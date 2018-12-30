@@ -39,10 +39,10 @@
 
 .boatsHolder {
 	position:absolute;
-	width:80px;
+	width:100px;
 	height:20px;
 	background-color:white;
-	bottom: 0px;
+	top: 20px;
 }
 
 .isPossible {
@@ -58,6 +58,6 @@
 }
 
 .waterInfo {
-	top: 15px;
+	top: 0px;
 	position:absolute;
 }

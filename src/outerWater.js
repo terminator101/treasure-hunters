@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { PlayerBoat } from './player';
+
 import { CARD_IMAGE_LOCATION, 
 		IMAGE_PLACEHOLDER, 
 		CARD_IMAGE_CLASS } from './constants';
@@ -10,12 +12,11 @@ export default class OuterWater extends React.Component {
 	constructor(props) {
 		super(props);
 
-		//this.cardClass = this.props."cardObject"
-
 		this.defaults = {
 			id: 			0,
 			row:  			0,
 			col: 			0,
+			objectType: 	"outerWater",
 			imageLocation: 	CARD_IMAGE_LOCATION,
 			cardImage: 		"",
 			currentImage: 	IMAGE_PLACEHOLDER,
@@ -30,7 +31,7 @@ export default class OuterWater extends React.Component {
 	render(){
 		this.settings = Object.assign({}, this.defaults, this.props);
 
-		let imageLocation = this.settings.imageLocation + "/" + this.settings.imageLocation;
+		let imageLocation = this.settings.imageLocation + "/" + this.settings.currentImage;
 		let possibleMove = this.props.possibleMove ? 'possible' : '';
 		let playerBoat = this.props.playerBoat ? this.props.playerBoat : '';
 		return(
@@ -38,8 +39,26 @@ export default class OuterWater extends React.Component {
 				<img className={this.settings.imageClass} src={imageLocation} alt="water" />
 				<div className="waterInfo">{this.settings.row} - {this.settings.col}</div>
 				<div className="isPossible">{possibleMove}</div>
-				<div className="boatsHolder">{playerBoat}</div>
+				<div className="boatsHolder">{this.settings.playerBoat ? this._displayPlayerBoat(this.settings.playerBoat) : ""}</div>
 			</div>
+		)
+	}
+
+	_displayPlayerBoat(playerBoat){
+		return(
+			<PlayerBoat
+				key = 			{playerBoat.row + "" + playerBoat.col}
+				id =			{playerBoat.id}
+				row = 			{playerBoat.row}
+				col =  			{playerBoat.col}
+				location =      {playerBoat.location}
+				units = 		{playerBoat.units}
+				playerId = 		{playerBoat.playerId}
+				playerName = 	{playerBoat.playerName}
+				possibleMove = 	{playerBoat.possibleMove}
+				
+				disabled = 	    {playerBoat.disabled}
+			/>
 		)
 	}
 }

@@ -16,7 +16,8 @@ export default class Card extends React.Component {
 		this.defaults = {
 			id: 			0,
 			row:  			0,
-			col: 			0, 
+			col: 			0,
+			objectType: 	"card",
 			opened: 		false,
 			disabled: 		true,
 			treasure: 		false,
@@ -49,11 +50,6 @@ export default class Card extends React.Component {
 		);
 	}
 
-	///
-	_getCardId(){
-		return this.settings.id;
-	}
-
 	_displayUnits(units){
 		return units.map((unit) => {
 			return(
@@ -68,9 +64,11 @@ export default class Card extends React.Component {
 				/>
 			)
 		});
-		/*for(let index in units){
-			return units[index];
-		}*/
+	}
+
+	///
+	_getCardId(){
+		return this.settings.id;
 	}
 
 	///

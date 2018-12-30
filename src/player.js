@@ -82,6 +82,7 @@ class PlayerUnit extends React.Component {
 			</div>
 		);
 	}
+
 } 
 
 ///
@@ -119,6 +120,7 @@ class PlayerBoat extends React.Component {
 			image: "",
 			imageLocation: "",
 			possibleMove: false,
+			units: [],
 		}
 	}
 
@@ -127,11 +129,28 @@ class PlayerBoat extends React.Component {
 		let possibleMove = this.props.possibleMove ? 'possible' : '';
 		return(
 			<div>
-				<div>Player Boat</div>
 				<div>At {this.settings.row} and {this.settings.col}</div>
+				<div>Player Boat</div>
 				<div className="isPossible">{possibleMove}</div>
+				<div className="unitsHolder">{this._displayUnits(this.settings.units)}</div>
 			</div>
 		);
+	}
+
+	_displayUnits(units){
+		return units.map((unit) => {
+			return(
+				<PlayerUnit
+					key = 		{unit.id}
+					id =  		{unit.id}
+					row =		{unit.row}
+					col =  		{unit.col}
+					location =  {unit.location}
+					playerId = 	{unit.playerId}
+					playerName = {unit.playerName}
+				/>
+			)
+		});
 	}
 }
 
