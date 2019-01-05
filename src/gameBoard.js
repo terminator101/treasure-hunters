@@ -51,8 +51,6 @@ export default class GameBoard extends React.Component {
 
 	render(){
 		this.settings = Object.assign({}, this.defaults, this.props);
-		//const cardArray = this.state.cardArray;
-		//const cardArray = this._displayCards(this.state.cardArray);
 		let cardArray = [];
 		for (let i = 1; i < NUMBER_OF_ROWS + 1; i++) {
 			cardArray[i] = this._displayCards(this.state.cardArray[i]);
@@ -62,9 +60,6 @@ export default class GameBoard extends React.Component {
 		let leftWater = this._displayOuterWater(this._getOuterWater("left"));
 		let rightWater = this._displayOuterWater(this._getOuterWater("right"));
 
-		//const playerUnitsArray = this._displayPlayerUnits(this.state.playerUnitsArray);
-		
-		//console.log(this._findPlayerById(1));
 		return(
 			<div className="container">
 				<div className="row">
@@ -127,7 +122,6 @@ export default class GameBoard extends React.Component {
 		for(let i = 1; i < NUMBER_OF_ROWS + 1; i++){
 			outerWaterArray[i][7] = { row: i, col: 7, playerBoat: "", possibleMove: false, cardClass: "col-sm-12 cardObject", objectType: "outerWater" }
 		}
-		//console.log(outerWaterArray);
 
 		return outerWaterArray;
 	}
@@ -232,48 +226,9 @@ export default class GameBoard extends React.Component {
 			
 		};
 
-		//playerUnitsArray = this._displayPlayerUnits(playerUnitsArray);
 		return playerUnitsArray;
 		
 	}
-
-	/*_displayPlayerUnits(playerUnitsArray){
-		return playerUnitsArray.map((unit) => {
-			return(
-				<PlayerUnit
-					key = 		{unit.id}
-					id =  		{unit.id}
-					row =		{unit.row}
-					col =  		{unit.col}
-					location =  {unit.location}
-					playerId = 	{unit.playerId}
-					playerName = {unit.playerName}
-				/>
-			)
-		});
-	}
-
-	_displayPlayerUnit(playerUnit){
-		return(
-			<PlayerUnit
-				key = 		{playerUnit.row + "" + playerUnit.col}
-				id =		{playerUnit.id}
-				row =		{playerUnit.row}
-				col =  		{playerUnit.col}
-				location =  {playerUnit.location}
-				playerId = 	{playerUnit.playerId}
-				playerName = {playerUnit.playerName}
-			/>
-		)
-	}
-
-	_addUnitToBoat(boat,unit){
-		unit.row = boat.row;
-		unit.col = boat.col;
-		unit = this._displayPlayerUnit(unit);
-		boat.units.push(unit);
-		return boat;
-	}*/
 
 	///////////////////
 	/// Cards
@@ -286,17 +241,9 @@ export default class GameBoard extends React.Component {
 			for (let i = 1; i < NUMBER_OF_ROWS + 1; i++) {
 				cardArray[r][i] = { row: r, col: i, cardType: "mermaid", units: [], possibleMove: false, cardImage: this.props.cardImagesArray[0], disabled: true, objectType: "card" };
 			}
-			//cardArray[i] = { id: i, cardType: "test", units: [], possibleMove: false, cardImage: this.props.cardImagesArray[0] };
 		}
 
 		return cardArray;
-
-		// let displayCardArray = [];
-		// for (let i = 1; i < NUMBER_OF_ROWS + 1; i++) {
-		// 	displayCardArray[i] = this._displayCards(cardArray[i]);
-		// }
-		// //cardArray = this._displayCards(cardArray);
-		// return displayCardArray;
 	}
 
 	_displayCards(cardArray){
@@ -317,91 +264,6 @@ export default class GameBoard extends React.Component {
 			)
 		});
 	}
-
-	/*_addUnitToCard(card,unit){
-
-		const cardArray = this.state.cardArray;
-		const playerUnitsArray = this.state.playerUnitsArray;
-
-		//Update the unit in the array with the location on the card
-		const updatedUnitsArray = update(playerUnitsArray, {
-			[unit.props.id]: {
-				props: {
-					row: {
-						$set: card.props.row
-					},
-					col: {
-						$set: card.props.col
-					},
-					location: {
-						$set: "card"
-					}
-				}
-			}
-		});
-
-		//console.log(updatedUnitsArray[unit.props.id]);
-
-		//Add the unit to the card and set it as enabled
-		const updatedCardArray = update(cardArray, {
-			[card.props.row]: {
-				[card.props.col]: {
-					props: {
-						units: {
-							$push: [updatedUnitsArray[unit.props.id]]
-						},
-						disabled: {
-							$set: false
-						},
-						onClick: {
-							$set: () => this._handleClick(card)
-						}
-					}
-				}
-			}
-		});
-
-		//this.state.playerUnitsArray = updatedUnitsArray;
-		//this.state.cardArray = updatedCardArray;
-		
-		this.setState({
-			cardArray: updatedCardArray,
-			playerUnitsArray: updatedUnitsArray,
-		});
-
-		//console.log(this.state.cardArray[card.props.row][card.props.col]);
-	}*/
-
-	/*_addUnitToCard(card,unit){
-		const cardArray = this.state.cardArray.slice();
-		const playerUnitsArray = this.state.playerUnitsArray.slice();
-
-		//console.log(cardArray[card.row][card.col]);
-		//console.log(playerUnitsArray[unit.id]);
-
-		unit.row = card.row;
-		unit.col = card.col;
-		unit.location = "card";
-		//unit = this._displayPlayerUnit(unit);
-
-		//Update
-		playerUnitsArray[unit.id] = Object.assign({}, playerUnitsArray[unit.id], {
-			row: unit.row,
-			col: unit.col
-		});
-
-		cardArray[card.row] = cardArray[card.row].slice();
-		cardArray[card.row][card.col] = Object.assign({}, cardArray[card.row][card.col], {
-			units: cardArray[card.row][card.col].units.concat(playerUnitsArray[unit.id]),
-			disabled: false
-		});
-
-		this.setState({
-			playerUnitsArray: playerUnitsArray,
-			cardArray: cardArray,
-		});
-		return cardArray;
-	}*/
 
 	_addUnitToObject(unit,object,playerUnitsArray,cardArray){
 		let cardsUpdatedWithUnitsArray = cardArray.slice();
@@ -432,49 +294,6 @@ export default class GameBoard extends React.Component {
 		return objectsWithUpdatedLocation;
 	}
 
-	/*_removeUnitFromObject(unit){
-		const cardArray = this.state.cardArray.slice();
-		//const playerUnitsArray = this.state.playerUnitsArray;
-
-		cardArray[unit.row] = cardArray[unit.row].slice();
-
-		let cardUnitsArray = cardArray[unit.row][unit.col].units;
-
-		const theUnit = cardUnitsArray.find( unit => unit.id === unit.id );
-
-		console.log(cardArray[unit.row][unit.col].units);
-		console.log(theUnit);
-
-		let newCardUnitArray = cardArray[unit.row][unit.col].units.filter(unit => unit.id !== theUnit.id);
-		console.log(newCardUnitArray);
-
-		
-		cardArray[unit.row][unit.col] = Object.assign({}, cardArray[unit.row][unit.col], {
-			units: newCardUnitArray,
-			disabled: true
-		});
-
-		//units: cardArray[unit.row][unit.col].units.filter(e => e !== playerUnitsArray[unit.id]),
-
-		const cardArray = this.state.cardArray.slice();
-		let cardUnitsArray = cardArray[unit.row][unit.col].units;
-		//console.log(cardUnitsArray);
-		//this._clearPossibleMoves();
-
-		for(let i = 0; i < cardUnitsArray.length+1; i++){
-			if (cardUnitsArray[i].id === unit.id) {
-				cardUnitsArray.splice(i);
-			}
-		}
-		//cardArray[unit.row][unit.col].units = cardUnitsArray;
-
-
-		this.setState({
-			cardArray: cardArray,
-		});
-		return unit;
-		
-	}*/
 	_removeUnitFromObject(unit,objectArray){
 		let updatedObjectArray = objectArray;
 		let objectUnitsArray = updatedObjectArray[unit.row][unit.col].units;
@@ -526,25 +345,6 @@ export default class GameBoard extends React.Component {
 		});
 		return possibleMoves;
 	}
-
-	/*_clearPossibleMoves(){
-		const cardArray = this.state.cardArray.slice();
-		let possibleMoves = this.state.possibleMoves.slice();
-		
-		//console.log(possibleMoves);
-		for(let position of possibleMoves){
-			cardArray[position.row] = cardArray[position.row].slice();
-			cardArray[position.row][position.col] = Object.assign({}, cardArray[position.row][position.col], {
-				possibleMove: false,
-				disabled: true
-			});
-		}
-
-		this.setState({
-			cardArray: cardArray,
-			possibleMoves: [],
-		});
-	}*/
 
 	_findPossibleMoves(object){
 		let moves = [];
@@ -746,7 +546,6 @@ export default class GameBoard extends React.Component {
 		const playerUnitsArray = this.state.playerUnitsArray.slice();
 		const possibleMoves = this.state.possibleMoves;
 
-		//console.log(this.state.playerUnitsArray);
 		//Get all units from the card
 		let objectUnits = this._getPlayerUnitsFromObject(object);
 		let currentPlayerUnit = 0;
@@ -755,9 +554,6 @@ export default class GameBoard extends React.Component {
 		if (objectUnits.length > 0) {
 			currentPlayerUnit = this._getCurrentPlayerUnitFromObject(objectUnits);
 		}
-
-		//console.log(currentPlayerUnit);
-		//console.log(this.state.possibleMoves.length);
 
 		//If there is a unit that belong to the current player and there aren't any possible moves, yet
 		if (currentPlayerUnit !== 0 && this.state.possibleMoves.length === 0) {
@@ -776,10 +572,13 @@ export default class GameBoard extends React.Component {
 			//If the object allows for a possible move
 			if(object.possibleMove === true){
 
-				//Remove unit and clear all moves
+				//Remove unit
 				let updatedCardArray = this._removeUnitFromObject(this.state.currentPlayerUnit,cardArray);
+				
+ 				//Clear all moves
 				updatedCardArray = this._clearPossibleMoves(updatedCardArray, possibleMoves);
 				
+				//Add the unit to the object and return arrays to be updated
 				let { cardsUpdatedWithUnitsArray, updatedUnitsArray }  = this._addUnitToObject(this.state.currentPlayerUnit,updatedCardArray[object.row][object.col],playerUnitsArray,updatedCardArray);
 
 				this.setState({
@@ -787,22 +586,12 @@ export default class GameBoard extends React.Component {
 					possibleMoves: [],
 					playerUnitsArray: updatedUnitsArray
 				});
-				/*
-				//Remove the current player unit from its current card
-				this._removeUnitFromObject(this.state.currentPlayerUnit);
-
-				this._clearPossibleMoves();
-				//this._removeUnitClearPossibleMoves(this.state.currentPlayerUnit);
-
-				//Add the current player unit to a new card
-				this._addUnitToCard(cardArray[object.row][object.col],this.state.currentPlayerUnit);*/
 				
 			} else {
 				alert("invalid move");
 			}
 
 		}
-		//alert("This card does not have units");
 
 	}
 
@@ -830,6 +619,203 @@ class PlayerTurn extends React.Component {
 
 
 ///Old code
+
+/*
+				//Remove the current player unit from its current card
+				this._removeUnitFromObject(this.state.currentPlayerUnit);
+
+				this._clearPossibleMoves();
+				//this._removeUnitClearPossibleMoves(this.state.currentPlayerUnit);
+
+				//Add the current player unit to a new card
+				this._addUnitToCard(cardArray[object.row][object.col],this.state.currentPlayerUnit);*/
+
+/*_addUnitToCard(card,unit){
+
+		const cardArray = this.state.cardArray;
+		const playerUnitsArray = this.state.playerUnitsArray;
+
+		//Update the unit in the array with the location on the card
+		const updatedUnitsArray = update(playerUnitsArray, {
+			[unit.props.id]: {
+				props: {
+					row: {
+						$set: card.props.row
+					},
+					col: {
+						$set: card.props.col
+					},
+					location: {
+						$set: "card"
+					}
+				}
+			}
+		});
+
+		//console.log(updatedUnitsArray[unit.props.id]);
+
+		//Add the unit to the card and set it as enabled
+		const updatedCardArray = update(cardArray, {
+			[card.props.row]: {
+				[card.props.col]: {
+					props: {
+						units: {
+							$push: [updatedUnitsArray[unit.props.id]]
+						},
+						disabled: {
+							$set: false
+						},
+						onClick: {
+							$set: () => this._handleClick(card)
+						}
+					}
+				}
+			}
+		});
+
+		//this.state.playerUnitsArray = updatedUnitsArray;
+		//this.state.cardArray = updatedCardArray;
+		
+		this.setState({
+			cardArray: updatedCardArray,
+			playerUnitsArray: updatedUnitsArray,
+		});
+
+		//console.log(this.state.cardArray[card.props.row][card.props.col]);
+	}*/
+
+	/*_addUnitToCard(card,unit){
+		const cardArray = this.state.cardArray.slice();
+		const playerUnitsArray = this.state.playerUnitsArray.slice();
+
+		//console.log(cardArray[card.row][card.col]);
+		//console.log(playerUnitsArray[unit.id]);
+
+		unit.row = card.row;
+		unit.col = card.col;
+		unit.location = "card";
+		//unit = this._displayPlayerUnit(unit);
+
+		//Update
+		playerUnitsArray[unit.id] = Object.assign({}, playerUnitsArray[unit.id], {
+			row: unit.row,
+			col: unit.col
+		});
+
+		cardArray[card.row] = cardArray[card.row].slice();
+		cardArray[card.row][card.col] = Object.assign({}, cardArray[card.row][card.col], {
+			units: cardArray[card.row][card.col].units.concat(playerUnitsArray[unit.id]),
+			disabled: false
+		});
+
+		this.setState({
+			playerUnitsArray: playerUnitsArray,
+			cardArray: cardArray,
+		});
+		return cardArray;
+	}*/
+
+/*_displayPlayerUnits(playerUnitsArray){
+		return playerUnitsArray.map((unit) => {
+			return(
+				<PlayerUnit
+					key = 		{unit.id}
+					id =  		{unit.id}
+					row =		{unit.row}
+					col =  		{unit.col}
+					location =  {unit.location}
+					playerId = 	{unit.playerId}
+					playerName = {unit.playerName}
+				/>
+			)
+		});
+	}
+
+	_displayPlayerUnit(playerUnit){
+		return(
+			<PlayerUnit
+				key = 		{playerUnit.row + "" + playerUnit.col}
+				id =		{playerUnit.id}
+				row =		{playerUnit.row}
+				col =  		{playerUnit.col}
+				location =  {playerUnit.location}
+				playerId = 	{playerUnit.playerId}
+				playerName = {playerUnit.playerName}
+			/>
+		)
+	}
+
+	_addUnitToBoat(boat,unit){
+		unit.row = boat.row;
+		unit.col = boat.col;
+		unit = this._displayPlayerUnit(unit);
+		boat.units.push(unit);
+		return boat;
+	}*/
+
+/*_clearPossibleMoves(){
+		const cardArray = this.state.cardArray.slice();
+		let possibleMoves = this.state.possibleMoves.slice();
+		
+		//console.log(possibleMoves);
+		for(let position of possibleMoves){
+			cardArray[position.row] = cardArray[position.row].slice();
+			cardArray[position.row][position.col] = Object.assign({}, cardArray[position.row][position.col], {
+				possibleMove: false,
+				disabled: true
+			});
+		}
+
+		this.setState({
+			cardArray: cardArray,
+			possibleMoves: [],
+		});
+	}*/
+
+/*_removeUnitFromObject(unit){
+		const cardArray = this.state.cardArray.slice();
+		//const playerUnitsArray = this.state.playerUnitsArray;
+
+		cardArray[unit.row] = cardArray[unit.row].slice();
+
+		let cardUnitsArray = cardArray[unit.row][unit.col].units;
+
+		const theUnit = cardUnitsArray.find( unit => unit.id === unit.id );
+
+		console.log(cardArray[unit.row][unit.col].units);
+		console.log(theUnit);
+
+		let newCardUnitArray = cardArray[unit.row][unit.col].units.filter(unit => unit.id !== theUnit.id);
+		console.log(newCardUnitArray);
+
+		
+		cardArray[unit.row][unit.col] = Object.assign({}, cardArray[unit.row][unit.col], {
+			units: newCardUnitArray,
+			disabled: true
+		});
+
+		//units: cardArray[unit.row][unit.col].units.filter(e => e !== playerUnitsArray[unit.id]),
+
+		const cardArray = this.state.cardArray.slice();
+		let cardUnitsArray = cardArray[unit.row][unit.col].units;
+		//console.log(cardUnitsArray);
+		//this._clearPossibleMoves();
+
+		for(let i = 0; i < cardUnitsArray.length+1; i++){
+			if (cardUnitsArray[i].id === unit.id) {
+				cardUnitsArray.splice(i);
+			}
+		}
+		//cardArray[unit.row][unit.col].units = cardUnitsArray;
+
+
+		this.setState({
+			cardArray: cardArray,
+		});
+		return unit;
+		
+	}*/
+
 /*_removeUnitClearPossibleMoves(unit){
 		const cardArray = this.state.cardArray.slice();
 		let cardUnitsArray = cardArray[unit.row][unit.col].units.slice();
