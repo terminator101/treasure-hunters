@@ -16,15 +16,18 @@ export default class OuterWater extends React.Component {
 			id: 			0,
 			row:  			0,
 			col: 			0,
+			cardType: 		"outerWater",
 			objectType: 	"outerWater",
 			imageLocation: 	CARD_IMAGE_LOCATION,
 			cardImage: 		"",
 			currentImage: 	IMAGE_PLACEHOLDER,
 			cardClass: 		"col-sm-2 cardObject",
 			imageClass:     CARD_IMAGE_CLASS,
-			units:          "",
+			units:          [],
 			possibleMove:   false,
-			playerBoat: 	""
+			playerBoat: 	"",
+			disabled: 		true,
+			onClick: 		""
 		}
 	}
 
@@ -35,7 +38,7 @@ export default class OuterWater extends React.Component {
 		let possibleMove = this.props.possibleMove ? 'possible' : '';
 		let playerBoat = this.props.playerBoat ? this.props.playerBoat : '';
 		return(
-			<div className={this.settings.cardClass} onClick={() => this.props.onClick()}>
+			<div className={this.settings.cardClass} onClick={this.settings.disabled ? null : () => this.props.onClick()}>
 				<img className={this.settings.imageClass} src={imageLocation} alt="water" />
 				<div className="waterInfo">{this.settings.row} - {this.settings.col}</div>
 				<div className="isPossible">{possibleMove}</div>
@@ -52,12 +55,11 @@ export default class OuterWater extends React.Component {
 				row = 			{playerBoat.row}
 				col =  			{playerBoat.col}
 				location =      {playerBoat.location}
+				objectType =    {playerBoat.objectType}
 				units = 		{playerBoat.units}
 				playerId = 		{playerBoat.playerId}
 				playerName = 	{playerBoat.playerName}
 				possibleMove = 	{playerBoat.possibleMove}
-				
-				disabled = 	    {playerBoat.disabled}
 			/>
 		)
 	}

@@ -31,7 +31,7 @@
 
 .unitsHolder {
 	position:absolute;
-	width:80px;
+	/*width:80px;*/
 	height:20px;
 	background-color:white;
 	bottom: 0px;
@@ -39,7 +39,7 @@
 
 .boatsHolder {
 	position:absolute;
-	width:100px;
+	/*width:100px;*/
 	height:20px;
 	background-color:white;
 	top: 20px;
@@ -48,7 +48,7 @@
 .isPossible {
 	position:absolute;
 	background-color:white;
-	bottom: 20px;
+	bottom: 0px;
 }
 
 .cardInfo {
@@ -60,4 +60,15 @@
 .waterInfo {
 	top: 0px;
 	position:absolute;
+}
+
+.no-padding {
+   /*padding: 0 !important;*/
+   padding-left: 0 !important;
+   padding-right: 0 !important;
+}
+
+.edge {
+	position:absolute;
+	bottom:20px;
 }

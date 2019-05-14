@@ -53,8 +53,7 @@ class PlayerUnit extends React.Component {
 		this.settings = Object.assign({}, this.defaults, this.props);
 		return(
 			<div>
-				<div>{this.settings.playerName} unit {this.settings.id}</div>
-				<div>At {this.settings.row} and {this.settings.col}</div>
+				<div>{this.settings.playerName} unit {this.settings.id} R:{this.settings.row}|C:{this.settings.col}</div>
 			</div>
 		);
 	}
@@ -96,6 +95,7 @@ class PlayerBoat extends React.Component {
 			image: "",
 			imageLocation: "",
 			possibleMove: false,
+			objectType: "boat",
 			units: [],
 		}
 	}
@@ -105,8 +105,7 @@ class PlayerBoat extends React.Component {
 		let possibleMove = this.props.possibleMove ? 'possible' : '';
 		return(
 			<div>
-				<div>At {this.settings.row} and {this.settings.col}</div>
-				<div>Player Boat</div>
+				<div>Player Boat R:{this.settings.row}|C:{this.settings.col}</div>
 				<div className="isPossible">{possibleMove}</div>
 				<div className="unitsHolder">{this._displayUnits(this.settings.units)}</div>
 			</div>

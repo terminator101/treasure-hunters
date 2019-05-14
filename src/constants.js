@@ -3,6 +3,7 @@
 //Game
 export const DEFAULT_NUMBER_OF_CARDS = 36;
 export const NUMBER_OF_ROWS = 6;
+export const NUMBER_CARDS_PER_ROW = 6;
 
 //Player
 export const DEAFULT_PLAYER_NAME = 'Andrej';

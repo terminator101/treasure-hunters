@@ -29,7 +29,8 @@ export default class Card extends React.Component {
 			imageClass:     CARD_IMAGE_CLASS,
 			units:          [],
 			possibleMove:   false,
-			onClick: 		""
+			onClick: 		"",
+			edge: 			false, 
 		}
 		
 	}
@@ -46,6 +47,7 @@ export default class Card extends React.Component {
 				<div className="cardInfo">{this.settings.cardType} {this.settings.row} - {this.settings.col}</div>
 				<div className="isPossible">{possibleMove}</div>
 				<div className="unitsHolder">{this._displayUnits(this.settings.units)}</div>
+				<div className="edge">{this.settings.edge ? "edge" : ''}</div>
 			</div>
 		);
 	}
