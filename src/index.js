@@ -1,7 +1,9 @@
 
-import './css/bootstrap.min.css';
+//import './css/bootstrap.min.css';
 import './css/style.css';
 import './treasure-hunters';
+import './css/bootstrap.min.css';
+//require('bootstrap');
 
 //import './bootstrap.min';
 /*import React from 'react';

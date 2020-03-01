@@ -112,33 +112,43 @@ export default class GameBoard extends React.Component {
 		return(
 			<div className="container">
 				<div className="row">
-					<div className="col-sm-12">
+					<div className="col-12">
 						{this.props.playersArray[this.state.currentPlayerId]}
 					</div>
 				</div>
 				<div className="row">
-					<div className="col-sm-10 col-sm-offset-1">
-						{/* This is where the top boat will go */}
-						{topWater}
+					<div className="col-10 offset-md-1">
+						<div className="row">
+							{/* This is where the boats will go */}
+							{topWater}
+						</div>
 					</div>
 				</div>
 				<div id={this.props.cardsHolderId} className="row">
-					<div className="col-sm-1">
-						{/* This is where the boats will go */}
-						{leftWater}
+					<div className="col-1">
+						<div className="row">
+							{/* This is where the boats will go */}
+							{leftWater}
+						</div>
 					</div>
 					<div className="col-sm-10">
-						{cardArray}
+						<div className="row">
+							{cardArray}
+						</div>
 					</div>
-					<div className="col-sm-1">
-						{/* This is where the boats will go */}
-						{rightWater}
+					<div className="col-1">
+						<div className="row">
+							{/* This is where the boats will go */}
+							{rightWater}
+						</div>
 					</div>
 				</div>
 				<div className="row">
-					<div className="col-sm-10 col-sm-offset-1">
-						{/* This is where the boats will go */}
-						{bottomWater}
+					<div className="col-10 offset-md-1">
+						<div className="row">
+							{/* This is where the boats will go */}
+							{bottomWater}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -156,20 +166,20 @@ export default class GameBoard extends React.Component {
 
 		//top
 		for(let i = 1; i < NUMBER_OF_ROWS + 1; i++){
-			outerWaterArray[0][i] = { row: 0, col: i, playerBoat: "", possibleMove: false, disabled: true, cardClass: "col-sm-2 cardObject no-padding", objectType: "outerWater", cardType: "horizontal vertical" }
+			outerWaterArray[0][i] = { row: 0, col: i, playerBoat: "", possibleMove: false, disabled: true, cardClass: "col-sm-2 cardObject no-gutters", objectType: "outerWater", cardType: "horizontal vertical" }
 		}
 		//bottom
 		for(let i = 1; i < NUMBER_OF_ROWS + 1; i++){
-			outerWaterArray[7][i] = { row: 7, col: i, playerBoat: "", possibleMove: false, disabled: true, cardClass: "col-sm-2 cardObject no-padding", objectType: "outerWater", cardType: "horizontal vertical" }
+			outerWaterArray[NUMBER_OF_ROWS + 1][i] = { row: NUMBER_OF_ROWS + 1, col: i, playerBoat: "", possibleMove: false, disabled: true, cardClass: "col-sm-2 cardObject no-gutters", objectType: "outerWater", cardType: "horizontal vertical" }
 		}
 
 		//left
 		for(let i = 1; i < NUMBER_OF_ROWS + 1; i++){
-			outerWaterArray[i][0] = { row: i, col: 0, playerBoat: "", possibleMove: false, disabled: true, cardClass: "col-sm-12 cardObject no-padding", objectType: "outerWater", cardType: "horizontal vertical" }
+			outerWaterArray[i][0] = { row: i, col: 0, playerBoat: "", possibleMove: false, disabled: true, cardClass: "col-sm-12 cardObject no-gutters", objectType: "outerWater", cardType: "horizontal vertical" }
 		}
 		//right
 		for(let i = 1; i < NUMBER_OF_ROWS + 1; i++){
-			outerWaterArray[i][7] = { row: i, col: 7, playerBoat: "", possibleMove: false, disabled: true, cardClass: "col-sm-12 cardObject no-padding", objectType: "outerWater", cardType: "horizontal vertical" }
+			outerWaterArray[i][NUMBER_OF_ROWS + 1] = { row: i, col: NUMBER_OF_ROWS + 1, playerBoat: "", possibleMove: false, disabled: true, cardClass: "col-sm-12 cardObject no-gutters", objectType: "outerWater", cardType: "horizontal vertical" }
 		}
 
 		return outerWaterArray;
@@ -186,7 +196,7 @@ export default class GameBoard extends React.Component {
 			break;
 			case "bottom":
 				for(let i = 1; i < NUMBER_OF_ROWS + 1; i++){
-					displayArray.push(outerWaterArray[7][i]);
+					displayArray.push(outerWaterArray[NUMBER_CARDS_PER_ROW + 1][i]);
 				}
 			break;
 			case "left":
@@ -196,7 +206,7 @@ export default class GameBoard extends React.Component {
 			break;
 			case "right":
 				for(let i = 1; i < NUMBER_OF_ROWS + 1; i++){
-					displayArray.push(outerWaterArray[i][7]);
+					displayArray.push(outerWaterArray[i][NUMBER_OF_ROWS + 1]);
 				}
 			break;
 			default:

@@ -62,12 +62,6 @@
 	position:absolute;
 }
 
-.no-padding {
-   /*padding: 0 !important;*/
-   padding-left: 0 !important;
-   padding-right: 0 !important;
-}
-
 .edge {
 	position:absolute;
 	bottom:20px;
