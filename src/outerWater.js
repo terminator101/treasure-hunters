@@ -42,7 +42,7 @@ export default class OuterWater extends React.Component {
 				<img className={this.settings.imageClass} src={imageLocation} alt="water" />
 				<div className="waterInfo">{this.settings.row} - {this.settings.col}</div>
 				<div className="isPossible">{possibleMove}</div>
-				<div className="boatsHolder">{this.settings.playerBoat ? this._displayPlayerBoat(this.settings.playerBoat) : ""}</div>
+				<div className="boatsHolder">{playerBoat ? this._displayPlayerBoat(playerBoat) : ""}</div>
 			</div>
 		)
 	}
@@ -56,6 +56,7 @@ export default class OuterWater extends React.Component {
 				col =  			{playerBoat.col}
 				location =      {playerBoat.location}
 				objectType =    {playerBoat.objectType}
+				movementType =  {playerBoat.movementType}
 				units = 		{playerBoat.units}
 				playerId = 		{playerBoat.playerId}
 				playerName = 	{playerBoat.playerName}

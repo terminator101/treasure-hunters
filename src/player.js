@@ -96,6 +96,7 @@ class PlayerBoat extends React.Component {
 			imageLocation: "",
 			possibleMove: false,
 			objectType: "boat",
+			movementType: "horizontal vertical",
 			units: [],
 		}
 	}

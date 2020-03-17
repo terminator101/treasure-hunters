@@ -1,10 +1,11 @@
 import React from 'react';
 
-import { PlayerUnit } from './player';
+import { PlayerBoat, PlayerUnit } from './player';
 
 import { CARD_IMAGE_LOCATION, 
 		IMAGE_PLACEHOLDER, 
-		CARD_CLASS, 
+		CARD_CLASS,
+		CARD_WIDTH,
 		CARD_IMAGE_CLASS } from './constants';
 
 ///The Card
@@ -18,6 +19,7 @@ export default class Card extends React.Component {
 			row:  			0,
 			col: 			0,
 			objectType: 	"card",
+			movementType:	"horizontal vertical",
 			opened: 		false,
 			disabled: 		true,
 			treasure: 		false,
@@ -25,12 +27,14 @@ export default class Card extends React.Component {
 			imageLocation: 	CARD_IMAGE_LOCATION,
 			cardImage: 		"",
 			currentImage: 	IMAGE_PLACEHOLDER,
+			cardWidth:		CARD_WIDTH,
 			cardClass: 		CARD_CLASS,
 			imageClass:     CARD_IMAGE_CLASS,
 			units:          [],
 			possibleMove:   false,
 			onClick: 		"",
-			edge: 			false, 
+			edge: 			false,
+			playerBoat: 	"",
 		}
 		
 	}
@@ -40,16 +44,28 @@ export default class Card extends React.Component {
 
 		let imageLocation = this.settings.imageLocation + "/" + this._getCardImage();
 		let possibleMove = this.props.possibleMove ? 'possible' : '';
+		let playerBoat = this.props.playerBoat ? this._displayPlayerBoat(this.props.playerBoat) : '';
+		let playerUnits = this.props.units ? this._displayUnits(this.settings.units) : '';
+		let cardClasses = this.settings.cardWidth + " " + this.settings.cardClass;
+		let edge = this.settings.edge ? this._displayEdge() : '';
 		return(
-			//<div className="col-md-4" onClick={this._handleClick.bind(this)}>
-			<div className={this.settings.cardClass} onClick={this.settings.disabled ? null : () => this.props.onClick()}>
+			<div className={cardClasses} onClick={this.settings.disabled ? null : () => this.props.onClick()}>
 				<img className={this.settings.imageClass} src={imageLocation} alt="card" />
 				<div className="cardInfo">{this.settings.cardType} {this.settings.row} - {this.settings.col}</div>
 				<div className="isPossible">{possibleMove}</div>
-				<div className="unitsHolder">{this._displayUnits(this.settings.units)}</div>
-				<div className="edge">{this.settings.edge ? "edge" : ''}</div>
+				<div className="unitsHolder">
+					{playerUnits}
+				</div>
+				{edge}
+				{playerBoat}
 			</div>
 		);
+	}
+
+	_displayEdge(){
+		return(
+			<div className="edge">edge</div>
+		)
 	}
 
 	_displayUnits(units){
@@ -66,6 +82,23 @@ export default class Card extends React.Component {
 				/>
 			)
 		});
+	}
+
+	_displayPlayerBoat(playerBoat){
+		return(
+			<PlayerBoat
+				key = 			{playerBoat.row + "" + playerBoat.col}
+				id =			{playerBoat.id}
+				row = 			{playerBoat.row}
+				col =  			{playerBoat.col}
+				location =      {playerBoat.location}
+				objectType =    {playerBoat.objectType}
+				units = 		{playerBoat.units}
+				playerId = 		{playerBoat.playerId}
+				playerName = 	{playerBoat.playerName}
+				possibleMove = 	{playerBoat.possibleMove}
+			/>
+		)
 	}
 
 	///
