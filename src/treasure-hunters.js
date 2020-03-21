@@ -45,7 +45,7 @@ class TreasureHunters extends React.Component {
 	//Function for filling the players array
 	_createPlayers(){
 		let playersArray = [];
-		playersArray[1] = { id: 1, name: DEAFULT_PLAYER_NAME };
+		playersArray[1] = { playerId: 1, playerName: DEAFULT_PLAYER_NAME };
 		return playersArray;
 	}
 
@@ -55,8 +55,8 @@ class TreasureHunters extends React.Component {
 			return(
 				<Player
 					key = 		 			{player.id}
-					id = 		 			{player.id}
-					name = 					{player.name}
+					playerId = 		 		{player.playerId}
+					playerName = 			{player.playerName}
 				/>
 			)
 		});

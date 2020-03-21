@@ -9,7 +9,7 @@ class Player extends React.Component {
 		super(props);
 
 		this.defaults = {
-			name: DEAFULT_PLAYER_NAME,
+			playerName: DEAFULT_PLAYER_NAME,
 			playerId: 0,
 			score: 0,
 			playerUnitNumber: 2,
@@ -24,7 +24,7 @@ class Player extends React.Component {
 		this.settings = Object.assign({}, this.defaults, this.props);
 		
 		return(
-			<div>Player {this.settings.name}</div>
+			<div>Player {this.settings.playerName} </div>
 		);
 	}
 
