@@ -41,34 +41,11 @@ export default class GameBoard extends React.Component {
 	//Add unit to a card and a boat to another card
 	_debug( unitId = 1, boatdId = 1, cardLocation = {row: 1, col: 1}, boatLocation = {row: 0, col: 2}){
 
-		//console.log(this.state.playersArray[1].props);
-
-		/*//Add a test unit to card
-		let { objectsUpdatedWithUnitsArray, updatedUnitsArray } = 
-		this._addUnitToObject(
-			this.state.playerUnitsArray[1], 
-			this.state.cardArray[cardLocation.row][cardLocation.col], 
-			this.state.playerUnitsArray, 
-			this.state.cardArray
-		);
-		
-		//Now add a test boat to outer water
-		let { outerWaterUpdatedWithBoatsArray, updatedPlayerBoatsArray } = 
-		this._addPlayerBoatToOuterWater(
-			this.state.playerBoatsArray[1], 
-			objectsUpdatedWithUnitsArray[boatLocation.row][boatLocation.col], 
-			this.state.playerBoatsArray, 
-			objectsUpdatedWithUnitsArray
-		);
-		
-		//Update the state of cards, units and boats
-		this.setState({
-			cardArray: outerWaterUpdatedWithBoatsArray,
-			playerUnitsArray: updatedUnitsArray,
-			playerBoatsArray: updatedPlayerBoatsArray,
-		});*/
 		let updatedUnitsArray = this.state.playerUnitsArray.slice();
+		let updatedPlayerBoatsArray = this.state.playerBoatsArray.slice();
 		let newUnit = updatedUnitsArray[unitId];
+		let newBoat = updatedPlayerBoatsArray[boatdId];
+		let updatedCardArray = this.state.cardArray.slice();
 
 		//Update the unit with the location
 		updatedUnitsArray = 
@@ -84,21 +61,29 @@ export default class GameBoard extends React.Component {
 			newUnit, 
 			this.state.cardArray[cardLocation.row][cardLocation.col], 
 			updatedUnitsArray, 
-			this.state.cardArray
+			updatedCardArray
 		);
-		
+
+		//Update the boat with the location
+		updatedPlayerBoatsArray = 
+		this._updateObjectWithNewLocation(
+			newBoat,
+			this.state.cardArray[boatLocation.row][boatLocation.col],
+			this.state.playerBoatsArray
+		);
+
 		//Now add a test boat to outer water
-		let { outerWaterUpdatedWithBoatsArray, updatedPlayerBoatsArray } = 
+		let objectsUpdatedWithBoatsArray = 
 		this._addPlayerBoatToOuterWater(
-			this.state.playerBoatsArray[boatdId], 
+			newBoat, 
 			objectsUpdatedWithUnitsArray[boatLocation.row][boatLocation.col], 
-			this.state.playerBoatsArray, 
+			updatedPlayerBoatsArray, 
 			objectsUpdatedWithUnitsArray
 		);
 		
 		//Update the state of cards, units and boats
 		this.setState({
-			cardArray: outerWaterUpdatedWithBoatsArray,
+			cardArray: objectsUpdatedWithBoatsArray,
 			playerUnitsArray: updatedUnitsArray,
 			playerBoatsArray: updatedPlayerBoatsArray,
 		});
@@ -363,18 +348,14 @@ export default class GameBoard extends React.Component {
 
 	_addPlayerBoatToOuterWater(boat,spot,playerBoatsArray,outerWaterArray){
 		let outerWaterUpdatedWithBoatsArray = outerWaterArray.slice();
-		let updatedPlayerBoatsArray = playerBoatsArray.slice();
-
-		//Update the boats
-		updatedPlayerBoatsArray = this._updateObjectWithNewLocation(boat,spot,updatedPlayerBoatsArray);
 
 		outerWaterUpdatedWithBoatsArray[spot.row] = outerWaterUpdatedWithBoatsArray[spot.row].slice();
 		outerWaterUpdatedWithBoatsArray[spot.row][spot.col] = Object.assign({}, outerWaterUpdatedWithBoatsArray[spot.row][spot.col], {
-			playerBoat: updatedPlayerBoatsArray[boat.id],
+			playerBoat: playerBoatsArray[boat.id],
 			disabled: false
 		});
 
-		return {outerWaterUpdatedWithBoatsArray, updatedPlayerBoatsArray};
+		return outerWaterUpdatedWithBoatsArray;
 	}
 
 	_removePlayerBoatFromOuterWater(boat,objectArray){
@@ -507,8 +488,8 @@ export default class GameBoard extends React.Component {
 	 * @param {Array} playerBoatsArray 
 	 * @param {Array} outerWaterArray 
 	 */
-	_addUnitToBoat(unit,boat,playerUnitsArray,playerBoatsArray,outerWaterArray){
-		let boatsUpdatedWithUnitsArray = playerBoatsArray.slice();
+	_addUnitToBoat(unit,boat,playerUnitsArray,playerBoatsArray){
+		/*let boatsUpdatedWithUnitsArray = playerBoatsArray.slice();
 		let updatedUnitsArray = playerUnitsArray.slice();
 		let outerWaterUpdatedWithBoatsArray = outerWaterArray.slice();
 		
@@ -527,7 +508,21 @@ export default class GameBoard extends React.Component {
 		});
 
 		return {boatsUpdatedWithUnitsArray, updatedUnitsArray, outerWaterUpdatedWithBoatsArray};
-	}
+		*/	
+		let boatsUpdatedWithUnitsArray = playerBoatsArray.slice();
+		//let updatedUnitsArray = playerUnitsArray.slice();
+		//let outerWaterUpdatedWithBoatsArray = outerWaterArray.slice();
+		
+		//updatedUnitsArray = this._updateObjectWithNewLocation(unit,boat,playerUnitsArray);
+
+		//Update the units
+		boatsUpdatedWithUnitsArray[boat.id] = Object.assign({}, boatsUpdatedWithUnitsArray[boat.id], {
+			units: boatsUpdatedWithUnitsArray[boat.id].units.concat(playerUnitsArray[unit.id]),
+			disabled: false
+		});
+
+		return boatsUpdatedWithUnitsArray;
+}
 
 	_removeUnitFromBoat(findUnit,boat,boatArray) {
 		let updatedPlayerBoatsArray = boatArray.slice();
@@ -587,19 +582,7 @@ export default class GameBoard extends React.Component {
 	}
 
 	_addUnitToObject(unit,object,playerUnitsArray,objectArray){
-		/*let objectsUpdatedWithUnitsArray = objectArray.slice();
-		let updatedUnitsArray = playerUnitsArray.slice();
 
-		//Update the location of the unit  to match the object
-		updatedUnitsArray = this._updateObjectWithNewLocation(unit,object,playerUnitsArray);
-
-		objectsUpdatedWithUnitsArray[object.row] = objectsUpdatedWithUnitsArray[object.row].slice();
-		objectsUpdatedWithUnitsArray[object.row][object.col] = Object.assign({}, objectsUpdatedWithUnitsArray[object.row][object.col], {
-			units: objectsUpdatedWithUnitsArray[object.row][object.col].units.concat(updatedUnitsArray[unit.id]),
-			disabled: false
-		});
-
-		return {objectsUpdatedWithUnitsArray, updatedUnitsArray};*/
 		let objectsUpdatedWithUnitsArray = objectArray.slice();
 
 		objectsUpdatedWithUnitsArray[object.row] = objectsUpdatedWithUnitsArray[object.row].slice();
@@ -700,7 +683,7 @@ export default class GameBoard extends React.Component {
 				cardArray[position.row] = cardArray[position.row].slice();
 
 				//Check if the move is to a card or if the card has the current player boat
-				if (cardArray[position.row][position.col].objectType == "card" || this._cardHasThePlayerBoat(cardArray[position.row][position.col],currentPlayerBoat)) {
+				if (cardArray[position.row][position.col].objectType === "card" || this._cardHasThePlayerBoat(cardArray[position.row][position.col],currentPlayerBoat)) {
 					cardArray[position.row][position.col] = Object.assign({}, cardArray[position.row][position.col], {
 						possibleMove: true,
 						disabled: false
@@ -732,7 +715,7 @@ export default class GameBoard extends React.Component {
 
 		//Loop through all player units in order ot get the ones that belong to the specified player
 		for(let playerUnit of allPlayerUnits){
-			if (playerUnit !== undefined && playerUnit.playerId == player.playerId) {
+			if (playerUnit !== undefined && playerUnit.playerId === player.playerId) {
 				specifiedPlayerUnits.push(playerUnit);
 			}
 		}
@@ -1137,8 +1120,21 @@ export default class GameBoard extends React.Component {
 				//AN outer water with a boat has been clicked so move the unit to the boat
 				if (object.objectType === 'outerWater'){
 					console.log('move unit from card to boat');
-					//Remove
+					//Update the unit with the new location
+					updatedUnitsArray = this._updateObjectWithNewLocation(this.state.currentPlayerUnit,updatedPlayerBoatsArray[object.playerBoat.id],this.state.playerUnitsArray);
+					//Remove the unit from the current location
 					updatedCardArray = this._removeUnitFromObject(this.state.currentPlayerUnit,cardArray);
+					//Add the updated unit to the boat
+					updatedPlayerBoatsArray = this._addUnitToBoat(this.state.currentPlayerUnit, updatedPlayerBoatsArray[object.playerBoat.id], updatedUnitsArray, updatedPlayerBoatsArray);
+					//Update the outer water
+					updatedCardArray = this._addPlayerBoatToOuterWater(updatedPlayerBoatsArray[object.playerBoat.id], updatedCardArray[object.row][object.col], updatedPlayerBoatsArray, updatedCardArray);
+					//Clear the possible moves
+					updatedCardArray = this._clearPossibleMoves(updatedCardArray, possibleMoves);
+
+					//updatedCardArray = this._addUnitToBoat(this.state.currentPlayerUnit,updatedCardArray[object.row][object.col],updatedUnitsArray,updatedCardArray);
+
+					//Remove
+					//updatedCardArray = this._removeUnitFromObject(this.state.currentPlayerUnit,cardArray);
 					//Add
 
 					//Update
@@ -1181,7 +1177,7 @@ export default class GameBoard extends React.Component {
 		}
 		//that.displayCurrentPlayer(that.playerArray[that.currentPlayerId]);
 		this._createTurn("current");*/
-		console.log(playerUnits);
+		//console.log(playerUnits);
 
 		for(let position of playerUnits){
 			cardArray[position.row] = cardArray[position.row].slice();
@@ -1198,7 +1194,7 @@ export default class GameBoard extends React.Component {
 		switch(type){
 			case "current":
 				//Its current players turn so check if it is a computer
-				if(this.state.playersArray[this.state.currentPlayer].getPlayerType() == 'computer'){
+				if(this.state.playersArray[this.state.currentPlayer].getPlayerType() === 'computer'){
 					//logAction("Computer Turn");
 					//Let the computer go
 					//this._goComputer();
@@ -1210,7 +1206,7 @@ export default class GameBoard extends React.Component {
 				//It is the next players turn so switch
 				this._goNextPlayer();
 				break;
-			case "end":
+			default:
 				break;
 		}
 	}
