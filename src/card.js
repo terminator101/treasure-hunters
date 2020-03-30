@@ -52,12 +52,10 @@ export default class Card extends React.Component {
 			<div className={cardClasses} onClick={this.settings.disabled ? null : () => this.props.onClick()}>
 				<img className={this.settings.imageClass} src={imageLocation} alt="card" />
 				<div className="cardInfo">{this.settings.cardType} {this.settings.row} - {this.settings.col}</div>
-				<div className="isPossible">{possibleMove}</div>
-				<div className="unitsHolder">
-					{playerUnits}
-				</div>
+				{possibleMove ? <div className="isPossible">{possibleMove}</div> : ""} 
+				{playerUnits ? <div className="unitsHolder">{playerUnits}</div> : ""}
 				{edge}
-				{playerBoat}
+				<div className="boatsHolder">{playerBoat}</div>
 			</div>
 		);
 	}
@@ -93,6 +91,7 @@ export default class Card extends React.Component {
 				col =  			{playerBoat.col}
 				location =      {playerBoat.location}
 				objectType =    {playerBoat.objectType}
+				movementType = 	{playerBoat.movementType}
 				units = 		{playerBoat.units}
 				playerId = 		{playerBoat.playerId}
 				playerName = 	{playerBoat.playerName}

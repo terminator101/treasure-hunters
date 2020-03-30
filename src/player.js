@@ -52,9 +52,7 @@ class PlayerUnit extends React.Component {
 	render(){
 		this.settings = Object.assign({}, this.defaults, this.props);
 		return(
-			<div>
-				<div>{this.settings.playerName} unit {this.settings.id} R:{this.settings.row}|C:{this.settings.col}</div>
-			</div>
+			<div>{this.settings.playerName} unit {this.settings.id} R:{this.settings.row}|C:{this.settings.col}</div>
 		);
 	}
 
@@ -93,6 +91,8 @@ class PlayerBoat extends React.Component {
 			col: "",
 			name: "",
 			image: "",
+			playerId: "",
+			playerName: "",
 			imageLocation: "",
 			possibleMove: false,
 			objectType: "boat",
@@ -107,7 +107,7 @@ class PlayerBoat extends React.Component {
 		return(
 			<div>
 				<div>Player Boat R:{this.settings.row}|C:{this.settings.col}</div>
-				<div className="isPossible">{possibleMove}</div>
+				{possibleMove ? <div className="isPossible">{possibleMove}</div> : ""}
 				<div className="unitsHolder">{this._displayUnits(this.settings.units)}</div>
 			</div>
 		);

@@ -21,7 +21,7 @@ export default class GameBoard extends React.Component {
 			cardArray: 			this._createCards(),
 			//outerWaterArray: 	this._createOuterWater(), //this._createPlayerBoats(this.props.playersArray)
 			playerBoatsArray: 	this._createPlayerBoats(this.props.playersArray),
-			possibleMovesCard: 	[],
+			possibleMovesUnit: 	[],
 			possibleMovesBoat: 	[],
 			currentPlayer: 		this.props.playersArray[1].props,
 			currentPlayerUnit: 	"",
@@ -35,7 +35,7 @@ export default class GameBoard extends React.Component {
 	componentDidMount() {
 		//this._debug({row: 1, col: 1});
 		//this._debug4();
-		this._debug();
+		this._debug2();
 	}
 
 	//Add unit to a card and a boat to another card
@@ -79,6 +79,61 @@ export default class GameBoard extends React.Component {
 			objectsUpdatedWithUnitsArray[boatLocation.row][boatLocation.col], 
 			updatedPlayerBoatsArray, 
 			objectsUpdatedWithUnitsArray
+		);
+		
+		//Update the state of cards, units and boats
+		this.setState({
+			cardArray: objectsUpdatedWithBoatsArray,
+			playerUnitsArray: updatedUnitsArray,
+			playerBoatsArray: updatedPlayerBoatsArray,
+		});
+	}
+
+	//Add a boat with e unit to a card
+	_debug2( unitId = 1, boatdId = 1, boatLocation = {row: 0, col: 2}){
+
+		let updatedUnitsArray = this.state.playerUnitsArray.slice();
+		let updatedPlayerBoatsArray = this.state.playerBoatsArray.slice();
+		let newUnit = updatedUnitsArray[unitId];
+		let newBoat = updatedPlayerBoatsArray[boatdId];
+		let updatedCardArray = this.state.cardArray.slice();
+
+		let futureBoatLocation = { row: boatLocation.row, col: boatLocation.col, objectType: "boat" };
+
+		//Update the unit with the location.
+		//Since the boathas not been updated yet, assume that the location will be a boat
+		updatedUnitsArray = 
+		this._updateObjectWithNewLocation(
+			newUnit,
+			futureBoatLocation,
+			//this.state.cardArray[boatLocation.row][boatLocation.col],
+			this.state.playerUnitsArray
+		);
+
+		//Add the unit to boat
+		updatedPlayerBoatsArray = 
+		this._addUnitToBoat(
+			newUnit, 
+			updatedPlayerBoatsArray[boatdId], 
+			updatedUnitsArray, 
+			updatedPlayerBoatsArray
+		);
+
+		//Update the boat with the location
+		updatedPlayerBoatsArray = 
+		this._updateObjectWithNewLocation(
+			newBoat,
+			this.state.cardArray[boatLocation.row][boatLocation.col],
+			updatedPlayerBoatsArray
+		);
+
+		//Now add the boat to outer water
+		let objectsUpdatedWithBoatsArray = 
+		this._addPlayerBoatToOuterWater(
+			newBoat, 
+			updatedCardArray[boatLocation.row][boatLocation.col], 
+			updatedPlayerBoatsArray, 
+			updatedCardArray
 		);
 		
 		//Update the state of cards, units and boats
@@ -337,8 +392,8 @@ export default class GameBoard extends React.Component {
 				possibleMove: false, 
 				objectType: "boat",
 				movementType: "horizontal",
-				playerId: playersArray[index].props.id, 
-				playerName: playersArray[index].props.name, 
+				playerId: playersArray[index].props.playerId, 
+				playerName: playersArray[index].props.playerName, 
 				disabled: true, 
 				location: "" }
 		};
@@ -369,6 +424,13 @@ export default class GameBoard extends React.Component {
 		return updatedObjectArray;
 	}
 
+	//Set the way the units will move from the boat
+	_setBoatUnitMovementType(location){
+		//If movement type for this location is horizontal, set the unit to move vertically
+		let unitMovementType = location.movementType === "horizontal" ? "vertical" : "horizontal";
+		return unitMovementType;
+	}
+
 	///////////////////
 	/// Player Units
 	///////////////////
@@ -384,8 +446,28 @@ export default class GameBoard extends React.Component {
 			
 		};
 
-		return playerUnitsArray;
+		return playerUnitsArray;		
+	}
+
+	_removeUnitFromBoat(findUnit,boat,objectArray){
+		let updatedPlayerBoatsArray = objectArray.slice();
+
+		//Get the units from the boat
+		let objectUnitsArray = updatedPlayerBoatsArray[boat.id].units;
 		
+		//Get the unit to be removed
+		const theUnit = objectUnitsArray.find( unit => unit.id === findUnit.id );
+		
+		//Remove the unit
+		let updatedObjectUnitArray = updatedPlayerBoatsArray[boat.id].units.filter(unit => unit.id !== theUnit.id);
+
+		//Update the boats array
+		updatedPlayerBoatsArray[boat.id] = Object.assign({}, updatedPlayerBoatsArray[boat.id], {
+			units: updatedObjectUnitArray,
+			disabled: true
+		});
+
+		return updatedPlayerBoatsArray;
 	}
 
 	///////////////////
@@ -597,13 +679,39 @@ export default class GameBoard extends React.Component {
 	//Update the location of the unit  to match the object
 	_updateObjectWithNewLocation(object,location,objectsArray){
 		let objectsWithUpdatedLocation = objectsArray.slice();
+		let boatUnitMovementType = "";
+
+		if (object.objectType === "boat") {
+			boatUnitMovementType = this._setBoatUnitMovementType(location);
+		}
 
 		//Update
 		objectsWithUpdatedLocation[object.id] = Object.assign({}, objectsWithUpdatedLocation[object.id], {
 			row: location.row,
 			col: location.col,
 			location: location.objectType,
+			movementType: boatUnitMovementType
 		});
+
+		return objectsWithUpdatedLocation;
+	}
+
+	_updateMultipleObjectsWithNewLocation(objectList,location,objectsArray){
+		let objectsWithUpdatedLocation = objectsArray.slice();
+
+		for(let object of objectList){
+			let boatUnitMovementType = "";
+			if (object.objectType === "boat") {
+				boatUnitMovementType = this._setBoatUnitMovementType(location);
+			}
+			//Update
+			objectsWithUpdatedLocation[object.id] = Object.assign({}, objectsWithUpdatedLocation[object.id], {
+				row: location.row,
+				col: location.col,
+				location: location.objectType,
+				movementType: boatUnitMovementType
+			});
+		}
 
 		return objectsWithUpdatedLocation;
 	}
@@ -640,11 +748,12 @@ export default class GameBoard extends React.Component {
 	_higlightPossibleMoves(object){
 		const cardArray = this.state.cardArray.slice();
 		const playerBoatsArray = this.state.playerBoatsArray.slice();
-		let possibleMovesCard = this.state.possibleMovesCard.slice();
+		let possibleMovesUnit = this.state.possibleMovesUnit.slice();
 		let possibleMovesBoat = this.state.possibleMovesBoat.slice();
 		let objectUnits = 0;
-		let currentPlayerUnit = 0;
-		let currentPlayerBoat = playerBoatsArray[this.state.currentPlayer.playerId];
+		let currentPlayerUnit = "";
+		let currentPlayerBoat = "";
+		let playerBoat = playerBoatsArray[this.state.currentPlayer.playerId];
 		let allowMovetoBoat = false;
 
 		if (object.objectType === "card") {
@@ -656,7 +765,7 @@ export default class GameBoard extends React.Component {
 			currentPlayerUnit = this._getCurrentPlayerUnitFromObject(objectUnits);
 			
 			//Find all possible moves
-			possibleMovesCard = this._findPossibleMoves(object, cardArray);
+			possibleMovesUnit = this._findPossibleMoves(object, cardArray);
 
 			/*if (object.edge === true) {
 				//The card is near the edge so use its location to search for the player boat
@@ -664,7 +773,7 @@ export default class GameBoard extends React.Component {
 				//Get the player boat using 
 				let playerBoat = playerBoatsArray[this.state.currentPlayerId];
 
-				for(let boat of possibleMovesCard){
+				for(let boat of possibleMovesUnit){
 					if (boat.row === playerBoat.row && boat.col === playerBoat.col) {
 						possibleMovesBoat = [playerBoat];
 					}
@@ -672,18 +781,41 @@ export default class GameBoard extends React.Component {
 
 			}*/
 
+		} else
+		if (object.objectType === "outerWater") {
+			
+			//Get the boat from the outer water
+			currentPlayerBoat = object.playerBoat;
+
+			if (currentPlayerBoat !== "") {
+				//get the possible moves for the boat along the outer water
+				possibleMovesBoat = this._findPossibleMoves(object, cardArray);
+				//Get all units from the boat
+				objectUnits = this._getPlayerUnitsFromObject(currentPlayerBoat);
+				if (objectUnits !== false) {
+					//use that to get the current player unit
+					currentPlayerUnit = this._getCurrentPlayerUnitFromObject(objectUnits);
+					//Find possible moves for the unit
+					possibleMovesUnit = this._findPossibleMoves(currentPlayerBoat, cardArray);
+				}
+			}
+			/*console.log("Boat moves");
+			console.log(possibleMovesBoat);
+			console.log("Card moves");
+			console.log(possibleMovesUnit);*/
+
 		}
 
-		if (possibleMovesCard.length > 0 ) {
+		if (possibleMovesUnit.length > 0 ) {
 			let playerBoatLocation = playerBoatsArray[this.state.currentPlayer.playerId];
 
 
 			//There are possible moves for the card so display them
-			for(let position of possibleMovesCard){
+			for(let position of possibleMovesUnit){
 				cardArray[position.row] = cardArray[position.row].slice();
 
 				//Check if the move is to a card or if the card has the current player boat
-				if (cardArray[position.row][position.col].objectType === "card" || this._cardHasThePlayerBoat(cardArray[position.row][position.col],currentPlayerBoat)) {
+				if (cardArray[position.row][position.col].objectType === "card" || this._cardHasThePlayerBoat(cardArray[position.row][position.col],playerBoat)) {
 					cardArray[position.row][position.col] = Object.assign({}, cardArray[position.row][position.col], {
 						possibleMove: true,
 						disabled: false
@@ -692,11 +824,23 @@ export default class GameBoard extends React.Component {
 				
 			}
 		}
+		if (possibleMovesBoat.length > 0 ) {
+			//There are possible moves for the boat so display them
+			for(let position of possibleMovesBoat){
+				cardArray[position.row] = cardArray[position.row].slice();
+				cardArray[position.row][position.col] = Object.assign({}, cardArray[position.row][position.col], {
+					possibleMove: true,
+					disabled: false
+				});
+			}
+		}
 
 		this.setState({
 			cardArray: cardArray,
-			possibleMovesCard: possibleMovesCard,
+			possibleMovesUnit: possibleMovesUnit,
+			possibleMovesBoat: possibleMovesBoat,
 			currentPlayerUnit: currentPlayerUnit,
+			currentPlayerBoat: currentPlayerBoat
 		});
 	}
 
@@ -728,7 +872,7 @@ export default class GameBoard extends React.Component {
 		const outerWaterArray = this.state.outerWaterArray.slice();
 		const playerBoatsArray = this.state.playerBoatsArray.slice();
 		
-		let possibleMovesCard = this.state.possibleMovesCard.slice();
+		let possibleMovesUnit = this.state.possibleMovesUnit.slice();
 		let possibleMovesBoat = this.state.possibleMovesBoat.slice();
 
 		let objectUnits = 0;
@@ -741,7 +885,7 @@ export default class GameBoard extends React.Component {
 			//use that to get the current player unit
 			currentPlayerUnit = this._getCurrentPlayerUnitFromObject(objectUnits);
 			//Find all possible moves
-			possibleMovesCard = this._findPossibleMoves(object, cardArray);
+			possibleMovesUnit = this._findPossibleMoves(object, cardArray);
 
 			if (object.edge === true) {
 				//The card is near the edge so use its location to search the outer water
@@ -749,7 +893,7 @@ export default class GameBoard extends React.Component {
 				//Get the player boat using 
 				let playerBoat = playerBoatsArray[this.state.currentPlayerId];
 
-				for(let boat of possibleMovesCard){
+				for(let boat of possibleMovesUnit){
 					if (boat.row === playerBoat.row && boat.col === playerBoat.col) {
 						possibleMovesBoat = [playerBoat];
 					}
@@ -770,14 +914,14 @@ export default class GameBoard extends React.Component {
 				if (objectUnits !== false) {
 					//use that to get the current player unit
 					currentPlayerUnit = this._getCurrentPlayerUnitFromObject(objectUnits);
-					possibleMovesCard = this._findPossibleMoves(object, cardArray);
+					possibleMovesUnit = this._findPossibleMoves(object, cardArray);
 				}
 			}
 		}
 
-		if (possibleMovesCard.length > 0 ) {
+		if (possibleMovesUnit.length > 0 ) {
 			//There are possible moves for the card so display them
-			for(let position of possibleMovesCard){
+			for(let position of possibleMovesUnit){
 				cardArray[position.row] = cardArray[position.row].slice();
 				cardArray[position.row][position.col] = Object.assign({}, cardArray[position.row][position.col], {
 					possibleMove: true,
@@ -800,7 +944,7 @@ export default class GameBoard extends React.Component {
 			cardArray: cardArray,
 			outerWaterArray: outerWaterArray,
 			//playerBoatsArray: playerBoatsArray,
-			possibleMovesCard: possibleMovesCard,
+			possibleMovesUnit: possibleMovesUnit,
 			possibleMovesBoat: possibleMovesBoat,
 			currentPlayerUnit: currentPlayerUnit,
 			currentPlayerBoat: currentPlayerBoat
@@ -822,7 +966,12 @@ export default class GameBoard extends React.Component {
 		let end = objectCol + 1;
 		let moves = [];
 
-		//console.log(objectType);
+		/*console.log("movementType");
+		console.log(movementType);
+
+		console.log("objectType");
+		console.log(objectType);*/
+
 		//console.log(objectArray);
 
 		//objectArray[0] = [this.state.playerBoatsArray[this.state.currentPlayerId]];
@@ -942,30 +1091,46 @@ export default class GameBoard extends React.Component {
 				if (r in objectArray) {
 					//The row has been found in the array so assign it to a row array
 					const objectRowArray = objectArray[r];
-					for(let i = start; i < (end + 1); i++){
-						if (i in objectRowArray)  {
+					for(let c = start; c < (end + 1); c++){
+						if (c in objectRowArray)  {
 							//the column has been found in the object row array so find the right coordinates
-							if (((i === objectCol) && (objectRow === r))){
+							if (((c === objectCol) && (objectRow === r))){
 							//Ignore the coordinates of the card itself
 							} else {
-								if (movementType === "horizontal vertical" || objectType === "boat") {
+								if (movementType === "horizontal vertical") {
 								//The card allows only for horizontal or vertical movement	
-									if ((i === objectCol) ^ (objectRow === r)){
+									if ((c === objectCol) ^ (objectRow === r)){
 										moves.push(
-											{"row" : r, "col" : i}
+											{"row" : r, "col" : c}
 										);
 									}
 								} 
 								else if (movementType === "diagonal") {
-									if ((i !== objectCol) && (objectRow !== r)){
+									if ((c !== objectCol) && (objectRow !== r)){
 										moves.push(
-											{"row" : r, "col" : i}
+											{"row" : r, "col" : c}
+										);
+									}
+								}
+								else if (movementType === "horizontal") {
+									console.log("move horizontal");
+									if (r === objectRow) {
+										moves.push(
+											{"row" : r, "col" : c}
+										);
+									}
+								}
+								else if (movementType === "vertical") {
+									console.log("move vertical");
+									if (c === objectCol) {
+										moves.push(
+											{"row" : r, "col" : c}
 										);
 									}
 								}
 								else {
 									moves.push(
-										{"row" : r, "col" : i}
+										{"row" : r, "col" : c}
 									);
 								}
 							}
@@ -1067,7 +1232,9 @@ export default class GameBoard extends React.Component {
 			let updatedUnitsArray = playerUnitsArray;
 			let updatedPlayerBoatsArray = playerBoatsArray;
 
-			const possibleMoves = this.state.possibleMovesCard.slice();
+			const possibleMovesUnit = this.state.possibleMovesUnit.slice();
+			const possibleMovesBoat = this.state.possibleMovesBoat.slice();
+
 			//let updatedOuterWaterArray = outerWaterArray;
 			//let updatedBoatsAndWaterArray = [updatedPlayerBoatsArray],[updatedOuterWaterArray];
 			//let updatedBoatsAndWaterArray.updatedPlayerBoatsArray = playerBoatsArray;
@@ -1082,25 +1249,56 @@ export default class GameBoard extends React.Component {
 					console.log('move boat to OuterWater');
 				}
 			} else*/
+			console.log("Boat moves");
+			console.log(possibleMovesBoat);
+			console.log("Card moves");
+			console.log(possibleMovesUnit);
+
 			//A boat has been previously clicked
 			if (this.state.currentPlayerBoat !== "") {
 				if (object.objectType === 'outerWater'){
 					console.log('move boat to OuterWater');
-					//Remove
-					//updatedOuterWaterArray = this._removePlayerBoatFromOuterWater(this.state.currentPlayerBoat,outerWaterArray);
-					//Add
-					//updatedOuterWaterArray = this._addPlayerBoatToOuterWater();
-					//Update
+
+					//Get all units from the boat
+					let objectUnits = this._getPlayerUnitsFromObject(this.state.currentPlayerBoat);
+
+					if (objectUnits) {
+						//Make sure the units get updated with proper location
+						let futureBoatLocation = { row: object.row, col: object.col, objectType: "boat" };
+						//Update all the units on the boat
+						updatedUnitsArray = this._updateMultipleObjectsWithNewLocation(objectUnits,futureBoatLocation,updatedUnitsArray);
+					}
+					
+					//update the boat with the new location
+					updatedPlayerBoatsArray = this._updateObjectWithNewLocation(this.state.currentPlayerBoat,cardArray[object.row][object.col],updatedPlayerBoatsArray);
+					//Remove boat from outer water
+					updatedCardArray = this._removePlayerBoatFromOuterWater(this.state.currentPlayerBoat,updatedCardArray);
+					//Update all boats
+					//updatedPlayerBoatsArray = this._addUnitToBoat(this.state.currentPlayerUnit, updatedPlayerBoatsArray[this.state.currentPlayerBoat.id], updatedUnitsArray, updatedPlayerBoatsArray);
+
+					//update the boats
+					updatedCardArray = this._addPlayerBoatToOuterWater(updatedPlayerBoatsArray[this.state.currentPlayerBoat.id], updatedCardArray[object.row][object.col], updatedPlayerBoatsArray, updatedCardArray);
+					//Clear the unit possible moves
+					updatedCardArray = this._clearPossibleMoves(updatedCardArray, possibleMovesUnit);
+					//Clear the boat possible moves
+					updatedCardArray = this._clearPossibleMoves(updatedCardArray, possibleMovesBoat);
 
 				} else
 				if (object.objectType === 'card') {
 					console.log('move unit from boat to card');
-					//Remove
-					//updatedPlayerBoatsArray = this._removeUnitFromBoat(this.state.currentPlayerUnit,this.state.currentPlayerBoat,playerBoatsArray);
-					//Add
 
-					//Update
-					//updatedOuterWaterArray = this._updateOuterWaterBoat(this.state.currentPlayerBoat, updatedPlayerBoatsArray, outerWaterArray);
+					//Update the unit with the new location
+					updatedUnitsArray = this._updateObjectWithNewLocation(this.state.currentPlayerUnit,cardArray[object.row][object.col],this.state.playerUnitsArray);
+					//Remove the unit from the current location
+					updatedPlayerBoatsArray = this._removeUnitFromBoat(this.state.currentPlayerUnit,this.state.currentPlayerBoat,updatedPlayerBoatsArray);
+					//Add the updated unit to the card
+					updatedCardArray = this._addUnitToObject(this.state.currentPlayerUnit,updatedCardArray[object.row][object.col],updatedUnitsArray,updatedCardArray);
+					//Update the outer water
+					updatedCardArray = this._addPlayerBoatToOuterWater(updatedPlayerBoatsArray[this.state.currentPlayerBoat.id], updatedCardArray[this.state.currentPlayerBoat.row][this.state.currentPlayerBoat.col], updatedPlayerBoatsArray, updatedCardArray);
+					//Clear the unit possible moves
+					updatedCardArray = this._clearPossibleMoves(updatedCardArray, possibleMovesUnit);
+					//Clear the boat possible moves
+					updatedCardArray = this._clearPossibleMoves(updatedCardArray, possibleMovesBoat);
 				}
 			} else
 			//a field with a unit has previous been clicked
@@ -1114,8 +1312,8 @@ export default class GameBoard extends React.Component {
 					updatedCardArray = this._removeUnitFromObject(this.state.currentPlayerUnit,cardArray);
 					//Add the updated unit to the new location
 					updatedCardArray = this._addUnitToObject(this.state.currentPlayerUnit,updatedCardArray[object.row][object.col],updatedUnitsArray,updatedCardArray);
-					//Clear the possible moves
-					updatedCardArray = this._clearPossibleMoves(updatedCardArray, possibleMoves);
+					//Clear the unit possible moves
+					updatedCardArray = this._clearPossibleMoves(updatedCardArray, possibleMovesUnit);
 				} else
 				//AN outer water with a boat has been clicked so move the unit to the boat
 				if (object.objectType === 'outerWater'){
@@ -1129,26 +1327,19 @@ export default class GameBoard extends React.Component {
 					//Update the outer water
 					updatedCardArray = this._addPlayerBoatToOuterWater(updatedPlayerBoatsArray[object.playerBoat.id], updatedCardArray[object.row][object.col], updatedPlayerBoatsArray, updatedCardArray);
 					//Clear the possible moves
-					updatedCardArray = this._clearPossibleMoves(updatedCardArray, possibleMoves);
-
-					//updatedCardArray = this._addUnitToBoat(this.state.currentPlayerUnit,updatedCardArray[object.row][object.col],updatedUnitsArray,updatedCardArray);
-
-					//Remove
-					//updatedCardArray = this._removeUnitFromObject(this.state.currentPlayerUnit,cardArray);
-					//Add
-
-					//Update
+					updatedCardArray = this._clearPossibleMoves(updatedCardArray, possibleMovesUnit);
 
 				}
 			}
 
 			//enable all cards that have the next players units
-			updatedCardArray = this._goNextPlayer(updatedCardArray,updatedUnitsArray);
+			updatedCardArray = this._goNextPlayer(updatedCardArray,updatedUnitsArray,updatedPlayerBoatsArray);
 
 			this.setState({
 				currentPlayerUnit: "",
+				currentPlayerBoat: "",
 				cardArray: updatedCardArray,
-				possibleMovesCard: [],
+				possibleMovesUnit: [],
 				possibleMovesBoat: [],
 				playerUnitsArray: updatedUnitsArray,
 				playerBoatsArray: updatedPlayerBoatsArray,
@@ -1158,26 +1349,14 @@ export default class GameBoard extends React.Component {
 	}
 
 	//Let the next player make a turn
-	_goNextPlayer(cardArray,updatedUnitsArray){
+	_goNextPlayer(cardArray,updatedUnitsArray,updatedPlayerBoatsArray){
 
 		//Get the current player
 		let currentPlayer = this.state.currentPlayer;
 		let playerUnits = this._getPlayerUnits(currentPlayer,updatedUnitsArray);
-
-		//Check if the current player id is less than the number of players
-		/*if (this.state.currentPlayerId < (this.state.playerArray.length - 1)){
-			//set the current player as previous
-			this.state.playerArray[that.currentPlayerId].setPlayerAsPrevious();
-			//that.currentPlayerId += 1;
-			//Set the next player as current
-			this.state.playerArray[that.currentPlayerId].setPlayerAsCurrent();
-		} else {
-			that.currentPlayerId = 0;
-			that.playerArray[0].setPlayerAsCurrent();
-		}
-		//that.displayCurrentPlayer(that.playerArray[that.currentPlayerId]);
-		this._createTurn("current");*/
-		//console.log(playerUnits);
+		let playerBoat = updatedPlayerBoatsArray[this.state.currentPlayer.playerId];
+		//Add the boat so that it's not disabled
+		playerUnits.push(playerBoat);
 
 		for(let position of playerUnits){
 			cardArray[position.row] = cardArray[position.row].slice();
@@ -1241,10 +1420,10 @@ class PlayerTurn extends React.Component {
 		const outerWaterArray = this.state.outerWaterArray.slice();
 		const playerBoatsArray = this.state.playerBoatsArray.slice();
 		
-		//let possibleMovesCard = this.state.possibleMoves.slice();
+		//let possibleMovesUnit = this.state.possibleMoves.slice();
 		//let possibleMovesBoat = this.state.possibleMovesBoat.slice();
 
-		let possibleMovesCard = [];
+		let possibleMovesUnit = [];
 		let boatLocation = [];
 		let possibleMovesBoat = [];
 
@@ -1252,7 +1431,7 @@ class PlayerTurn extends React.Component {
 
 		if (object.objectType === "card") {
 			//If thie object clicked is a card, find all possible cards 
-			possibleMovesCard = this._findPossibleMoves(object, cardArray);
+			possibleMovesUnit = this._findPossibleMoves(object, cardArray);
 			
 			let boatLocation = this._findPossibleMoves(playerBoatsArray[this.state.currentPlayerId], outerWaterArray);
 		}
@@ -1268,15 +1447,15 @@ class PlayerTurn extends React.Component {
 				if (objectUnits !== false) {
 					let boatUnit = this._getCurrentPlayerUnitFromObject(objectUnits);
 					//Boat usnit has been found so find the possible moves for the unit along the cards
-					possibleMovesCard = this._findPossibleMoves(object, cardArray);
+					possibleMovesUnit = this._findPossibleMoves(object, cardArray);
 				}
 			}
 			//alert("outerWater will get highlighted");
 		}
 
-		if (possibleMovesCard.length > 0 ) {
+		if (possibleMovesUnit.length > 0 ) {
 			//There are possible moves for the card so display them
-			for(let position of possibleMovesCard){
+			for(let position of possibleMovesUnit){
 				cardArray[position.row] = cardArray[position.row].slice();
 				cardArray[position.row][position.col] = Object.assign({}, cardArray[position.row][position.col], {
 					possibleMove: true,
@@ -1298,11 +1477,11 @@ class PlayerTurn extends React.Component {
 		this.setState({
 			cardArray: cardArray,
 			outerWaterArray: outerWaterArray,
-			possibleMoves: possibleMovesCard,
+			possibleMoves: possibleMovesUnit,
 			possibleMovesBoat: possibleMovesBoat,
 			playerBoatsArray: playerBoatsArray
 		});
-		return { possibleMovesCard, possibleMovesBoat };
+		return { possibleMovesUnit, possibleMovesBoat };
 	}*/
 
 	/*_higlightPossibleMoves(card){

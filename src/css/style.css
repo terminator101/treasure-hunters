@@ -40,9 +40,9 @@
 .boatsHolder {
 	position:absolute;
 	/*width:100px;*/
-	height:20px;
+	height:40px;
 	background-color:white;
-	top: 20px;
+	bottom: 20px;
 }
 
 .isPossible {
