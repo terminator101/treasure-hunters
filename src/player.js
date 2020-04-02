@@ -11,6 +11,8 @@ class Player extends React.Component {
 		this.defaults = {
 			playerName: DEAFULT_PLAYER_NAME,
 			playerId: 0,
+			col: 0,
+			row: 0,
 			score: 0,
 			playerUnitNumber: 2,
 		}
@@ -52,11 +54,13 @@ class PlayerUnit extends React.Component {
 	render(){
 		this.settings = Object.assign({}, this.defaults, this.props);
 		return(
-			<div>{this.settings.playerName} unit {this.settings.id} R:{this.settings.row}|C:{this.settings.col}</div>
+			<div className="unit"></div>
 		);
 	}
 
 } 
+
+//{this.settings.playerName} unit {this.settings.id} R:{this.settings.row}|C:{this.settings.col}
 
 ///
 class PlayerIcon extends React.Component {
@@ -105,7 +109,7 @@ class PlayerBoat extends React.Component {
 		this.settings = Object.assign({}, this.defaults, this.props);
 		let possibleMove = this.props.possibleMove ? 'possible' : '';
 		return(
-			<div>
+			<div className="boat">
 				<div>Player Boat R:{this.settings.row}|C:{this.settings.col}</div>
 				{possibleMove ? <div className="isPossible">{possibleMove}</div> : ""}
 				<div className="unitsHolder">{this._displayUnits(this.settings.units)}</div>

@@ -29,10 +29,10 @@ class TreasureHunters extends React.Component {
 	}
 
 	render(){	
-		const playersArray = this._displayPlayers(this.state.playersArray);
+		//const playersArray = this._displayPlayers(this.state.playersArray);
 		return(
 			<GameBoard
-				playersArray  = {playersArray}
+				playersArray  = {this.state.playersArray}
 				cardsHolderId = {this.settings.cardsHolderId}
 				numberOfCards = {this.settings.numberOfCards}
 				numberOfRows  = {this.settings.numberOfRows}
@@ -45,22 +45,24 @@ class TreasureHunters extends React.Component {
 	//Function for filling the players array
 	_createPlayers(){
 		let playersArray = [];
-		playersArray[1] = { playerId: 1, playerName: DEAFULT_PLAYER_NAME };
+		playersArray.push({ playerId: 1, playerName: DEAFULT_PLAYER_NAME, row: 3, col: 0 });
 		return playersArray;
 	}
 
 	///
-	_displayPlayers(playersArray){
+	/*_displayPlayers(playersArray){
 		return playersArray.map((player) => {
 			return(
 				<Player
 					key = 		 			{player.id}
 					playerId = 		 		{player.playerId}
 					playerName = 			{player.playerName}
+					row =					{player.row}
+					col =					{player.col}
 				/>
 			)
 		});
-	}
+	}*/
 
 }
 

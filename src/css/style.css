@@ -66,3 +66,19 @@
 	position:absolute;
 	bottom:20px;
 }
+
+.boat {
+	background:
+    radial-gradient(9em 3em at 50% 50%, blue 50%, transparent 50%);
+  background-repeat: no-repeat;
+  width: 150px;
+  height: 60px;
+}
+
+.unit {
+	background:
+    radial-gradient(1.2em 1.2em at 50% 50%, red 50%, transparent 50%);
+  background-repeat: no-repeat;
+  width: 20px;
+  height: 20px;
+}
