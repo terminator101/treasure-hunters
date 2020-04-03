@@ -31,9 +31,8 @@
 
 .unitsHolder {
 	position:absolute;
-	/*width:80px;*/
+	width:80px;
 	height:20px;
-	background-color:white;
 	bottom: 0px;
 }
 
@@ -81,4 +80,5 @@
   background-repeat: no-repeat;
   width: 20px;
   height: 20px;
+  float: left;
 }
