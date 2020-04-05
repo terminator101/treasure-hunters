@@ -35,6 +35,8 @@ export default class Card extends React.Component {
 			onClick: 		"",
 			edge: 			false,
 			playerBoat: 	"",
+			debug: 			false,
+			cardTypeClass: 	"horizontalVerticalCard"
 		}
 		
 	}
@@ -43,22 +45,26 @@ export default class Card extends React.Component {
 		this.settings = Object.assign({}, this.defaults, this.props);
 
 		let imageLocation = this.settings.imageLocation + "/" + this._getCardImage();
-		let possibleMove = this.props.possibleMove ? 'possible' : '';
+		let possibleMove = this.props.possibleMove ? 'possibleMove' : '';
 		let playerBoat = this.props.playerBoat ? this._displayPlayerBoat(this.props.playerBoat) : '';
 		let playerUnits = this.props.units ? this._displayUnits(this.settings.units) : '';
 		let cardClasses = this.settings.cardWidth + " " + this.settings.cardClass;
-		let edge = this.settings.edge ? this._displayEdge() : '';
+		//let edge = this.settings.edge ? this._displayEdge() : '';
+		let debug = this.settings.debug;
+		let opened = this.props.opened ? this.props.opened : '';
+		let cardTypeClass = "cardInfo " + this.props.cardTypeClass;
 		return(
 			<div className={cardClasses} onClick={this.settings.disabled ? null : () => this.props.onClick()}>
 				<img className={this.settings.imageClass} src={imageLocation} alt="card" />
-				<div className="cardInfo">{this.settings.cardType} {this.settings.row} - {this.settings.col}</div>
-				{possibleMove ? <div className="isPossible">{possibleMove}</div> : ""} 
+				{debug ? <div className="cardInfo">{this.settings.cardType} {this.settings.row} - {this.settings.col}</div> : ""}
+				{opened ? <div className={cardTypeClass}>{this.settings.cardType}</div> : ""}
 				{playerUnits ? <div className="unitsHolder">{playerUnits}</div> : ""}
-				{edge}
-				<div className="boatsHolder">{playerBoat}</div>
+				{playerBoat ? <div className="boatsHolder">{playerBoat}</div> : ""}
+				{possibleMove ? <div className="possibleMove"></div> : ""}
 			</div>
 		);
 	}
+	//
 
 	_displayEdge(){
 		return(

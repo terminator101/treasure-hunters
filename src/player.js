@@ -90,28 +90,29 @@ class PlayerBoat extends React.Component {
 		super(props);
 
 		this.defaults = {
-			id: 0,
-			row: "",
-			col: "",
-			name: "",
-			image: "",
-			playerId: "",
-			playerName: "",
-			imageLocation: "",
-			possibleMove: false,
-			objectType: "boat",
-			movementType: "horizontal vertical",
-			units: [],
+			id: 			0,
+			row: 			"",
+			col: 			"",
+			name: 			"",
+			image: 			"",
+			playerId: 		"",
+			playerName: 	"",
+			imageLocation: 	"",
+			possibleMove: 	false,
+			objectType: 	"boat",
+			movementType: 	"horizontal vertical",
+			units: 			[],
+			debug: 			false 
 		}
 	}
 
 	render(){
 		this.settings = Object.assign({}, this.defaults, this.props);
 		let possibleMove = this.props.possibleMove ? 'possible' : '';
+		let debug = this.settings.debug;
 		return(
 			<div className="boat">
-				<div>Player Boat R:{this.settings.row}|C:{this.settings.col}</div>
-				{possibleMove ? <div className="isPossible">{possibleMove}</div> : ""}
+				{debug ? <div>Player Boat R:{this.settings.row}|C:{this.settings.col}</div> : ""}
 				<div className="unitsHolder">{this._displayUnits(this.settings.units)}</div>
 			</div>
 		);
