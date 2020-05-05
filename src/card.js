@@ -76,7 +76,7 @@ export default class Card extends React.Component {
 		return units.map((unit) => {
 			return(
 				<PlayerUnit
-					key = 		{unit.id}
+					key = 		{unit.key}
 					id =  		{unit.id}
 					row =		{unit.row}
 					col =  		{unit.col}
@@ -91,7 +91,7 @@ export default class Card extends React.Component {
 	_displayPlayerBoat(playerBoat){
 		return(
 			<PlayerBoat
-				key = 			{playerBoat.row + "" + playerBoat.col}
+				key = 			{playerBoat.key}
 				id =			{playerBoat.id}
 				row = 			{playerBoat.row}
 				col =  			{playerBoat.col}

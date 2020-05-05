@@ -123,7 +123,7 @@ class PlayerBoat extends React.Component {
 		return units.map((unit) => {
 			return(
 				<PlayerUnit
-					key = 		{unit.id}
+					key = 		{unit.key}
 					id =  		{unit.id}
 					row =		{unit.row}
 					col =  		{unit.col}
