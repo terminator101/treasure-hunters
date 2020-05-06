@@ -83,6 +83,7 @@ export default class Card extends React.Component {
 					location =  {unit.location}
 					playerId = 	{unit.playerId}
 					playerName = {unit.playerName}
+					unitClass =	{unit.unitClass}
 				/>
 			)
 		});
@@ -102,6 +103,7 @@ export default class Card extends React.Component {
 				playerId = 		{playerBoat.playerId}
 				playerName = 	{playerBoat.playerName}
 				possibleMove = 	{playerBoat.possibleMove}
+				boatClass =		{playerBoat.boatClass}
 			/>
 		)
 	}

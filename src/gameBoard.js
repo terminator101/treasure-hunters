@@ -374,7 +374,8 @@ export default class GameBoard extends React.Component {
 				playerId: player.playerId, 
 				playerName: player.playerName, 
 				disabled: true, 
-				location: "" })
+				location: "",
+				boatClass: player.playerClass })
 
 			/*playerBoatsArray[player.playerId] = { 
 				key: "boat" + player.playerId,
@@ -453,7 +454,8 @@ export default class GameBoard extends React.Component {
 					playerId: player.playerId, 
 					playerName: player.playerName, 
 					location: "boat",
-					dead: false
+					dead: false,
+					unitClass: player.playerClass
 				});
 				unitCounter++;
 			}
@@ -1094,8 +1096,12 @@ export default class GameBoard extends React.Component {
 				if (objectUnits !== false) {
 					//use that to get the current player unit
 					currentPlayerUnit = this._getCurrentPlayerUnitFromObject(objectUnits);
-					//Find possible moves for the unit
-					possibleMovesUnit = this._findPossibleMoves(currentPlayerBoat, cardArray);
+
+					if (currentPlayerUnit) {
+						//Current player unit found so find possible moves
+						possibleMovesUnit = this._findPossibleMoves(currentPlayerBoat, cardArray);
+					}
+					
 				}
 			}
 			/*console.log("Boat moves");
@@ -1106,7 +1112,7 @@ export default class GameBoard extends React.Component {
 		}
 
 		let allMoves = [];
-		if (possibleMovesUnit.length > 0 ) {
+		if (possibleMovesUnit.length > 0) {
 			let playerBoatLocation = playerBoatsArray[this.state.currentPlayer.playerId];
 
 

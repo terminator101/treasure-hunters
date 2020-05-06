@@ -29,19 +29,13 @@
 	bottom: 0px;
 }
 
-.unitsHolder {
-	position:absolute;
-	width:80px;
-	height:20px;
-	bottom: 0px;
-}
-
 .boatsHolder {
 	position:absolute;
 	/*width:100px;*/
-	height:40px;
+	/* height:40px; */
 	background-color:white;
-	bottom: 20px;
+	bottom: 0px;
+	right: 0px;
 }
 
 /*.isPossible {
@@ -66,12 +60,60 @@
 	bottom:20px;
 }
 
-.boat {
+.player1boat {
 	background:
     radial-gradient(9em 3em at 50% 50%, brown 50%, transparent 50%);
   background-repeat: no-repeat;
   width: 150px;
   height: 60px;
+}
+
+.unitsHolder {
+	position:absolute;
+	width:80px;
+	height:20px;
+	bottom:0px;
+}
+
+.player1boat > .unitsHolder {
+	position:absolute;
+	width:80px;
+	height:20px;
+	bottom: 20px;
+}
+
+.player1unit {
+	background:
+    radial-gradient(1.2em 1.2em at 50% 50%, red 50%, transparent 50%);
+  background-repeat: no-repeat;
+  width: 20px;
+  height: 20px;
+  float: left;
+}
+
+.player2boat {
+	background:
+    radial-gradient(3em 6em at 50% 50%, blue 50%, transparent 50%);
+  background-repeat: no-repeat;
+  width: 60px;
+  height: 100px;
+}
+
+.player2boat > .unitsHolder {
+	position:absolute;
+	width:20px;
+	height:80px;
+	left: 20px;
+	top: 0px;
+}
+
+.player2unit {
+	background:
+    radial-gradient(1.2em 1.2em at 50% 50%, cyan 50%, transparent 50%);
+  background-repeat: no-repeat;
+  width: 20px;
+  height: 20px;
+  float: left;
 }
 
 .unit {

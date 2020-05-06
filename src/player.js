@@ -15,6 +15,7 @@ class Player extends React.Component {
 			row: 0,
 			score: 0,
 			playerUnitNumber: 2,
+			playerClass: "player"
 		}
 
 		this.state = {
@@ -48,14 +49,15 @@ class PlayerUnit extends React.Component {
 			row: 0,
 			playerName: "",
 			playerId: 0,
-			dead: false
+			dead: false,
+			unitClass: "unit"
 		}
 	}
 
 	render(){
 		this.settings = Object.assign({}, this.defaults, this.props);
 		return(
-			<div className="unit"></div>
+			<div className={this.settings.unitClass + "unit"}></div>
 		);
 	}
 
@@ -103,7 +105,8 @@ class PlayerBoat extends React.Component {
 			objectType: 	"boat",
 			movementType: 	"horizontal vertical",
 			units: 			[],
-			debug: 			false 
+			debug: 			false,
+			boatClass: 		"boat"
 		}
 	}
 
@@ -112,7 +115,7 @@ class PlayerBoat extends React.Component {
 		let possibleMove = this.props.possibleMove ? 'possible' : '';
 		let debug = this.settings.debug;
 		return(
-			<div className="boat">
+			<div className={this.settings.boatClass + "boat"}>
 				{debug ? <div>Player Boat R:{this.settings.row}|C:{this.settings.col}</div> : ""}
 				<div className="unitsHolder">{this._displayUnits(this.settings.units)}</div>
 			</div>
@@ -130,6 +133,7 @@ class PlayerBoat extends React.Component {
 					location =  {unit.location}
 					playerId = 	{unit.playerId}
 					playerName = {unit.playerName}
+					unitClass = {unit.unitClass}
 				/>
 			)
 		});
