@@ -46,7 +46,7 @@ class TreasureHunters extends React.Component {
 	_createPlayers(){
 		let playersArray = [];
 		playersArray.push({ playerId: 0, playerName: DEAFULT_PLAYER_NAME, row: 0, col: 3, playerClass: "player1" });
-		//playersArray.push({ playerId: 1, playerName: "Mike", row: 4, col: 0, playerClass: "player2" });
+		playersArray.push({ playerId: 1, playerName: "Mike", row: 4, col: 0, playerClass: "player2" });
 		return playersArray;
 	}
 

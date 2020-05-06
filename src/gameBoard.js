@@ -153,6 +153,7 @@ export default class GameBoard extends React.Component {
 		let updatedCardArray = this.state.cardArray.slice();
 		const playerBoatsArray = this.state.playerBoatsArray.slice();
 		const playerUnitsArray = this.state.playerUnitsArray.slice();
+		let currentPlayer = this.state.currentPlayer;
 
 		let displayCardArray = [];
 
@@ -186,7 +187,7 @@ export default class GameBoard extends React.Component {
 			<div className="container">
 				<div className="row no-gutters">
 					<div className="col-12">
-						{ this.state.currentPlayer.playerName }
+						{ currentPlayer.playerName }
 					</div>
 				</div>
 				<div className="row no-gutters">
@@ -315,7 +316,7 @@ export default class GameBoard extends React.Component {
 		const playerBoatsArray = this.state.playerBoatsArray.slice();
 		const playerUnitsArray = this.state.playerUnitsArray.slice();
 		let updatedOuterWaterArray = outerWaterArray.slice();
-		
+
 		updatedOuterWaterArray = this._addAllBoatsToCards(this._addAllUnitsToBoats(playerUnitsArray,playerBoatsArray),updatedOuterWaterArray);
 		return updatedOuterWaterArray
 	}*/
@@ -1027,7 +1028,6 @@ export default class GameBoard extends React.Component {
 		});
 
 		return updatedObjectArray;
-		
 	}
 
 	_clearPossibleMoves(objectArray,possibleMoves){
@@ -1432,6 +1432,7 @@ export default class GameBoard extends React.Component {
 		/*let objectUnits = 0;
 		let currentPlayerUnit = 0;
 		let objectBoat = "";*/
+		let updatedPlayersArray = this.state.playersArray.slice();
 
 		//Make sure that neither a unit nor a boat has been set
 		if (this.state.currentPlayerUnit === "" && this.state.currentPlayerBoat === "") {
@@ -1606,8 +1607,17 @@ export default class GameBoard extends React.Component {
 			console.log("units updated before _goNextPlayer");
 			console.log(updatedUnitsArray);
 
-			//enable all cards that have the next players units
-			updatedCardArray = this._goNextPlayer(updatedCardArray,updatedUnitsArray,updatedPlayerBoatsArray);
+			//Switch to the next player
+			updatedPlayersArray = this._goNextPlayer(updatedPlayersArray); //this.createturn(updatedPlayersArray); 
+			
+			//Get the next player
+			let updatedCurrentPlayer = this._getCurrentPlayer(updatedPlayersArray);
+
+			//Disable all cards
+			updatedCardArray = this._disableAllCards(updatedCardArray);
+
+			//enable all cards that have the next players units and boats
+			updatedCardArray = this._enableAllCardsWithCurrentplayerUnitsAndBoats(updatedCurrentPlayer,updatedCardArray,updatedUnitsArray,updatedPlayerBoatsArray);
 
 			this.setState({
 				currentPlayerUnit: "",
@@ -1615,6 +1625,8 @@ export default class GameBoard extends React.Component {
 				cardArray: updatedCardArray,
 				possibleMovesUnit: [],
 				possibleMovesBoat: [],
+				currentPlayer: updatedCurrentPlayer,
+				playersArray: updatedPlayersArray,
 				playerUnitsArray: updatedUnitsArray,
 				playerBoatsArray: updatedPlayerBoatsArray,
 			});
@@ -1622,19 +1634,70 @@ export default class GameBoard extends React.Component {
 		}
 	}
 
-	//Let the next player make a turn
-	_goNextPlayer(cardArray,updatedUnitsArray,updatedPlayerBoatsArray){
+	//Change who the current player is
+	_goNextPlayer(playersArray){
 
 		//Get the current player
 		let currentPlayer = this.state.currentPlayer;
-		let updatedPlayerUnits = this._getPlayerUnitsFromPlayer(currentPlayer,updatedUnitsArray);
-		let playerBoat = updatedPlayerBoatsArray[this.state.currentPlayer.playerId];
+		let updatedPlayersArray = playersArray.slice();
+		let currentPlayerId = currentPlayer.playerId;
+
+		if (currentPlayer.playerId < (playersArray.length -1)) {
+			updatedPlayersArray = this._changePlayerState(currentPlayer,updatedPlayersArray,"previous");
+			currentPlayerId += 1;
+			updatedPlayersArray = this._changePlayerState(updatedPlayersArray[currentPlayerId],updatedPlayersArray,"current");
+		} else {
+			currentPlayerId = 0;
+			updatedPlayersArray = this._changePlayerState(updatedPlayersArray[currentPlayerId],updatedPlayersArray,"current");
+		}
+		//this.createturn("current",updatedPlayersArray);
+		return updatedPlayersArray
+	};
+
+	_createTurn(type,playersArray){
+		switch(type){
+		case "current":
+			console.log("current turn created");
+
+			//Its current players turn so check if it is a computer
+			if(this._getCurrentPlayer.playerType == 'computer'){
+				//logAction("Computer Turn");
+				//Let the computer go
+				//goComputer();
+			} else {
+				//logAction("Human Turn");
+			}
+			break;
+		case "next":
+			//It is the next players turn so switch
+			playersArray = this.goNextPlayer(playersArray);
+			break;
+		case "end":
+			break;
+		}
+		return playersArray;
+	}
+
+	//Find who the current player is
+	_getCurrentPlayer(playersArray){
+		for(let player of playersArray){
+			if(player.playerState === "current"){
+				return player;
+			}
+		}
+	};
+
+	//Enable all 
+	_enableAllCardsWithCurrentplayerUnitsAndBoats(currentPlayer,cardArray,updatedUnitsArray,playerBoatsArray){
+
+		let playerUnits = this._getPlayerUnitsFromPlayer(currentPlayer,updatedUnitsArray);
+		let playerBoat = playerBoatsArray[currentPlayer.playerId];
 		let updatedCardArray = cardArray.slice();
 
 		//Add the boat so that it's not disabled
-		//updatedPlayerUnits.push(playerBoat);
+		playerUnits.push(playerBoat);
 
-		for(let playerUnit of updatedPlayerUnits) {
+		for(let playerUnit of playerUnits) {
 			if (!playerUnit.dead) {
 				updatedCardArray[playerUnit.row] = updatedCardArray[playerUnit.row].slice();
 
@@ -1645,7 +1708,40 @@ export default class GameBoard extends React.Component {
 		}
 		
 		return updatedCardArray;
-	};
+	}
+
+	//Disable all cards so that the player can only click on cards with their unit and boat
+	_disableAllCards(cardArray){
+
+		let updatedCardArray = cardArray.slice();
+
+		console.log("updatedCardArray before disabled------------------------")
+		console.log(updatedCardArray);
+
+		for(let card of updatedCardArray){
+			if(card !== undefined){
+				card = Object.assign(card, card, {
+					disabled: true,
+				});
+			}
+		}
+
+		console.log("updatedCardArray after disabled------------------------")
+		console.log(updatedCardArray);
+
+		return updatedCardArray;
+
+	}
+
+	_changePlayerState(player,playerArray,state){
+		let updatedPlayers = playerArray.slice();
+
+		updatedPlayers[player.playerId] = Object.assign({}, updatedPlayers[player.playerId], {
+			playerState: state
+		});
+
+		return updatedPlayers;
+	}
 
 	//Create a turn based on the type
 	_createTurn(type){
