@@ -33,6 +33,7 @@ export default class GameBoard extends React.Component {
 
 	//Used for testing
 	componentDidMount() {
+		
 		//this._debug({row: 1, col: 1});
 		//this._debug4();
 		//this._debug2();
@@ -166,8 +167,8 @@ export default class GameBoard extends React.Component {
 
 		//let outerWaterArray = this._getAllOuterWater(cardArray);
 		updatedCardArray = this._addAllBoatsToCards(this._addAllUnitsToBoats(playerUnitsArray,playerBoatsArray),updatedCardArray);
-		console.log("All outer water");
-		console.log(updatedCardArray);
+		//console.log("All outer water");
+		//console.log(updatedCardArray);
 
 		//Display each outer water
 		/*let topWater = this._displayCards(this._getOuterWater("top",this.state.cardArray.slice()));
@@ -719,10 +720,16 @@ export default class GameBoard extends React.Component {
 
 		for(let boat of playerBoatsArray){
 			if (cardsUpdatedWithBoats[boat.row] !== undefined) {
+				let disabled = true;
+				if (this.state.currentPlayer.playerId === boat.playerId && this.state.currentPlayerUnit === "") {
+					//Boat with the current player was found and no current player unit is selected so enable it
+					disabled = false;
+				}
+
 				cardsUpdatedWithBoats[boat.row] = cardsUpdatedWithBoats[boat.row].slice();
 				cardsUpdatedWithBoats[boat.row][boat.col] = Object.assign({}, cardsUpdatedWithBoats[boat.row][boat.col], {
 					playerBoat: playerBoatsArray[boat.id],
-					disabled: false
+					disabled: disabled
 				});
 			}
 			
@@ -1045,7 +1052,7 @@ export default class GameBoard extends React.Component {
 	}
 
 	_higlightPossibleMoves(object){
-		const cardArray = this.state.cardArray.slice();
+		let cardArray = this.state.cardArray.slice();
 		const playerBoatsArray = this.state.playerBoatsArray.slice();
 		let possibleMovesUnit = this.state.possibleMovesUnit.slice();
 		let possibleMovesBoat = this.state.possibleMovesBoat.slice();
@@ -1110,6 +1117,8 @@ export default class GameBoard extends React.Component {
 			console.log(possibleMovesUnit);*/
 
 		}
+
+		cardArray = this._disableAllCards(cardArray);
 
 		let allMoves = [];
 		if (possibleMovesUnit.length > 0) {
@@ -1607,14 +1616,14 @@ export default class GameBoard extends React.Component {
 			console.log("units updated before _goNextPlayer");
 			console.log(updatedUnitsArray);
 
+			//Disable all cards
+			//updatedCardArray = this._disableAllCards(updatedCardArray);
+
 			//Switch to the next player
 			updatedPlayersArray = this._goNextPlayer(updatedPlayersArray); //this.createturn(updatedPlayersArray); 
 			
 			//Get the next player
 			let updatedCurrentPlayer = this._getCurrentPlayer(updatedPlayersArray);
-
-			//Disable all cards
-			updatedCardArray = this._disableAllCards(updatedCardArray);
 
 			//enable all cards that have the next players units and boats
 			updatedCardArray = this._enableAllCardsWithCurrentplayerUnitsAndBoats(updatedCurrentPlayer,updatedCardArray,updatedUnitsArray,updatedPlayerBoatsArray);
@@ -1691,11 +1700,11 @@ export default class GameBoard extends React.Component {
 	_enableAllCardsWithCurrentplayerUnitsAndBoats(currentPlayer,cardArray,updatedUnitsArray,playerBoatsArray){
 
 		let playerUnits = this._getPlayerUnitsFromPlayer(currentPlayer,updatedUnitsArray);
-		let playerBoat = playerBoatsArray[currentPlayer.playerId];
+		//let playerBoat = playerBoatsArray[currentPlayer.playerId];
 		let updatedCardArray = cardArray.slice();
 
 		//Add the boat so that it's not disabled
-		playerUnits.push(playerBoat);
+		//playerUnits.push(playerBoat);
 
 		for(let playerUnit of playerUnits) {
 			if (!playerUnit.dead) {
@@ -1715,20 +1724,16 @@ export default class GameBoard extends React.Component {
 
 		let updatedCardArray = cardArray.slice();
 
-		console.log("updatedCardArray before disabled------------------------")
-		console.log(updatedCardArray);
-
-		for(let card of updatedCardArray){
-			if(card !== undefined){
-				card = Object.assign(card, card, {
-					disabled: true,
-				});
+		for(let cardArrayRow of updatedCardArray){
+			for(let card of cardArrayRow.slice()){
+				
+				if(card !== undefined){
+					card = Object.assign(card, card, {
+						disabled: true,
+					});
+				}
 			}
 		}
-
-		console.log("updatedCardArray after disabled------------------------")
-		console.log(updatedCardArray);
-
 		return updatedCardArray;
 
 	}
