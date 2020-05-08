@@ -16,7 +16,8 @@ class Player extends React.Component {
 			score: 0,
 			playerUnitNumber: 2,
 			playerClass: "player",
-			playerState: ""
+			playerState: "",
+			playerType: "human"
 		}
 
 		this.state = {

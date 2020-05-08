@@ -5,21 +5,26 @@ import Card from './card';
 import { PlayerUnit, PlayerBoat } from './player';
 import OuterWater from './outerWater';
 
-import { NUMBER_OF_ROWS, NUMBER_CARDS_PER_ROW, CARD_TYPES } from './constants';
+import { NUMBER_OF_ROWS, NUMBER_CARDS_PER_ROW, CARD_TYPES, OUTER_WATER_TYPES } from './constants';
 
 export default class GameBoard extends React.Component {
 	constructor(props) {
 		super(props);
 
+		this.turnTypes = {
+			current: 'current',
+			next: 	 'next'
+		}
+
 		this.defaults = {
-			cardDatabase: CARD_TYPES,
+			outerWaterTypes:  OUTER_WATER_TYPES,
 			numberCardsPerRow: NUMBER_CARDS_PER_ROW,
 		}
+
 		this.state = {
 			playersArray: 		this.props.playersArray,
 			playerUnitsArray: 	this._createPlayerUnits(this.props.playersArray),
 			cardArray: 			this._createCards(this.props.numberOfCards,this.props.playersArray.length),
-			//outerWaterArray: 	this._createOuterWater(), //this._createPlayerBoats(this.props.playersArray)
 			playerBoatsArray: 	this._createPlayerBoats(this.props.playersArray),
 			possibleMovesUnit: 	[],
 			possibleMovesBoat: 	[],
@@ -29,6 +34,9 @@ export default class GameBoard extends React.Component {
 		}
 		//console.log(this.state.cardArray);
 		//this._debug();
+		console.log("this.state.playersArray");
+		console.log(this.state.playersArray);
+		this._createTurn(this.turnTypes.current,this.state.playersArray);
 	}
 
 	//Used for testing
@@ -177,11 +185,11 @@ export default class GameBoard extends React.Component {
 		let leftWater = this._addSpacer(this._displayCards(this._getOuterWater("left",this.state.cardArray.slice())));
 		let rightWater = this._addSpacer(this._displayCards(this._getOuterWater("right",this.state.cardArray.slice())));
 */
-		let topWater = this._displayCards(this._getOuterWater("top",updatedCardArray));
-		let bottomWater = this._displayCards(this._getOuterWater("bottom",updatedCardArray));
+		let topWater = this._displayCards(this._getOuterWater(this.defaults.outerWaterTypes.top,updatedCardArray));
+		let bottomWater = this._displayCards(this._getOuterWater(this.defaults.outerWaterTypes.bottom,updatedCardArray));
 		//Left and right outer water need spacer to display properly
-		let leftWater = this._addSpacer(this._displayCards(this._getOuterWater("left",updatedCardArray)));
-		let rightWater = this._addSpacer(this._displayCards(this._getOuterWater("right",updatedCardArray)));
+		let leftWater = this._addSpacer(this._displayCards(this._getOuterWater(this.defaults.outerWaterTypes.left,updatedCardArray)));
+		let rightWater = this._addSpacer(this._displayCards(this._getOuterWater(this.defaults.outerWaterTypes.right,updatedCardArray)));
 
 
 		return(
@@ -534,14 +542,14 @@ export default class GameBoard extends React.Component {
 
 		//top outerWater
 		for(let i = 1; i < NUMBER_OF_ROWS + 1; i++){
-			cardArray[0][i] = this._createOuterWater("top",i);
+			cardArray[0][i] = this._createOuterWater(this.defaults.outerWaterTypes.top,i);
 		}
 
 		for (let r = 1; r < NUMBER_OF_ROWS + 1; r++) {
 			cardArray[r] = [];
 
 			//Left outerWater
-			cardArray[r][0] = this._createOuterWater("left",r);
+			cardArray[r][0] = this._createOuterWater(this.defaults.outerWaterTypes.left,r);
 
 			for (let i = 1; i < NUMBER_OF_ROWS + 1; i++) {
 				//Check if the card is at the edge
@@ -550,8 +558,8 @@ export default class GameBoard extends React.Component {
 				cardArray[r][i] = { 
 					row: 			r, 
 					col: 			i, 
-					cardType: 		generatedCards[cardTypeCounter].card.cardType,//"horizontal vertical",
-					movementType: 	generatedCards[cardTypeCounter].card.movementType,//"horizontal vertical",
+					cardType: 		generatedCards[cardTypeCounter].card.cardType,
+					movementType: 	generatedCards[cardTypeCounter].card.movementType,
 					cardWidth: 		"col-sm-2", 
 					cardClass: 		"cardObject", 
 					units: 			[], 
@@ -570,13 +578,13 @@ export default class GameBoard extends React.Component {
 			}
 
 			//right outerWater
-			cardArray[r][NUMBER_OF_ROWS + 1] = this._createOuterWater("right",r);
+			cardArray[r][NUMBER_OF_ROWS + 1] = this._createOuterWater(this.defaults.outerWaterTypes.right,r);
 			
 		}
 
 		//bottom outerWater
 		for(let i = 1; i < NUMBER_OF_ROWS + 1; i++){
-			cardArray[NUMBER_OF_ROWS + 1][i]  = this._createOuterWater("bottom",i);
+			cardArray[NUMBER_OF_ROWS + 1][i]  = this._createOuterWater(this.defaults.outerWaterTypes.bottom,i);
 		}
 
 		return cardArray;
@@ -912,7 +920,7 @@ export default class GameBoard extends React.Component {
 		}
 	}*/
 
-	_updateOuterWaterBoat(boat, boatArray, outerWaterArray, options = {}){
+	/*_updateOuterWaterBoat(boat, boatArray, outerWaterArray, options = {}){
 		let updatedOuterWaterArray = outerWaterArray.slice();
 
 		let defaults = {
@@ -930,7 +938,7 @@ export default class GameBoard extends React.Component {
 		});
 
 		return updatedOuterWaterArray;
-	}
+	}*/
 
 	_addUnitToCard(unit,object,playerUnitsArray,objectArray){
 
@@ -971,12 +979,13 @@ export default class GameBoard extends React.Component {
 		return objectsUpdatedWithUnitsArray;
 	}*/
 
-	//Update the location of the unit  to match the object
+	//Update the location of a unit or a boat  to match the object
 	_updateObjectWithNewLocation(object,location,objectsArray){
 		let objectsWithUpdatedLocation = objectsArray.slice();
 		let boatUnitMovementType = "";
 
 		if (object.objectType === "boat") {
+			//This is a boat so change the movement type to be different for the units on the boat
 			boatUnitMovementType = this._setBoatUnitMovementType(location);
 		}
 
@@ -1620,7 +1629,7 @@ export default class GameBoard extends React.Component {
 			//updatedCardArray = this._disableAllCards(updatedCardArray);
 
 			//Switch to the next player
-			updatedPlayersArray = this._goNextPlayer(updatedPlayersArray); //this.createturn(updatedPlayersArray); 
+			updatedPlayersArray = this._createTurn(this.turnTypes.next,updatedPlayersArray); 
 			
 			//Get the next player
 			let updatedCurrentPlayer = this._getCurrentPlayer(updatedPlayersArray);
@@ -1664,12 +1673,13 @@ export default class GameBoard extends React.Component {
 	};
 
 	_createTurn(type,playersArray){
+		let updatedPlayersArray = playersArray.slice();
 		switch(type){
 		case "current":
 			console.log("current turn created");
 
 			//Its current players turn so check if it is a computer
-			if(this._getCurrentPlayer.playerType == 'computer'){
+			if(this._getCurrentPlayer(updatedPlayersArray).playerType == 'computer'){
 				//logAction("Computer Turn");
 				//Let the computer go
 				//goComputer();
@@ -1679,12 +1689,12 @@ export default class GameBoard extends React.Component {
 			break;
 		case "next":
 			//It is the next players turn so switch
-			playersArray = this.goNextPlayer(playersArray);
+			updatedPlayersArray = this._goNextPlayer(updatedPlayersArray);
 			break;
 		case "end":
 			break;
 		}
-		return playersArray;
+		return updatedPlayersArray;
 	}
 
 	//Find who the current player is
@@ -1694,6 +1704,8 @@ export default class GameBoard extends React.Component {
 				return player;
 			}
 		}
+		//No current player has been found so check the state
+		return this.state.currentPlayer;
 	};
 
 	//Enable all 
@@ -1748,27 +1760,6 @@ export default class GameBoard extends React.Component {
 		return updatedPlayers;
 	}
 
-	//Create a turn based on the type
-	_createTurn(type){
-		switch(type){
-			case "current":
-				//Its current players turn so check if it is a computer
-				if(this.state.playersArray[this.state.currentPlayer].getPlayerType() === 'computer'){
-					//logAction("Computer Turn");
-					//Let the computer go
-					//this._goComputer();
-				} else {
-					//logAction("Human Turn");
-				}
-				break;
-			case "next":
-				//It is the next players turn so switch
-				this._goNextPlayer();
-				break;
-			default:
-				break;
-		}
-	}
 };
 
 
