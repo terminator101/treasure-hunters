@@ -17,8 +17,9 @@ export default class GameBoard extends React.Component {
 		}
 
 		this.defaults = {
-			outerWaterTypes:  OUTER_WATER_TYPES,
-			numberCardsPerRow: NUMBER_CARDS_PER_ROW,
+			outerWaterTypes:  	OUTER_WATER_TYPES,
+			numberCardsPerRow: 	NUMBER_CARDS_PER_ROW,
+			cardTypes: 			CARD_TYPES,
 		}
 
 		this.state = {
@@ -32,12 +33,11 @@ export default class GameBoard extends React.Component {
 			currentPlayerUnit: 	"",
 			currentPlayerBoat: 	""
 		}
-		//console.log(this.state.cardArray);
-		//this._debug();
-		//console.log("this.state.playersArray");
-		//console.log(this.state.playersArray);
-		//this._createTurn(this.turnTypes.current,this.state.playersArray);
+		
+		//Update the cards with boats and units
 		this.state.cardArray = this._addAllBoatsToCards(this._addAllUnitsToBoats(this.state.playerUnitsArray,this.state.playerBoatsArray),this.state.cardArray);
+		
+		//Allow the first player to go
 		this._createTurn(this.state.currentPlayer);
 	}
 
@@ -512,7 +512,7 @@ export default class GameBoard extends React.Component {
 	_createCards(numberOfCards,numberOfPlayers){
 		let cardArray = [];
 		let cardTypeCounter = 0;
-		let cardTypes = this._createCardTypes(numberOfCards,numberOfPlayers);
+		const cardTypes = this.defaults.cardTypes; //this._createCardTypes(numberOfCards,numberOfPlayers);
 		//let theCard = cardTypes.get("mermaid").defaultCount;
 		let generatedCards = [];
 
@@ -559,7 +559,8 @@ export default class GameBoard extends React.Component {
 					objectType: 	"card", 
 					edge: 			isEdge,
 					opened: 		false,
-					cardTypeClass: 	generatedCards[cardTypeCounter].card.cardTypeClass//"horizontalVerticalCard",
+					cardTypeClass: 	generatedCards[cardTypeCounter].card.cardTypeClass,
+					treasure: 		generatedCards[cardTypeCounter].card.treasure
 				};
 
 				cardTypeCounter += 1;
@@ -594,93 +595,6 @@ export default class GameBoard extends React.Component {
 		}
 	}
 
-	_createCardTypes(numberOfCards,numberOfPlayers){
-		let outerWaterTypes = new Map([
-			["horizontal",
-				{ 
-					cardType: 		"horizontal",
-					movementType: 	"horizontal", 
-					cardTypeClass: 	"horizontal" 
-				}
-			],
-			["vertical",
-				{ 
-					cardType: 		"vertical",
-					movementType: 	"vertical", 
-					cardTypeClass: 	"vertical" 
-				}
-			]
-		]);
-
-		let cardTypes = new Map([
-  			["horizontal vertical", 
-  				{ 	
-					cardType: 		"horizontal vertical",
-					movementType: 	"horizontal vertical", 
-					cardTypeClass: 	"horizontalVerticalCard",
-					defaultCount: 	4
-				}
-			],
-			["diagonal",
-				{ 	
-					cardType: 		"diagonal",
-					movementType: 	"diagonal", 
-					cardTypeClass: 	"diagonal",
-					defaultCount: 	6
-				}
-			],
-			["shark",
-				{ 
-					cardType: 		"shark",
-					movementType: 	"none", 
-					cardTypeClass: 	"shark",
-					defaultCount: 	4 
-				}
-			],
-			["sea horse",
-				{ 
-					cardType: 		"sea horse",
-					movementType: 	"sea horse", 
-					cardTypeClass: 	"seaHorse",
-					defaultCount: 	4 
-				}
-			],
-			["mermaid",
-				{ 
-					cardType: 		"mermaid",
-					movementType: 	"mermaid", 
-					cardTypeClass: 	"mermaid",
-					defaultCount: 	2
-				}
-			],
-			["all directions",
-				{ 
-					cardType: 		"all directions",
-					movementType: 	"all", 
-					cardTypeClass: 	"allDirections",
-					defaultCount: 	2
-				}
-			],
-			["fish",
-				{ 
-					cardType: 		"fish",
-					movementType: 	"horizontal vertical", 
-					cardTypeClass: 	"fish",
-					defaultCount: 	8 
-				}
-			],
-			["treasure",
-				{ 
-					cardType: 		"treasure",
-					movementType: 	"horizontal vertical", 
-					cardTypeClass: 	"treasure",
-					defaultCount: 	6 
-				}
-			]
-		]);
-		return cardTypes;
-	}
-
 	_displayCards(cardArray){
 		return cardArray.map((card) => {
 			return(
@@ -702,6 +616,7 @@ export default class GameBoard extends React.Component {
 					disabled = 	   {card.disabled}
 					opened = 	   {card.opened}
 					cardTypeClass = {card.cardTypeClass}
+					treasure =	   {card.treasure ? card.treasure : ""}
 				/>
 			)
 		});
@@ -1703,6 +1618,93 @@ class PlayerTurn extends React.Component {
 }
 
 ///Old code
+
+/*	_createCardTypes(numberOfCards,numberOfPlayers){
+		let outerWaterTypes = new Map([
+			["horizontal",
+				{ 
+					cardType: 		"horizontal",
+					movementType: 	"horizontal", 
+					cardTypeClass: 	"horizontal" 
+				}
+			],
+			["vertical",
+				{ 
+					cardType: 		"vertical",
+					movementType: 	"vertical", 
+					cardTypeClass: 	"vertical" 
+				}
+			]
+		]);
+
+		let cardTypes = new Map([
+  			["horizontal vertical", 
+  				{ 	
+					cardType: 		"horizontal vertical",
+					movementType: 	"horizontal vertical", 
+					cardTypeClass: 	"horizontalVerticalCard",
+					defaultCount: 	4
+				}
+			],
+			["diagonal",
+				{ 	
+					cardType: 		"diagonal",
+					movementType: 	"diagonal", 
+					cardTypeClass: 	"diagonal",
+					defaultCount: 	6
+				}
+			],
+			["shark",
+				{ 
+					cardType: 		"shark",
+					movementType: 	"none", 
+					cardTypeClass: 	"shark",
+					defaultCount: 	4 
+				}
+			],
+			["sea horse",
+				{ 
+					cardType: 		"sea horse",
+					movementType: 	"sea horse", 
+					cardTypeClass: 	"seaHorse",
+					defaultCount: 	4 
+				}
+			],
+			["mermaid",
+				{ 
+					cardType: 		"mermaid",
+					movementType: 	"mermaid", 
+					cardTypeClass: 	"mermaid",
+					defaultCount: 	2
+				}
+			],
+			["all directions",
+				{ 
+					cardType: 		"all directions",
+					movementType: 	"all", 
+					cardTypeClass: 	"allDirections",
+					defaultCount: 	2
+				}
+			],
+			["fish",
+				{ 
+					cardType: 		"fish",
+					movementType: 	"horizontal vertical", 
+					cardTypeClass: 	"fish",
+					defaultCount: 	8 
+				}
+			],
+			["treasure",
+				{ 
+					cardType: 		"treasure",
+					movementType: 	"horizontal vertical", 
+					cardTypeClass: 	"treasure",
+					defaultCount: 	6 
+				}
+			]
+		]);
+		return cardTypes;
+	}*/
 
 	/*_getAllOuterWater(outerWaterArray){
 		const playerBoatsArray = this.state.playerBoatsArray.slice();

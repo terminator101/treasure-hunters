@@ -52,12 +52,14 @@ export default class Card extends React.Component {
 		//let edge = this.settings.edge ? this._displayEdge() : '';
 		let debug = this.settings.debug;
 		let opened = this.props.opened ? this.props.opened : '';
+		let treasure = this.props.treasure ? this._displayTreasure() : '';
 		let cardTypeClass = "cardInfo " + this.props.cardTypeClass;
 		return(
 			<div className={cardClasses} onClick={this.settings.disabled ? null : () => this.props.onClick()}>
 				<img className={this.settings.imageClass} src={imageLocation} alt="card" />
 				{debug ? <div className="cardInfo">{this.settings.cardType} {this.settings.row} - {this.settings.col}</div> : ""}
 				{opened ? <div className={cardTypeClass}>{this.settings.cardType}</div> : ""}
+				{(treasure && opened) ? <div className="treasureHolder">{treasure}</div> : ""}
 				{playerUnits ? <div className="unitsHolder">{playerUnits}</div> : ""}
 				{playerBoat ? <div className="boatsHolder">{playerBoat}</div> : ""}
 				{possibleMove ? <div className="possibleMove"></div> : ""}
@@ -69,6 +71,12 @@ export default class Card extends React.Component {
 	_displayEdge(){
 		return(
 			<div className="edge">edge</div>
+		)
+	}
+
+	_displayTreasure(){
+		return(
+			<div className="treasure">Treasure</div>
 		)
 	}
 

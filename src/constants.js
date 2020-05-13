@@ -81,12 +81,13 @@ export const CARD_TYPES = new Map([
 					defaultCount: 	8 
 				}
 			],
-			["treasure",
+			["chest",
 				{ 
-					cardType: 		"treasure",
+					cardType: 		"chest",
 					movementType: 	"horizontal vertical", 
-					cardTypeClass: 	"treasure",
-					defaultCount: 	6 
+					cardTypeClass: 	"chest",
+					defaultCount: 	6,
+					treasure: 		true
 				}
 			]
 		]);
