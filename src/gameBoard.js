@@ -2,8 +2,6 @@ import React from 'react';
 //import update from 'immutability-helper';
 
 import Card from './card';
-import { PlayerUnit, PlayerBoat } from './player';
-import OuterWater from './outerWater';
 
 import { NUMBER_OF_ROWS, NUMBER_CARDS_PER_ROW, CARD_TYPES, OUTER_WATER_TYPES } from './constants';
 
@@ -983,18 +981,14 @@ export default class GameBoard extends React.Component {
 
 		cardArray = this._disableAllCards(cardArray);
 
-		let allMoves = [];
 		if (possibleMovesUnit.length > 0) {
-			let playerBoatLocation = playerBoatsArray[this.state.currentPlayer.playerId];
-
 
 			//There are possible moves for the card so display them
 			for(let position of possibleMovesUnit){
 				cardArray[position.row] = cardArray[position.row].slice();
 
 				//Check if the move is to a card or if the card has the current player boat
-				//if (cardArray[position.row][position.col].objectType === "card" || this._cardHasThePlayerBoat(cardArray[position.row][position.col],playerBoat)) {
-				if (cardArray[position.row][position.col].objectType === "card") {
+				if (cardArray[position.row][position.col].objectType === "card" || this._cardHasThePlayerBoat(cardArray[position.row][position.col],playerBoat)) {
 					cardArray[position.row][position.col] = Object.assign({}, cardArray[position.row][position.col], {
 						possibleMove: true,
 						disabled: false
@@ -1002,7 +996,6 @@ export default class GameBoard extends React.Component {
 				}
 				
 			}
-			allMoves.concat(possibleMovesUnit);
 		}
 
 		if (possibleMovesBoat.length > 0 ) {
@@ -1014,19 +1007,7 @@ export default class GameBoard extends React.Component {
 					disabled: false
 				});
 			}
-			allMoves.concat(possibleMovesBoat);
 		}
-
-		/*for(let card of cardArray){
-			for(let move of allMoves){
-				if(card.row !== move.row && card.col !== move.col){
-					cardArray[card.row] = cardArray[card.row].slice();
-					cardArray[card.row][card.col] = Object.assign({}, cardArray[card.row][card.col], {
-						disabled: true
-					});
-				}
-			}
-		}*/
 
 		this.setState({
 			cardArray: cardArray,
@@ -1083,23 +1064,6 @@ export default class GameBoard extends React.Component {
 		let start = objectCol - 1;
 		let end = objectCol + 1;
 		let moves = [];
-
-		/*console.log("movementType");
-		console.log(movementType);
-
-		console.log("objectType");
-		console.log(objectType);*/
-
-		//console.log(objectArray);
-
-		//objectArray[0] = [this.state.playerBoatsArray[this.state.currentPlayerId]];
-		/*if (object.edge === true) {
-			let boat = this.state.playerBoatsArray[this.state.currentPlayerId];
-			moves.push(
-				{"row" : boat.row, "col" : boat.col}
-			);
-		}*/
-		let cardTypes = ["shark","sea horse","mermaid"];
 
 		switch(movementType){
 			case "none":
@@ -1293,36 +1257,20 @@ export default class GameBoard extends React.Component {
 
 	//
 	_handleClick(object){
-		//const cardArray = this.state.cardArray.slice();
-		//const playerUnitsArray = this.state.playerUnitsArray.slice();
-		//const outerWaterArray = this.state.outerWaterArray.slice();
-		//const playerBoatsArray = this.state.playerBoatsArray.slice();
-		//const possibleMoves = this.state.possibleMoves;
-		//const possibleMovesBoat = this.state.possibleMovesBoat;
+
 		console.log("Object clicked");
-		//Set defaults
-		/*let objectUnits = 0;
-		let currentPlayerUnit = 0;
-		let objectBoat = "";*/
-		//let updatedPlayersArray = this.state.playersArray.slice();
 
 		//Make sure that neither a unit nor a boat has been set
 		if (this.state.currentPlayerUnit === "" && this.state.currentPlayerBoat === "") {
-
+			//
 			this._higlightPossibleMoves(object);
-
-			//Store the current player unit
-			/*this.setState({
-				currentPlayerUnit: currentPlayerUnit,
-				currentPlayerBoat: 
-			});*/
 		} else {
-			
+			//
 			this._moveToDestination(object);
 		}
 	}
 
-	//Move the 
+	//Move the object to the destination
 	_moveToDestination(object){
 		console.log("Unit to move:" + this.state.currentPlayerUnit + " || " + this.state.currentPlayerBoat);
 
@@ -1546,11 +1494,11 @@ export default class GameBoard extends React.Component {
 	_enableAllCardsWithCurrentplayerUnitsAndBoats(currentPlayer,cardArray,updatedUnitsArray,playerBoatsArray){
 
 		let playerUnits = this._getPlayerUnitsFromPlayer(currentPlayer,updatedUnitsArray);
-		//let playerBoat = playerBoatsArray[currentPlayer.playerId];
+		let playerBoat = playerBoatsArray[currentPlayer.playerId];
 		let updatedCardArray = cardArray.slice();
 
 		//Add the boat so that it's not disabled
-		//playerUnits.push(playerBoat);
+		playerUnits.push(playerBoat);
 
 		for(let playerUnit of playerUnits) {
 			if (!playerUnit.dead) {
@@ -1584,13 +1532,18 @@ export default class GameBoard extends React.Component {
 
 	}
 
+	/**
+	 * Set the player state
+	 * @param {Player} player 
+	 * @param {Array} playerArray 
+	 * @param {String} state 
+	 */
 	_changePlayerState(player,playerArray,state){
 		let updatedPlayers = playerArray.slice();
 
 		updatedPlayers[player.playerId] = Object.assign({}, updatedPlayers[player.playerId], {
 			playerState: state
 		});
-
 		return updatedPlayers;
 	}
 
@@ -1618,6 +1571,33 @@ class PlayerTurn extends React.Component {
 }
 
 ///Old code
+
+/*for(let card of cardArray){
+			for(let move of allMoves){
+				if(card.row !== move.row && card.col !== move.col){
+					cardArray[card.row] = cardArray[card.row].slice();
+					cardArray[card.row][card.col] = Object.assign({}, cardArray[card.row][card.col], {
+						disabled: true
+					});
+				}
+			}
+		}*/
+
+		/*console.log("movementType");
+		console.log(movementType);
+
+		console.log("objectType");
+		console.log(objectType);*/
+
+		//console.log(objectArray);
+
+		//objectArray[0] = [this.state.playerBoatsArray[this.state.currentPlayerId]];
+		/*if (object.edge === true) {
+			let boat = this.state.playerBoatsArray[this.state.currentPlayerId];
+			moves.push(
+				{"row" : boat.row, "col" : boat.col}
+			);
+		}*/
 
 /*	_createCardTypes(numberOfCards,numberOfPlayers){
 		let outerWaterTypes = new Map([
