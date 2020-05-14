@@ -196,14 +196,24 @@ export default class GameBoard extends React.Component {
 
 		return(
 			<div className="container">
-				<div className="row h-100 justify-content-center">
-					<div className="col-6">
-						{ cardInformation }
+				<div className="row justify-content-center">
+					<div className="col-8">
+						<table class="table table-bordered">
+							<thead class="thead-dark">
+								<tr>
+									<th scope="col">Card</th>
+									<th scope="col">Description</th>
+								</tr>
+							</thead>
+							<tbody>
+							{ cardInformation }
+							</tbody>
+						</table>
 					</div>
 				</div>
 				<div className="row no-gutters">
 					<div className="col-12">
-						{ currentPlayer.playerName }
+						{ currentPlayer.playerName + " | " + currentPlayer.score }
 					</div>
 				</div>
 				<div className="row no-gutters">
@@ -876,6 +886,57 @@ export default class GameBoard extends React.Component {
 		return updatedObjectArray;
 	}
 
+	/**
+	 * Add a treasure to a card
+	 * @param {object} location 
+	 * @param {array} objectArray 
+	 */
+	_addTreasureToCard(location,objectArray){
+		let updatedObjectArray = objectArray.slice();
+
+		updatedObjectArray[location.row] = updatedObjectArray[location.row].slice();
+		updatedObjectArray[location.row][location.col] = Object.assign({}, updatedObjectArray[location.row][location.col], {
+			treasure: true
+		});
+
+		return updatedObjectArray;
+	}
+
+	/**
+	 * Remove a treasure from a card
+	 * @param {object} location 
+	 * @param {array} objectArray 
+	 */
+	_removeTreasureFromCard(location,objectArray){
+		let updatedObjectArray = objectArray.slice();
+
+		updatedObjectArray[location.row] = updatedObjectArray[location.row].slice();
+		updatedObjectArray[location.row][location.col] = Object.assign({}, updatedObjectArray[location.row][location.col], {
+			treasure: false
+		});
+
+		return updatedObjectArray;
+	}
+
+	/**
+	 * Check if a card has a treasure
+	 * @param {object} location 
+	 * @param {array} objectArray 
+	 */
+	_cardHasTreasure(location,objectArray){
+		
+		if(objectArray[location.row][location.col].treasure){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Clear highlighted cards
+	 * @param {array} objectArray 
+	 * @param {array} possibleMoves 
+	 */
 	_clearPossibleMoves(objectArray,possibleMoves){
 		let updatedObjectArray = objectArray;
 		//console.log(possibleMoves);
@@ -1199,7 +1260,6 @@ export default class GameBoard extends React.Component {
 				}
 			}
 		}
-		//console.log(moves);
 		return moves;
 	}
 
@@ -1233,22 +1293,26 @@ export default class GameBoard extends React.Component {
 	//- If it is a possible move, store the old row and col from the unit and then add the unit to the new card
 	//- Get the card row and col from the unit and use those to remove the unit from the previous card
 
-	//
+	/**
+	 * Handle what happens when object gets clicked on
+	 * @param {object} object 
+	 */
 	_handleClick(object){
 
 		console.log("Object clicked");
 
 		//Make sure that neither a unit nor a boat has been set
 		if (this.state.currentPlayerUnit === "" && this.state.currentPlayerBoat === "") {
-			//
 			this._higlightPossibleMoves(object);
 		} else {
-			//
 			this._moveToDestination(object);
 		}
 	}
 
-	//Move the object to the destination
+	/**
+	 * Move the object to the destination
+	 * @param {object} object 
+	 */
 	_moveToDestination(object){
 		console.log("Unit to move:" + this.state.currentPlayerUnit + " || " + this.state.currentPlayerBoat);
 
@@ -1326,14 +1390,6 @@ export default class GameBoard extends React.Component {
 					updatedCardArray = this._removeUnitFromCard(this.state.currentPlayerUnit,updatedCardArray);
 					//Removed the units from the array
 					updatedUnitsArray = this._markUnitAsdead(this.state.currentPlayerUnit,updatedUnitsArray);
-					//updatedUnitsArray.splice(this.state.currentPlayerUnit.id,1);
-					//updatedUnitsArray = updatedUnitsArray.filter(unit => unit.id !== this.state.currentPlayerUnit.id);
-
-					//console.log("Current player unit after shark attack");
-					//console.log(this.state.currentPlayerUnit);
-					//console.log("units array after shark attack");
-					//console.log(updatedUnitsArray);
-
 					//Keep the card open
 					updatedCardArray = this._setCardToStayOpen(object,updatedCardArray);
 				} else {
@@ -1343,17 +1399,33 @@ export default class GameBoard extends React.Component {
 					updatedCardArray = this._removeUnitFromCard(this.state.currentPlayerUnit,updatedCardArray);
 					//Add the updated unit to the new location
 					updatedCardArray = this._addUnitToCard(this.state.currentPlayerUnit,updatedCardArray[object.row][object.col],updatedUnitsArray,updatedCardArray);
+
+					if(this._cardHasTreasure(this.state.currentPlayerUnit,updatedCardArray)){
+						//The object has a tresure so remove it 
+						updatedCardArray = this._removeTreasureFromCard(this.state.currentPlayerUnit,updatedCardArray);
+						//Add it to the new location
+						updatedCardArray = this._addTreasureToCard(updatedCardArray[object.row][object.col],updatedCardArray);
+					}
 				}
 				//Clear the unit possible moves
 				updatedCardArray = this._clearPossibleMoves(updatedCardArray, possibleMovesUnit);
 			} else
-			//AN outer water with a boat has been clicked so move the unit to the boat
+			//An outer water with a boat has been clicked so move the unit to the boat
 			if (object.objectType === 'outerWater'){
 				console.log('move unit from card to boat');
 				//Update the unit with the new location
 				updatedUnitsArray = this._updateObjectWithNewLocation(this.state.currentPlayerUnit,updatedPlayerBoatsArray[object.playerBoat.id],this.state.playerUnitsArray);
 				//Remove the unit from the current location
 				updatedCardArray = this._removeUnitFromCard(this.state.currentPlayerUnit,updatedCardArray);
+				
+				if(this._cardHasTreasure(this.state.currentPlayerUnit,updatedCardArray)){
+					//The object has a tresure so remove it 
+					updatedCardArray = this._removeTreasureFromCard(this.state.currentPlayerUnit,updatedCardArray);
+					
+					updatedPlayersArray = this._increaseScore(this.state.currentPlayer, updatedPlayersArray, 1);
+					console.log("Player score increased");
+				}
+
 				//Add the updated unit to the boat
 				updatedPlayerBoatsArray = this._addUnitToBoat(this.state.currentPlayerUnit, updatedPlayerBoatsArray[object.playerBoat.id], updatedUnitsArray, updatedPlayerBoatsArray);
 				//Update the outer water
@@ -1393,7 +1465,10 @@ export default class GameBoard extends React.Component {
 		console.log("--------------------- turn ended ---------------------------");
 	}
 
-	//Change who the current player is
+	/**
+	 * Change who the current player is
+	 * @param {array} playersArray 
+	 */
 	_goNextPlayer(playersArray){
 
 		//Get the current player
@@ -1413,7 +1488,26 @@ export default class GameBoard extends React.Component {
 		return updatedPlayersArray
 	};
 
-	//Create turn in order to allow a computer to go
+	/**
+	 * Increase the score for the given player
+	 * @param {Object} player 
+	 * @param {array} playersArray 
+	 * @param {integer} score 
+	 */
+	_increaseScore(player,playersArray,score){
+		let updatedPlayersArray = playersArray.slice();
+		let newScore = updatedPlayersArray[player.playerId].score + score;
+
+		updatedPlayersArray[player.playerId] = Object.assign({}, updatedPlayersArray[player.playerId], {
+			score: newScore
+		});
+		return updatedPlayersArray;
+	}
+
+	/**
+	 * Create turn in order to allow a computer to go
+	 * @param {Object} currentPlayer 
+	 */
 	_createTurn(currentPlayer){
 		
 		if(currentPlayer.playerType === 'computer'){
@@ -1517,12 +1611,12 @@ export default class GameBoard extends React.Component {
 	 * @param {String} state 
 	 */
 	_changePlayerState(player,playerArray,state){
-		let updatedPlayers = playerArray.slice();
+		let updatedPlayersArray = playerArray.slice();
 
-		updatedPlayers[player.playerId] = Object.assign({}, updatedPlayers[player.playerId], {
+		updatedPlayersArray[player.playerId] = Object.assign({}, updatedPlayersArray[player.playerId], {
 			playerState: state
 		});
-		return updatedPlayers;
+		return updatedPlayersArray;
 	}
 
 };
@@ -1544,10 +1638,10 @@ class CardInfo extends React.Component {
 	render(){
 		this.settings = Object.assign({}, this.defaults, this.props);
 		return(
-			<div className="row">
-				<div className="col-md">{ this.settings.cardName }</div>
-				<div className="col-md">{ this.settings.cardDescription }</div>
-			</div>
+			<tr>
+				<td>{ this.settings.cardName }</td>
+				<td>{ this.settings.cardDescription }</td>
+    		</tr>
 		);
 	}
 }
