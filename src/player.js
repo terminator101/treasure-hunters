@@ -49,8 +49,9 @@ class PlayerUnit extends React.Component {
 			id: 0,
 			col: 0,
 			row: 0,
-			playerName: "",
 			playerId: 0,
+			playerName: "",
+			location: "",
 			dead: false,
 			unitClass: "unit"
 		}

@@ -30,7 +30,8 @@ export const CARD_TYPES = new Map([
 					cardType: 		"horizontal vertical",
 					movementType: 	"horizontal vertical", 
 					cardTypeClass: 	"horizontalVerticalCard",
-					defaultCount: 	4
+					defaultCount: 	4,
+					description:	"Player can move horizontally or vertically"
 				}
 			],
 			["diagonal",
@@ -38,7 +39,8 @@ export const CARD_TYPES = new Map([
 					cardType: 		"diagonal",
 					movementType: 	"diagonal", 
 					cardTypeClass: 	"diagonal",
-					defaultCount: 	6
+					defaultCount: 	6,
+					description:	"Player can move diagonally"
 				}
 			],
 			["shark",
@@ -46,7 +48,8 @@ export const CARD_TYPES = new Map([
 					cardType: 		"shark",
 					movementType: 	"none", 
 					cardTypeClass: 	"shark",
-					defaultCount: 	4 
+					defaultCount: 	4,
+					description:	"Kills the player unit"
 				}
 			],
 			["sea horse",
@@ -54,7 +57,8 @@ export const CARD_TYPES = new Map([
 					cardType: 		"sea horse",
 					movementType: 	"sea horse", 
 					cardTypeClass: 	"seaHorse",
-					defaultCount: 	4 
+					defaultCount: 	4,
+					description:	"Player can move in L like direction"
 				}
 			],
 			["mermaid",
@@ -62,7 +66,8 @@ export const CARD_TYPES = new Map([
 					cardType: 		"mermaid",
 					movementType: 	"mermaid", 
 					cardTypeClass: 	"mermaid",
-					defaultCount: 	2
+					defaultCount: 	2,
+					description:	"Player can move diagonally as far as allowed"
 				}
 			],
 			["all directions",
@@ -70,7 +75,8 @@ export const CARD_TYPES = new Map([
 					cardType: 		"all directions",
 					movementType: 	"all", 
 					cardTypeClass: 	"allDirections",
-					defaultCount: 	2
+					defaultCount: 	2,
+					description:	"Player can move in every direction"
 				}
 			],
 			["fish",
@@ -78,7 +84,8 @@ export const CARD_TYPES = new Map([
 					cardType: 		"fish",
 					movementType: 	"horizontal vertical", 
 					cardTypeClass: 	"fish",
-					defaultCount: 	8 
+					defaultCount: 	8,
+					description:	"Empty ocean"
 				}
 			],
 			["chest",
@@ -87,7 +94,8 @@ export const CARD_TYPES = new Map([
 					movementType: 	"horizontal vertical", 
 					cardTypeClass: 	"chest",
 					defaultCount: 	6,
-					treasure: 		true
+					treasure: 		true,
+					description:	"Find these and deliver the treasure to your boat"
 				}
 			]
 		]);
