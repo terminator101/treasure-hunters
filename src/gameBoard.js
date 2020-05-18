@@ -22,6 +22,7 @@ export default class GameBoard extends React.Component {
 			numberCardsPerRow: 	NUMBER_CARDS_PER_ROW,
 			cardTypes: 			CARD_TYPES,
 			cardInformation:	this._generateCardInformation(CARD_TYPES),
+			cardTypeWithTreasure: "chest"
 		}
 
 		this.state = {
@@ -29,16 +30,21 @@ export default class GameBoard extends React.Component {
 			playerUnitsArray: 	this._createPlayerUnits(this.props.unitsPerPlayer,this.props.playersArray),
 			cardArray: 			this._createCards(this.props.numberOfCards,this.props.playersArray.length,CARD_TYPES,OUTER_WATER_TYPES),
 			playerBoatsArray: 	this._createPlayerBoats(this.props.playersArray),
+			treasuresArray:		[],
 			possibleMovesUnit: 	[],
 			possibleMovesBoat: 	[],
 			currentPlayer: 		this.props.playersArray[0],
 			currentPlayerUnit: 	"",
 			currentPlayerBoat: 	""
 		}
-		
+
+		//Create the treasures using the cards
+		this.state.treasuresArray = this._createTreasures(this.state.cardArray);
+		//Add the treasures to the cards
+		this.state.cardArray = this._addAllTreasuresToCards(this.state.treasuresArray,this.state.cardArray);
 		//Update the cards with boats and units
 		this.state.cardArray = this._addAllBoatsToCards(this._addAllUnitsToBoats(this.state.playerUnitsArray,this.state.playerBoatsArray),this.state.cardArray);
-		
+
 		//Allow the first player to go
 		this._createTurn(this.state.currentPlayer);
 	}
@@ -198,8 +204,8 @@ export default class GameBoard extends React.Component {
 			<div className="container">
 				<div className="row justify-content-center">
 					<div className="col-8">
-						<table class="table table-bordered">
-							<thead class="thead-dark">
+						<table className="table table-bordered">
+							<thead className="thead-dark">
 								<tr>
 									<th scope="col">Card</th>
 									<th scope="col">Description</th>
@@ -271,10 +277,14 @@ export default class GameBoard extends React.Component {
 		return objectWithSpacerArray;
 	}
 
-	_generateCardInformation(cardTypes){
+	/**
+	 * Generate the card information
+	 * @param {array} cardTypesArray
+	 */
+	_generateCardInformation(cardTypesArray){
 		let generatedInfo = [];
 
-		cardTypes.forEach(function(card, key) {
+		cardTypesArray.forEach(function(card, key) {
 			generatedInfo.push({ 
 				cardName: card.cardType, 
 				cardDescription: card.description
@@ -283,6 +293,10 @@ export default class GameBoard extends React.Component {
 		return generatedInfo;
 	}
 
+	/**
+	 * Display The card information
+	 * @param {array} cardArray 
+	 */
 	_displayCardInformation(cardArray){
 		return cardArray.map((cardInfo) => {
 			return(
@@ -298,6 +312,11 @@ export default class GameBoard extends React.Component {
 	///////////////////
 	/// Outer Water
 	///////////////////
+	/**
+	 * Crete outer water using the specified position
+	 * @param {string} position 
+	 * @param {integer} index 
+	 */
 	_createOuterWater(position, index = 0){
 		let outerWater = "";
 		switch(position){
@@ -560,7 +579,7 @@ export default class GameBoard extends React.Component {
 					edge: 			isEdge,
 					opened: 		false,
 					cardTypeClass: 	generatedCards[cardTypeCounter].card.cardTypeClass,
-					treasure: 		generatedCards[cardTypeCounter].card.treasure
+					treasures: 		generatedCards[cardTypeCounter].card.treasures ? generatedCards[cardTypeCounter].card.treasures : []
 				};
 
 				cardTypeCounter += 1;
@@ -635,7 +654,7 @@ export default class GameBoard extends React.Component {
 					disabled = 	   {card.disabled}
 					opened = 	   {card.opened}
 					cardTypeClass = {card.cardTypeClass}
-					treasure =	   {card.treasure ? card.treasure : ""}
+					treasures =	   {card.treasures}
 				/>
 			)
 		});
@@ -794,6 +813,13 @@ export default class GameBoard extends React.Component {
 		return updatedPlayerBoatsArray;
 	}
 
+	/**
+	 * Adding a unit to the card
+	 * @param {object} unit 
+	 * @param {object} object 
+	 * @param {*} playerUnitsArray 
+	 * @param {*} objectArray 
+	 */
 	_addUnitToCard(unit,object,playerUnitsArray,objectArray){
 
 		let objectsUpdatedWithUnitsArray = objectArray.slice();
@@ -808,11 +834,18 @@ export default class GameBoard extends React.Component {
 		return objectsUpdatedWithUnitsArray;
 	}
 
+	/**
+	 * Update the card properties after a shark attack
+	 * @param {object} object 
+	 * @param {array} objectArray 
+	 */
 	_setCardToStayOpen(object,objectArray){
 		let updatedObjects = objectArray.slice();
 
 		updatedObjects[object.row] = updatedObjects[object.row].slice();
 		updatedObjects[object.row][object.col] = Object.assign({}, updatedObjects[object.row][object.col], {
+			cardType: "dead shark",
+			movementType: "horizontal vertical",
 			opened: true
 		});
 
@@ -886,20 +919,99 @@ export default class GameBoard extends React.Component {
 		return updatedObjectArray;
 	}
 
+	///////////////////
+	/// Treasures
+	///////////////////
 	/**
-	 * Add a treasure to a card
-	 * @param {object} location 
-	 * @param {array} objectArray 
+	 * Create treasures
+	 * @param {array} cardArray 
 	 */
-	_addTreasureToCard(location,objectArray){
-		let updatedObjectArray = objectArray.slice();
+	_createTreasures(cardArray){
+		let treasuresArray = [];
+		let treasureCounter = 0;
 
-		updatedObjectArray[location.row] = updatedObjectArray[location.row].slice();
-		updatedObjectArray[location.row][location.col] = Object.assign({}, updatedObjectArray[location.row][location.col], {
-			treasure: true
+		for(let cardArrayRow of cardArray){
+			for(let card of cardArrayRow.slice()){
+				//The card exists and its type has a chest 
+				if ( card !== undefined && card.cardType === this.defaults.cardTypeWithTreasure) {
+
+					treasuresArray = treasuresArray.concat({
+						key: "treasure" + treasureCounter,
+						id: treasureCounter,
+						row: card.row,
+						col: card.col,
+						name: "Treasure",
+						retrievedBy: ""
+					})
+					treasureCounter++
+				}
+			}
+		}
+		return treasuresArray;
+	}
+
+	/**
+	 * Add all treasures to cards
+	 * @param {array} treasuresArray 
+	 * @param {array} cardArray 
+	 */
+	_addAllTreasuresToCards(treasuresArray,cardArray){
+		let cardsUpdatedWithTreasures = cardArray.slice();
+
+		for(let treasure of treasuresArray){
+			if (cardsUpdatedWithTreasures[treasure.row] !== undefined) {
+				cardsUpdatedWithTreasures[treasure.row] = cardsUpdatedWithTreasures[treasure.row].slice();
+
+				cardsUpdatedWithTreasures[treasure.row][treasure.col] = Object.assign({}, cardsUpdatedWithTreasures[treasure.row][treasure.col], {
+					treasures: cardsUpdatedWithTreasures[treasure.row][treasure.col].treasures.concat(treasure),
+				});
+			}
+		}
+		return cardsUpdatedWithTreasures;
+	}
+
+	_getTreasuresFromObject(object){
+		const treasures = object.treasures;
+		if (treasures.length > 0) {
+			return treasures;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Update who retrieved the treasure
+	 * @param {object} object 
+	 * @param {array} objectsArray 
+	 * @param {object} collector 
+	 */
+	_markTreasureAsRetrieved(object,objectsArray,collector){
+		let updatedObjects = objectsArray.slice();
+
+		updatedObjects[object.id] = Object.assign({}, updatedObjects[object.id], {
+			retrievedBy: collector.playerName
 		});
 
-		return updatedObjectArray;
+		return updatedObjects;
+	}
+
+	/**
+	 * Add a treasure to a card
+	 * @param {Object} treasure 
+	 * @param {Object} location 
+	 * @param {array} treasuresArray 
+	 * @param {array} locationArray 
+	 */
+	_addTreasureToCard(treasure,location,treasuresArray,locationArray){
+
+		let objectsUpdatedWithTreasuresArray = locationArray.slice();
+
+		objectsUpdatedWithTreasuresArray[location.row] = objectsUpdatedWithTreasuresArray[location.row].slice();
+		objectsUpdatedWithTreasuresArray[location.row][location.col] = Object.assign({}, objectsUpdatedWithTreasuresArray[location.row][location.col], {
+			treasures: objectsUpdatedWithTreasuresArray[location.row][location.col].treasures.concat(treasuresArray[treasure.id]),
+		});
+
+		return objectsUpdatedWithTreasuresArray;
 	}
 
 	/**
@@ -907,29 +1019,18 @@ export default class GameBoard extends React.Component {
 	 * @param {object} location 
 	 * @param {array} objectArray 
 	 */
-	_removeTreasureFromCard(location,objectArray){
+	_removeTreasureFromCard(findTreasure,objectArray){
 		let updatedObjectArray = objectArray.slice();
+		let objectTreasuresArray = updatedObjectArray[findTreasure.row][findTreasure.col].treasures;
+		const theTreasure = objectTreasuresArray.find( treasure => treasure.id === findTreasure.id );
+		let updatedObjectTreasureArray = updatedObjectArray[findTreasure.row][findTreasure.col].treasures.filter(treasure => treasure.id !== theTreasure.id);
 
-		updatedObjectArray[location.row] = updatedObjectArray[location.row].slice();
-		updatedObjectArray[location.row][location.col] = Object.assign({}, updatedObjectArray[location.row][location.col], {
-			treasure: false
+		updatedObjectArray[findTreasure.row] = updatedObjectArray[findTreasure.row].slice();
+		updatedObjectArray[findTreasure.row][findTreasure.col] = Object.assign({}, updatedObjectArray[findTreasure.row][findTreasure.col], {
+			treasures: updatedObjectTreasureArray //objectTreasures.filter((treasure, i) => i < objectTreasures.length - 1)
 		});
 
 		return updatedObjectArray;
-	}
-
-	/**
-	 * Check if a card has a treasure
-	 * @param {object} location 
-	 * @param {array} objectArray 
-	 */
-	_cardHasTreasure(location,objectArray){
-		
-		if(objectArray[location.row][location.col].treasure){
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	/**
@@ -1084,12 +1185,15 @@ export default class GameBoard extends React.Component {
 				}
 			}
 		}
-		console.log("specifiedPlayerUnits during next turn");
-		console.log(specifiedPlayerUnits);
 
 		return specifiedPlayerUnits;
 	}
 
+	/**
+	 * Find all possible moves based on the card movement type
+	 * @param {object} object 
+	 * @param {array} objectArray 
+	 */
 	_findPossibleMoves(object, objectArray){
 		const {
 			col: objectCol,
@@ -1263,6 +1367,10 @@ export default class GameBoard extends React.Component {
 		return moves;
 	}
 
+	/**
+	 * Get all player units from the given object
+	 * @param {object} object 
+	 */
 	_getPlayerUnitsFromObject(object){
 		const units = object.units;
 		if (units.length > 0) {
@@ -1272,6 +1380,10 @@ export default class GameBoard extends React.Component {
 		}
 	}
 
+	/**
+	 * Ge the unit the belongs to the current player
+	 * @param {array} objectUnits 
+	 */
 	_getCurrentPlayerUnitFromObject(objectUnits){
 		if (objectUnits !== false && objectUnits.length > 0) {
 			for(let unit of objectUnits){
@@ -1321,6 +1433,8 @@ export default class GameBoard extends React.Component {
 		let updatedPlayersArray = this.state.playersArray.slice();
 		let updatedUnitsArray = this.state.playerUnitsArray.slice();
 		let updatedPlayerBoatsArray = this.state.playerBoatsArray.slice();
+		let updatedTreasuresArray = this.state.treasuresArray.slice();
+		let treasureToMove = "";
 
 		const possibleMovesUnit = this.state.possibleMovesUnit.slice();
 		const possibleMovesBoat = this.state.possibleMovesBoat.slice();
@@ -1399,14 +1513,22 @@ export default class GameBoard extends React.Component {
 					updatedCardArray = this._removeUnitFromCard(this.state.currentPlayerUnit,updatedCardArray);
 					//Add the updated unit to the new location
 					updatedCardArray = this._addUnitToCard(this.state.currentPlayerUnit,updatedCardArray[object.row][object.col],updatedUnitsArray,updatedCardArray);
-
-					if(this._cardHasTreasure(this.state.currentPlayerUnit,updatedCardArray)){
-						//The object has a tresure so remove it 
-						updatedCardArray = this._removeTreasureFromCard(this.state.currentPlayerUnit,updatedCardArray);
-						//Add it to the new location
-						updatedCardArray = this._addTreasureToCard(updatedCardArray[object.row][object.col],updatedCardArray);
-					}
 				}
+
+				//Get all treasures from the card
+				let cardTreasures = this._getTreasuresFromObject(updatedCardArray[this.state.currentPlayerUnit.row][this.state.currentPlayerUnit.col]);
+
+				if(cardTreasures){
+					//A card has treasures so get the last one
+					treasureToMove = cardTreasures[cardTreasures.length - 1];
+					//Update the treasure with a new location
+					updatedTreasuresArray = this._updateObjectWithNewLocation(treasureToMove, updatedCardArray[object.row][object.col],updatedTreasuresArray);
+					//The object has a tresure so remove it 
+					updatedCardArray = this._removeTreasureFromCard(treasureToMove,updatedCardArray);
+					//Add it to the new location
+					updatedCardArray = this._addTreasureToCard(treasureToMove,updatedCardArray[object.row][object.col],updatedTreasuresArray,updatedCardArray);
+				}
+
 				//Clear the unit possible moves
 				updatedCardArray = this._clearPossibleMoves(updatedCardArray, possibleMovesUnit);
 			} else
@@ -1417,11 +1539,17 @@ export default class GameBoard extends React.Component {
 				updatedUnitsArray = this._updateObjectWithNewLocation(this.state.currentPlayerUnit,updatedPlayerBoatsArray[object.playerBoat.id],this.state.playerUnitsArray);
 				//Remove the unit from the current location
 				updatedCardArray = this._removeUnitFromCard(this.state.currentPlayerUnit,updatedCardArray);
-				
-				if(this._cardHasTreasure(this.state.currentPlayerUnit,updatedCardArray)){
+				//Get all treasures from the card
+				let cardTreasures = this._getTreasuresFromObject(updatedCardArray[this.state.currentPlayerUnit.row][this.state.currentPlayerUnit.col]);
+
+				if(cardTreasures){
+					//A card has treasures so get the last one
+					treasureToMove = cardTreasures[cardTreasures.length - 1];
 					//The object has a tresure so remove it 
-					updatedCardArray = this._removeTreasureFromCard(this.state.currentPlayerUnit,updatedCardArray);
-					
+					updatedCardArray = this._removeTreasureFromCard(treasureToMove,updatedCardArray);
+					//A treasure has been delivered to a boat
+					updatedTreasuresArray = this._markTreasureAsRetrieved(treasureToMove,updatedTreasuresArray,this.state.currentPlayer);
+					//Player scored
 					updatedPlayersArray = this._increaseScore(this.state.currentPlayer, updatedPlayersArray, 1);
 					console.log("Player score increased");
 				}
@@ -1461,6 +1589,7 @@ export default class GameBoard extends React.Component {
 			playersArray: updatedPlayersArray,
 			playerUnitsArray: updatedUnitsArray,
 			playerBoatsArray: updatedPlayerBoatsArray,
+			treasuresArray: updatedTreasuresArray
 		});
 		console.log("--------------------- turn ended ---------------------------");
 	}
@@ -1607,11 +1736,11 @@ export default class GameBoard extends React.Component {
 	/**
 	 * Set the player state
 	 * @param {Player} player 
-	 * @param {Array} playerArray 
+	 * @param {Array} playersArray 
 	 * @param {String} state 
 	 */
-	_changePlayerState(player,playerArray,state){
-		let updatedPlayersArray = playerArray.slice();
+	_changePlayerState(player,playersArray,state){
+		let updatedPlayersArray = playersArray.slice();
 
 		updatedPlayersArray[player.playerId] = Object.assign({}, updatedPlayersArray[player.playerId], {
 			playerState: state

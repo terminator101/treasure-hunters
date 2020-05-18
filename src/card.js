@@ -22,7 +22,7 @@ export default class Card extends React.Component {
 			movementType:	"horizontal vertical",
 			opened: 		false,
 			disabled: 		true,
-			treasure: 		false,
+			treasures: 		[],
 			cardType: 		"none",
 			imageLocation: 	CARD_IMAGE_LOCATION,
 			cardImage: 		"",
@@ -52,14 +52,14 @@ export default class Card extends React.Component {
 		//let edge = this.settings.edge ? this._displayEdge() : '';
 		let debug = this.settings.debug;
 		let opened = this.props.opened ? this.props.opened : '';
-		let treasure = this.props.treasure ? this._displayTreasure() : '';
+		let treasures = this.props.treasures ? this._displayTreasures(this.settings.treasures) : '';
 		let cardTypeClass = "cardInfo " + this.props.cardTypeClass;
 		return(
 			<div className={cardClasses} onClick={this.settings.disabled ? null : () => this.props.onClick()}>
 				<img className={this.settings.imageClass} src={imageLocation} alt="card" />
 				{debug ? <div className="cardInfo">{this.settings.cardType} {this.settings.row} - {this.settings.col}</div> : ""}
 				{opened ? <div className={cardTypeClass}>{this.settings.cardType}</div> : ""}
-				{(treasure && opened) ? <div className="treasureHolder">{treasure}</div> : ""}
+				{(treasures && opened) ? <div className="treasureHolder">{treasures}</div> : ""}
 				{playerUnits ? <div className="unitsHolder">{playerUnits}</div> : ""}
 				{playerBoat ? <div className="boatsHolder">{playerBoat}</div> : ""}
 				{possibleMove ? <div className="possibleMove"></div> : ""}
@@ -74,10 +74,25 @@ export default class Card extends React.Component {
 		)
 	}
 
-	_displayTreasure(){
-		return(
-			<div className="treasure">Treasure</div>
-		)
+	_displayTreasures(treasures){
+		if (treasures[treasures.length - 1] !== undefined) {
+			return(
+				<div className="treasure">{treasures[treasures.length - 1].name}</div>
+			);
+		}
+		/* Hidden for now so that only one treasure shows up at a time
+		return treasures.map((treasure) => {
+			return(
+				<Treasure
+					key = 		{treasure.key}
+					id =		{treasure.id}
+					row =		{treasure.row}
+					col = 		{treasure.col}
+					name = 		{treasure.name}
+					retrievedBy = {treasure.retrievedBy}
+				/>
+			)
+		}); */
 	}
 
 	_displayUnits(units){
@@ -134,4 +149,27 @@ export default class Card extends React.Component {
 		return this.settings.playerId;
 	}
 
+}
+
+class Treasure extends React.Component {
+
+	constructor(props) {
+		super(props);
+
+		this.defaults = {
+			id: 0,
+			row: 0,
+			col: 0,
+			name: "Treasure",
+			retrievedBy: ""
+		}
+
+	}
+
+	render(){
+		this.settings = Object.assign({}, this.defaults, this.props);
+		return(
+			<div className="treasure">{this.settings.name}</div>
+		);
+	}
 }
