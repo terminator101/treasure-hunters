@@ -6,7 +6,13 @@ export const NUMBER_OF_ROWS = 6;
 export const NUMBER_CARDS_PER_ROW = 6;
 
 //Player
-export const DEAFULT_PLAYER_NAME = 'Andrej';
+export const DEAFULT_PLAYER_NAME = 'Tester';
+
+export const PLAYER_STATES = {
+	current: 	'current',
+	previous: 	'previous',
+	dead: 		'dead'
+}
 
 export const DEFAULT_UNTS_PER_PLAYER = 2;
 

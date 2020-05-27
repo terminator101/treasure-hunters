@@ -6,7 +6,8 @@ import Card from './card';
 import { NUMBER_OF_ROWS, 
 		NUMBER_CARDS_PER_ROW, 
 		CARD_TYPES, 
-		OUTER_WATER_TYPES } from './constants';
+		OUTER_WATER_TYPES, 
+		PLAYER_STATES } from './constants';
 
 export default class GameBoard extends React.Component {
 	constructor(props) {
@@ -21,6 +22,7 @@ export default class GameBoard extends React.Component {
 			outerWaterTypes:  	OUTER_WATER_TYPES,
 			numberCardsPerRow: 	NUMBER_CARDS_PER_ROW,
 			cardTypes: 			CARD_TYPES,
+			playerStates:		PLAYER_STATES,
 			cardInformation:	this._generateCardInformation(CARD_TYPES),
 			cardTypeWithTreasure: "chest"
 		}
@@ -51,7 +53,9 @@ export default class GameBoard extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		if (this.state.cardArray !== prevState.cardArray ) {
+			//The cards have been changed so check if the current player has also changed
 			if(this.state.currentPlayer !== prevState.currentPlayer){
+				//The current player has changed so create a turn using the changed player
 				this._createTurn(this.state.currentPlayer);
 			}
 			
@@ -1172,8 +1176,8 @@ export default class GameBoard extends React.Component {
 		let updatedPlayerUnits = allPlayerUnits.slice();
 		var specifiedPlayerUnits = [];
 
-		console.log("Player units during next turn");
-		console.log(updatedPlayerUnits);
+		//console.log("Player units during next turn");
+		//console.log(updatedPlayerUnits);
 
 		//Loop through all player units in order ot get the ones that belong to the specified player
 		for(let playerUnit of updatedPlayerUnits){
@@ -1564,11 +1568,16 @@ export default class GameBoard extends React.Component {
 			}
 		}
 
-		//console.log("units updated before _goNextPlayer");
-		//console.log(updatedUnitsArray);
-
 		//Disable all cards
 		//updatedCardArray = this._disableAllCards(updatedCardArray);
+
+		//Get all player units
+		let currrentPlayerUnits = this._getPlayerUnitsFromPlayer(this.state.currentPlayer,updatedUnitsArray);
+		
+		if (currrentPlayerUnits.length === 0) {
+			//All of the current player units are dead so set the player as dead
+			updatedPlayersArray = this._changePlayerState(this.state.currentPlayer,updatedPlayersArray,this.defaults.playerStates.dead);
+		}
 
 		//Switch to the next player
 		updatedPlayersArray = this._goNextPlayer(updatedPlayersArray); //this._createTurn(this.turnTypes.next,updatedPlayersArray); 
@@ -1604,18 +1613,40 @@ export default class GameBoard extends React.Component {
 		let currentPlayer = this.state.currentPlayer;
 		let updatedPlayersArray = playersArray.slice();
 		let currentPlayerId = currentPlayer.playerId;
+		let playerStates = this.defaults.playerStates;
 
 		if (currentPlayer.playerId < (playersArray.length -1)) {
-			updatedPlayersArray = this._changePlayerState(currentPlayer,updatedPlayersArray,"previous");
+			updatedPlayersArray = this._changePlayerState(currentPlayer,updatedPlayersArray,playerStates.previous);
 			currentPlayerId += 1;
-			updatedPlayersArray = this._changePlayerState(updatedPlayersArray[currentPlayerId],updatedPlayersArray,"current");
 		} else {
 			currentPlayerId = 0;
-			updatedPlayersArray = this._changePlayerState(updatedPlayersArray[currentPlayerId],updatedPlayersArray,"current");
 		}
-		//this.createturn("current",updatedPlayersArray);
+		
+		/* let nextPlayerAlive = false;
+		let nextPlayer = "";
+		while (nextPlayerAlive === false) {
+			nextPlayer = this._getNextPlayer(currentPlayer,playersArray);
+			if(nextPlayer.playerState !== "dead"){
+				nextPlayerAlive = true;
+			}
+		} */
+
+		updatedPlayersArray = this._changePlayerState(updatedPlayersArray[currentPlayerId],updatedPlayersArray,playerStates.current);
 		return updatedPlayersArray
 	};
+
+	_getNextPlayer(currentPlayer,playersArray){
+		//let counter = 0;
+		//let nextPlayer = "";
+		//while (counter < playersArray.length) {
+			if((currentPlayer.playerId + 1) < playersArray.length){
+				return playersArray[currentPlayer.playerId + 1];
+			} else {
+				return playersArray[0];
+			}
+			//counter++;
+		//}
+	}
 
 	/**
 	 * Increase the score for the given player
@@ -1747,6 +1778,15 @@ export default class GameBoard extends React.Component {
 		});
 		return updatedPlayersArray;
 	}
+
+	/* _MarkPlayerAsDead(currentPlayer,playersArray){
+		let updatedPlayersArray = playersArray.slice();
+		let playerUnits = this._getPlayerUnitsFromPlayer(currentPlayer,updatedUnitsArray);
+		if (playerUnits.length === 0) {
+			updatedPlayersArray = this._changePlayerState(currentPlayer,playersArray,this.defaults.playerStates.dead);
+		}
+		return updatedPlayersArray;
+	} */
 
 };
 
