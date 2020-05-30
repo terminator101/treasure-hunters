@@ -14,6 +14,12 @@ export const PLAYER_STATES = {
 	dead: 		'dead'
 }
 
+export const SCREENS = {
+	mainMenu:	'mainMenu',
+	gameBoard: 	'gameBoard',
+	resultsScreen: 'resultsScreen'
+}
+
 export const DEFAULT_UNTS_PER_PLAYER = 2;
 
 //Card

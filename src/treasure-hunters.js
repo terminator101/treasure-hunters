@@ -2,9 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import GameBoard from './gameBoard';
-import { Player } from './player';
+import Results from './results';
 
-import { DEFAULT_NUMBER_OF_CARDS, DEFAULT_UNTS_PER_PLAYER, DEAFULT_PLAYER_NAME, NUMBER_OF_ROWS } from './constants';
+import { DEFAULT_NUMBER_OF_CARDS, 
+	DEFAULT_UNTS_PER_PLAYER, 
+	DEAFULT_PLAYER_NAME, 
+	NUMBER_OF_ROWS,
+	SCREENS } from './constants';
+import { DisplayScreenContext } from "./display-screen-context";
+
 //import jQuery from 'jquery';
 
 class TreasureHunters extends React.Component {
@@ -16,6 +22,7 @@ class TreasureHunters extends React.Component {
 			numberOfCards: 	 DEFAULT_NUMBER_OF_CARDS,
 			numberOfRows:    NUMBER_OF_ROWS,
 			unitsPerPlayer:  DEFAULT_UNTS_PER_PLAYER,
+			screens:		 SCREENS,
 			cardImagesArray: ['img_0663.jpg'],
 			numberOfPlayers: 1,
 			cardsHolderId: 	 "cardsHolder"
@@ -24,22 +31,36 @@ class TreasureHunters extends React.Component {
 
 		this.state = {
 			playersArray: this._createPlayers(),
+			displayScreen: this.defaults.screens.gameBoard,
+			setDisplayScreen: this._setDisplayScreen,
 		} 
-		
 	}
 
-	render(){	
-		//const playersArray = this._displayPlayers(this.state.playersArray);
-		return(
-			<GameBoard
-				playersArray  = {this.state.playersArray}
-				cardsHolderId = {this.settings.cardsHolderId}
-				numberOfCards = {this.settings.numberOfCards}
-				numberOfRows  = {this.settings.numberOfRows}
-				cardImagesArray = {this.settings.cardImagesArray}
-				unitsPerPlayer = {this.settings.unitsPerPlayer}
-			/>
-		);
+	_setDisplayScreen = (vars) => {
+        this.setState(state => ({
+            displayScreen: vars
+        }))
+    }
+
+	render(){
+		if(this.state.displayScreen === this.defaults.screens.gameBoard){
+			return(
+				<DisplayScreenContext.Provider value={this.state}>
+					<GameBoard
+						playersArray  = {this.state.playersArray}
+						cardsHolderId = {this.settings.cardsHolderId}
+						numberOfCards = {this.settings.numberOfCards}
+						numberOfRows  = {this.settings.numberOfRows}
+						cardImagesArray = {this.settings.cardImagesArray}
+						unitsPerPlayer = {this.settings.unitsPerPlayer}
+					/>
+				  </DisplayScreenContext.Provider>
+			)
+		} else {
+			return(
+				<Results />
+			)
+		}
 	}
 
 	//Function for filling the players array

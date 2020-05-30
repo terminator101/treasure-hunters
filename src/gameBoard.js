@@ -2,14 +2,17 @@ import React from 'react';
 //import update from 'immutability-helper';
 
 import Card from './card';
+import { DisplayScreenContext } from "./display-screen-context";
 
 import { NUMBER_OF_ROWS, 
 		NUMBER_CARDS_PER_ROW, 
 		CARD_TYPES, 
 		OUTER_WATER_TYPES, 
-		PLAYER_STATES } from './constants';
+		PLAYER_STATES,
+		SCREENS } from './constants';
 
 export default class GameBoard extends React.Component {
+
 	constructor(props) {
 		super(props);
 
@@ -23,6 +26,7 @@ export default class GameBoard extends React.Component {
 			numberCardsPerRow: 	NUMBER_CARDS_PER_ROW,
 			cardTypes: 			CARD_TYPES,
 			playerStates:		PLAYER_STATES,
+			screens:			SCREENS,
 			cardInformation:	this._generateCardInformation(CARD_TYPES),
 			cardTypeWithTreasure: "chest"
 		}
@@ -37,7 +41,7 @@ export default class GameBoard extends React.Component {
 			possibleMovesBoat: 	[],
 			currentPlayer: 		this.props.playersArray[0],
 			currentPlayerUnit: 	"",
-			currentPlayerBoat: 	""
+			currentPlayerBoat: 	"",
 		}
 
 		//Create the treasures using the cards
@@ -184,8 +188,6 @@ export default class GameBoard extends React.Component {
 		this.settings = Object.assign({}, this.defaults, this.props);
 		const updatedCardArray = this.state.cardArray.slice();
 		const cardInformation = this._displayCardInformation(this.settings.cardInformation);
-		const playerBoatsArray = this.state.playerBoatsArray.slice();
-		const playerUnitsArray = this.state.playerUnitsArray.slice();
 		let currentPlayer = this.state.currentPlayer;
 
 		let displayCardArray = [];
@@ -1182,7 +1184,7 @@ export default class GameBoard extends React.Component {
 		//Loop through all player units in order ot get the ones that belong to the specified player
 		for(let playerUnit of updatedPlayerUnits){
 
-			if (playerUnit !== undefined || !playerUnit.dead) {
+			if (!playerUnit.dead) {
 				if (playerUnit.playerId === player.playerId) {
 
 					specifiedPlayerUnits.push(playerUnit);
@@ -1577,6 +1579,8 @@ export default class GameBoard extends React.Component {
 		if (currrentPlayerUnits.length === 0) {
 			//All of the current player units are dead so set the player as dead
 			updatedPlayersArray = this._changePlayerState(this.state.currentPlayer,updatedPlayersArray,this.defaults.playerStates.dead);
+			
+			this.context.setDisplayScreen(this.defaults.screens.resultsScreen);
 		}
 
 		//Switch to the next player
@@ -1790,6 +1794,7 @@ export default class GameBoard extends React.Component {
 
 };
 
+GameBoard.contextType = DisplayScreenContext;
 
 ///
 class CardInfo extends React.Component {
