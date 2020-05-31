@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import GameBoard from './gameBoard';
 import Results from './results';
@@ -13,7 +12,7 @@ import { DisplayScreenContext } from "./display-screen-context";
 
 //import jQuery from 'jquery';
 
-class TreasureHunters extends React.Component {
+export default class TreasureHunters extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -70,22 +69,4 @@ class TreasureHunters extends React.Component {
 		playersArray.push({ playerId: 1, playerName: "Mike", row: 4, col: 0, playerClass: "player2", score: 0, playerType: "human" });
 		return playersArray;
 	}
-
-	///
-	/*_displayPlayers(playersArray){
-		return playersArray.map((player) => {
-			return(
-				<Player
-					key = 		 			{player.id}
-					playerId = 		 		{player.playerId}
-					playerName = 			{player.playerName}
-					row =					{player.row}
-					col =					{player.col}
-				/>
-			)
-		});
-	}*/
-
 }
-
-ReactDOM.render(<TreasureHunters />, document.getElementById('root'));
