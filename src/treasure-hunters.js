@@ -7,7 +7,9 @@ import { DEFAULT_NUMBER_OF_CARDS,
 	DEFAULT_UNTS_PER_PLAYER, 
 	DEAFULT_PLAYER_NAME, 
 	NUMBER_OF_ROWS,
-	SCREENS } from './constants';
+	SCREENS,
+	GAME_SETUPS,
+	CARD_TYPES_TEST } from './constants';
 import { DisplayScreenContext } from "./display-screen-context";
 
 //import jQuery from 'jquery';
@@ -18,9 +20,11 @@ export default class TreasureHunters extends React.Component {
 		super(props);
 
 		this.defaults = {
-			numberOfCards: 	 DEFAULT_NUMBER_OF_CARDS,
-			numberOfRows:    NUMBER_OF_ROWS,
-			unitsPerPlayer:  DEFAULT_UNTS_PER_PLAYER,
+			gameSetup:		 GAME_SETUPS.large,
+			cardTypes: 		 CARD_TYPES_TEST,
+			//numberOfCards: 	 DEFAULT_NUMBER_OF_CARDS,
+			//numberOfRows:    NUMBER_OF_ROWS,
+			//unitsPerPlayer:  DEFAULT_UNTS_PER_PLAYER,
 			screens:		 SCREENS,
 			cardImagesArray: ['img_0663.jpg'],
 			numberOfPlayers: 1,
@@ -32,8 +36,18 @@ export default class TreasureHunters extends React.Component {
 			playersArray: this._createPlayers(),
 			displayScreen: this.defaults.screens.gameBoard,
 			setDisplayScreen: this._setDisplayScreen,
-		} 
+		}
+
 	}
+
+	/* _getCards(){
+		let theCardsCountArray = this.defaults.gameSetup.cardTypeNumbersCount;
+		let theCards = [];
+		let entries = Object.entries(this.defaults.cardTypes);
+		theCardsCountArray.forEach(function(card, key) {
+			theCards = {  }
+		}) 
+	}*/
 
 	_setDisplayScreen = (vars) => {
         this.setState(state => ({
@@ -48,10 +62,15 @@ export default class TreasureHunters extends React.Component {
 					<GameBoard
 						playersArray  = {this.state.playersArray}
 						cardsHolderId = {this.settings.cardsHolderId}
-						numberOfCards = {this.settings.numberOfCards}
-						numberOfRows  = {this.settings.numberOfRows}
+						//numberOfCards = {this.settings.numberOfCards}
+						gameSetup = {this.settings.gameSetup}
+						/* numberOfRows  = {this.settings.gameSetup.numberOfRows}
+						numberCardsPerRow = {this.settings.gameSetup.numberCardsPerRow}
+						cardRowWidthClass = {this.settings.gameSetup.cardRowWidthClass}
+						cardWidthClass = {this.settings.gameSetup.cardWidthClass}
+						unitsPerPlayer = {this.settings.gameSetup.unitsPerPlayer} */
 						cardImagesArray = {this.settings.cardImagesArray}
-						unitsPerPlayer = {this.settings.unitsPerPlayer}
+						
 					/>
 				  </DisplayScreenContext.Provider>
 			)
@@ -66,7 +85,19 @@ export default class TreasureHunters extends React.Component {
 	_createPlayers(){
 		let playersArray = [];
 		playersArray.push({ playerId: 0, playerName: DEAFULT_PLAYER_NAME, row: 0, col: 3, playerClass: "player1", score: 0, playerType: "human" });
-		playersArray.push({ playerId: 1, playerName: "Mike", row: 4, col: 0, playerClass: "player2", score: 0, playerType: "human" });
+		playersArray.push({ playerId: 1, playerName: "Mike", row: 3, col: 0, playerClass: "player2", score: 0, playerType: "human" });
 		return playersArray;
 	}
 }
+
+/*
+	<GameBoard
+						playersArray  = {this.state.playersArray}
+						cardsHolderId = {this.settings.cardsHolderId}
+						//numberOfCards = {this.settings.numberOfCards}
+						numberOfRows  = {this.settings.numberOfRows}
+						cardImagesArray = {this.settings.cardImagesArray}
+						unitsPerPlayer = {this.settings.unitsPerPlayer}
+					/>
+
+*/

@@ -23,7 +23,13 @@ export default class GameBoard extends React.Component {
 
 		this.defaults = {
 			outerWaterTypes:  	OUTER_WATER_TYPES,
-			numberCardsPerRow: 	NUMBER_CARDS_PER_ROW,
+			numberOfRows:		this.props.gameSetup.numberOfRows,
+			numberCardsPerRow: 	this.props.gameSetup.numberCardsPerRow,
+			cardRowWidthClass: 	this.props.gameSetup.cardRowWidthClass,
+			cardWidthClass:		this.props.gameSetup.cardWidthClass,
+			unitsPerPlayer:		this.props.gameSetup.unitsPerPlayer,
+			gameBoardWidthClass:this.props.gameSetup.gameBoardWidthClass,
+			outerWaterSideWidth:this.props.gameSetup.outerWaterSideWidth,
 			cardTypes: 			CARD_TYPES,
 			playerStates:		PLAYER_STATES,
 			screens:			SCREENS,
@@ -33,8 +39,8 @@ export default class GameBoard extends React.Component {
 
 		this.state = {
 			playersArray: 		this.props.playersArray,
-			playerUnitsArray: 	this._createPlayerUnits(this.props.unitsPerPlayer,this.props.playersArray),
-			cardArray: 			this._createCards(this.props.numberOfCards,this.props.playersArray.length,CARD_TYPES,OUTER_WATER_TYPES),
+			playerUnitsArray: 	this._createPlayerUnits(this.defaults.unitsPerPlayer,this.props.playersArray),
+			cardArray: 			this._createCards(CARD_TYPES,OUTER_WATER_TYPES),
 			playerBoatsArray: 	this._createPlayerBoats(this.props.playersArray),
 			treasuresArray:		[],
 			possibleMovesUnit: 	[],
@@ -193,7 +199,7 @@ export default class GameBoard extends React.Component {
 		let displayCardArray = [];
 
 		//Display the cards, but remove the first and last since that's outer water
-		for (let i = 1; i < NUMBER_OF_ROWS + 1; i++) {
+		for (let i = 1; i < this.defaults.numberOfRows + 1; i++) {
 			let changedCardArray = updatedCardArray[i].slice(1);
 			changedCardArray.pop();
 			displayCardArray[i] = this._displayCards(changedCardArray);
@@ -205,7 +211,10 @@ export default class GameBoard extends React.Component {
 		//Left and right outer water need spacer to display properly
 		let leftWater = this._addSpacer(this._displayCards(this._getOuterWater(this.defaults.outerWaterTypes.left,updatedCardArray)));
 		let rightWater = this._addSpacer(this._displayCards(this._getOuterWater(this.defaults.outerWaterTypes.right,updatedCardArray)));
-
+		
+		//Outer water containers have to scale
+		let outerWaterSideContainerWitdhClass = "col-" + this.settings.outerWaterSideWidth;
+		let outerWaterTopBottomContainerWithClass = this.settings.cardRowWidthClass + " offset-md-" + this.defaults.outerWaterSideWidth;
 		return(
 			<div className="container">
 				<div className="row justify-content-center">
@@ -218,48 +227,52 @@ export default class GameBoard extends React.Component {
 								</tr>
 							</thead>
 							<tbody>
-							{ cardInformation }
+								{ cardInformation }
 							</tbody>
 						</table>
 					</div>
 				</div>
-				<div className="row no-gutters">
-					<div className="col-12">
-						{ currentPlayer.playerName + " | " + currentPlayer.score }
-					</div>
-				</div>
-				<div className="row no-gutters">
-					<div className="col-10 offset-md-1">
+				<div className="row justify-content-center no-gutters">
+					<div className={ this.settings.gameBoardWidthClass }>
 						<div className="row no-gutters">
-							{/* This is where the boats will go */}
-							{ topWater }
+							<div className="col-12">
+								{ currentPlayer.playerName + " | " + currentPlayer.score }
+							</div>
 						</div>
-					</div>
-				</div>
-				<div id={this.props.cardsHolderId} className="row no-gutters">
-					<div className="col-1">
 						<div className="row no-gutters">
-							{/* This is where the boats will go */}
-							{ leftWater }
+							<div className={ outerWaterTopBottomContainerWithClass }>
+								<div className="row no-gutters">
+									{/* This is where the boats will go */}
+									{ topWater }
+								</div>
+							</div>
 						</div>
-					</div>
-					<div className="col-sm-10">
-						<div className="row no-gutters">
-							{displayCardArray}
+						<div id={this.props.cardsHolderId} className="row no-gutters">
+							<div className={ outerWaterSideContainerWitdhClass }>
+								<div className="row no-gutters">
+									{/* This is where the boats will go */}
+									{ leftWater }
+								</div>
+							</div>
+							<div className={ this.settings.cardRowWidthClass }>
+								<div className="row no-gutters">
+									{ displayCardArray }
+								</div>
+							</div>
+							<div className={ outerWaterSideContainerWitdhClass }>
+								<div className="row no-gutters">
+									{/* This is where the boats will go */}
+									{ rightWater }
+								</div>
+							</div>
 						</div>
-					</div>
-					<div className="col-1">
 						<div className="row no-gutters">
-							{/* This is where the boats will go */}
-							{ rightWater }
-						</div>
-					</div>
-				</div>
-				<div className="row no-gutters">
-					<div className="col-10 offset-md-1">
-						<div className="row no-gutters">
-							{/* This is where the boats will go */}
-							{ bottomWater }
+							<div className={ outerWaterTopBottomContainerWithClass }>
+								<div className="row no-gutters">
+									{/* This is where the boats will go */}
+									{ bottomWater }
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -333,7 +346,7 @@ export default class GameBoard extends React.Component {
 					playerBoat: "", 
 					possibleMove: false, 
 					disabled: true, 
-					cardWidth: "col-sm-2", 
+					cardWidth: this.defaults.cardWidthClass, 
 					cardClass: "cardObject", 
 					objectType: "outerWater", 
 					cardType: "horizontal vertical",
@@ -342,12 +355,12 @@ export default class GameBoard extends React.Component {
 			break;
 			case "bottom":
 				outerWater = { 
-					row: NUMBER_OF_ROWS + 1, 
+					row: this.defaults.numberOfRows + 1, 
 					col: index, 
 					playerBoat: "", 
 					possibleMove: false, 
 					disabled: true, 
-					cardWidth: "col-sm-2", 
+					cardWidth: this.defaults.cardWidthClass, 
 					cardClass: "cardObject", 
 					objectType: "outerWater", 
 					cardType: "horizontal vertical",
@@ -371,7 +384,7 @@ export default class GameBoard extends React.Component {
 			case "right":
 				outerWater = { 
 					row: index, 
-					col: NUMBER_OF_ROWS + 1, 
+					col: this.defaults.numberCardsPerRow + 1, 
 					playerBoat: "", 
 					possibleMove: false, 
 					disabled: true, 
@@ -388,34 +401,31 @@ export default class GameBoard extends React.Component {
 	}
 
 	_getOuterWater(position,outerWaterArray){
-		const playerBoatsArray = this.state.playerBoatsArray.slice();
-		const playerUnitsArray = this.state.playerUnitsArray.slice();
 		let displayArray = [];
 		switch(position){
 			case "top":
-				for(let i = 1; i < NUMBER_OF_ROWS + 1; i++){
+				for(let i = 1; i < this.defaults.numberCardsPerRow + 1; i++){
 					displayArray.push(outerWaterArray[0][i]);
 				}
 			break;
 			case "bottom":
-				for(let i = 1; i < NUMBER_OF_ROWS + 1; i++){
-					displayArray.push(outerWaterArray[NUMBER_CARDS_PER_ROW + 1][i]);
+				for(let i = 1; i < this.defaults.numberCardsPerRow + 1; i++){
+					displayArray.push(outerWaterArray[this.defaults.numberOfRows + 1][i]);
 				}
 			break;
 			case "left":
-				for(let i = 1; i < NUMBER_OF_ROWS + 1; i++){
+				for(let i = 1; i < this.defaults.numberOfRows + 1; i++){
 					displayArray.push(outerWaterArray[i][0]);
 				}
 			break;
 			case "right":
-				for(let i = 1; i < NUMBER_OF_ROWS + 1; i++){
-					displayArray.push(outerWaterArray[i][NUMBER_OF_ROWS + 1]);
+				for(let i = 1; i < this.defaults.numberOfRows + 1; i++){
+					displayArray.push(outerWaterArray[i][this.defaults.numberOfRows + 1]);
 				}
 			break;
 			default:
 				return 0;
 		}
-		//displayArray = this._addAllBoatsToCards(this._addAllUnitsToBoats(playerUnitsArray,playerBoatsArray),displayArray);
 		return displayArray;
 	}
 
@@ -536,37 +546,42 @@ export default class GameBoard extends React.Component {
 	///////////////////
 	/// Cards
 	///////////////////
-	_createCards(numberOfCards,numberOfPlayers,cardTypes,outerWaterTypes){
+	_createCards(cardTypes,outerWaterTypes){
 		let cardArray = [];
 		let cardTypeCounter = 0;
 		let generatedCards = [];
 
 		cardTypes.forEach(function(card, key) {
-  			//console.log(key + ' = ' + value)
+			//console.log(key + ' = ' + value)
   			for(let i = 0; i < card.defaultCount; i++) {
   				generatedCards.push({ card });
-  			}
+			}
+			/* if(card.smallCount > 0){
+				for(let i = 0; i < card.smallCount; i++) {
+					generatedCards.push({ card });
+				} 
+			} */
 		})
 
 		//Randomize the generated cards
 		generatedCards = this._randomizeArray(generatedCards);
 
-		for(let r = 0; r < NUMBER_OF_ROWS + 2; r++){
+		for(let r = 0; r < this.defaults.numberOfRows + 2; r++){
 			cardArray[r] = [];
 		}
 
 		//top outerWater
-		for(let i = 1; i < NUMBER_OF_ROWS + 1; i++){
+		for(let i = 1; i < this.defaults.numberOfRows + 1; i++){
 			cardArray[0][i] = this._createOuterWater(outerWaterTypes.top,i);
 		}
 
-		for (let r = 1; r < NUMBER_OF_ROWS + 1; r++) {
+		for (let r = 1; r < this.defaults.numberCardsPerRow + 1; r++) {
 			cardArray[r] = [];
 
 			//Left outerWater
 			cardArray[r][0] = this._createOuterWater(outerWaterTypes.left,r);
 
-			for (let i = 1; i < NUMBER_OF_ROWS + 1; i++) {
+			for (let i = 1; i < this.defaults.numberCardsPerRow + 1; i++) {
 				//Check if the card is at the edge
 				let isEdge = this._isAtTheEdge(r,i);
 				
@@ -575,7 +590,7 @@ export default class GameBoard extends React.Component {
 					col: 			i, 
 					cardType: 		generatedCards[cardTypeCounter].card.cardType,
 					movementType: 	generatedCards[cardTypeCounter].card.movementType,
-					cardWidth: 		"col-sm-2", 
+					cardWidth: 		this.defaults.cardWidthClass, 
 					cardClass: 		"cardObject", 
 					units: 			[], 
 					possibleMove: 	false, 
@@ -594,13 +609,13 @@ export default class GameBoard extends React.Component {
 			}
 
 			//right outerWater
-			cardArray[r][NUMBER_OF_ROWS + 1] = this._createOuterWater(outerWaterTypes.right,r);
+			cardArray[r][this.defaults.numberCardsPerRow + 1] = this._createOuterWater(outerWaterTypes.right,r);
 			
 		}
 
 		//bottom outerWater
-		for(let i = 1; i < NUMBER_OF_ROWS + 1; i++){
-			cardArray[NUMBER_OF_ROWS + 1][i]  = this._createOuterWater(outerWaterTypes.bottom,i);
+		for(let i = 1; i < this.defaults.numberOfRows + 1; i++){
+			cardArray[this.defaults.numberOfRows + 1][i]  = this._createOuterWater(outerWaterTypes.bottom,i);
 		}
 
 		return cardArray;

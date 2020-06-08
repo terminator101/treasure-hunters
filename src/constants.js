@@ -36,14 +36,125 @@ export const OUTER_WATER_TYPES = {
 	right: 	'right'
 }
 
+export const GAME_SETUPS = {
+	small: 
+	{
+		numberOfRows: 3,
+		numberCardsPerRow: 3,
+		unitsPerPlayer: 1,
+		gameBoardWidthClass: "col-8",
+		cardRowWidthClass: "col-sm-8",
+		cardWidthClass: "col-sm-4",
+		outerWaterSideWidth: "2",
+		cardTypeNumbersCount: [
+			{horizontal_vertical: 1},
+			{chest: 2},
+			{shark: 2},
+			{all_directions: 1},
+			{fish: 1},
+			{mermaid: 1},
+			{diagonal: 1},
+		],
+	},
+	large: 
+	{
+		numberOfRows: 6,
+		numberCardsPerRow: 6,
+		unitsPerPlayer: 2,
+		gameBoardWidthClass: "col-12",
+		cardRowWidthClass: "col-sm-10",
+		cardWidthClass: "col-sm-2",
+		outerWaterSideWidth: "1",
+		cardTypeNumbersCount: [
+			{horizontal_vertical: 4},
+			{diagonal: 6},
+			{shark: 4},
+			{sea_horse: 4},
+			{mermaid: 2},
+			{all_directions: 2},
+			{fish: 8},
+			{chest: 6},
+		],
+	}
+}
+
+export const CARD_TYPES_TEST = {
+	horizontal_vertical: 
+	{ 	
+		cardType: 		"horizontal vertical",
+		movementType: 	"horizontal vertical", 
+		cardTypeClass: 	"horizontalVerticalCard",
+		defaultCount: 	4,
+		description:	"Player can move horizontally or vertically"
+	},
+	diagonal: 
+	{ 	
+		cardType: 		"diagonal",
+		movementType: 	"diagonal", 
+		cardTypeClass: 	"diagonal",
+		defaultCount: 	6,
+		description:	"Player can move diagonally"
+	},
+	shark: 
+	{ 
+		cardType: 		"shark",
+		movementType: 	"none", 
+		cardTypeClass: 	"shark",
+		defaultCount: 	4,
+		description:	"Kills the player unit and dies as well"
+	},
+	sea_horse:
+	{ 
+		cardType: 		"sea horse",
+		movementType: 	"sea horse", 
+		cardTypeClass: 	"seaHorse",
+		defaultCount: 	4,
+		description:	"Player can move in L like direction"
+	},
+	mermaid:
+	{ 
+		cardType: 		"mermaid",
+		movementType: 	"mermaid", 
+		cardTypeClass: 	"mermaid",
+		defaultCount: 	2,
+		description:	"Player can move diagonally as far as allowed"
+	},
+	all_directions:
+	{ 
+		cardType: 		"all directions",
+		movementType: 	"all", 
+		cardTypeClass: 	"allDirections",
+		defaultCount: 	2,
+		description:	"Player can move in every direction"
+	},
+	fish:
+	{ 
+		cardType: 		"fish",
+		movementType: 	"horizontal vertical", 
+		cardTypeClass: 	"fish",
+		defaultCount: 	8,
+		description:	"Empty ocean"
+	},
+	chest:
+	{ 
+		cardType: 		"chest",
+		movementType: 	"horizontal vertical", 
+		cardTypeClass: 	"chest",
+		defaultCount: 	6,
+		treasures: 		[],
+		description:	"Find these and deliver the treasure to your boat"
+	},
+};
+
 export const CARD_TYPES = new Map([
-	["horizontal vertical", 
+	["horizontal_vertical", 
 		{ 	
 			cardType: 		"horizontal vertical",
 			movementType: 	"horizontal vertical", 
 			cardTypeClass: 	"horizontalVerticalCard",
 			defaultCount: 	4,
-			description:	"Player can move horizontally or vertically"
+			description:	"Player can move horizontally or vertically",
+			smallCount:		1
 		}
 	],
 	["diagonal",
@@ -52,7 +163,8 @@ export const CARD_TYPES = new Map([
 			movementType: 	"diagonal", 
 			cardTypeClass: 	"diagonal",
 			defaultCount: 	6,
-			description:	"Player can move diagonally"
+			description:	"Player can move diagonally",
+			smallCount:		1
 		}
 	],
 	["shark",
@@ -61,16 +173,18 @@ export const CARD_TYPES = new Map([
 			movementType: 	"none", 
 			cardTypeClass: 	"shark",
 			defaultCount: 	4,
-			description:	"Kills the player unit and dies as well"
+			description:	"Kills the player unit and dies as well",
+			smallCount:		2
 		}
 	],
-	["sea horse",
+	["sea_horse",
 		{ 
 			cardType: 		"sea horse",
 			movementType: 	"sea horse", 
 			cardTypeClass: 	"seaHorse",
 			defaultCount: 	4,
-			description:	"Player can move in L like direction"
+			description:	"Player can move in L like direction",
+			smallCount:		0
 		}
 	],
 	["mermaid",
@@ -79,16 +193,18 @@ export const CARD_TYPES = new Map([
 			movementType: 	"mermaid", 
 			cardTypeClass: 	"mermaid",
 			defaultCount: 	2,
-			description:	"Player can move diagonally as far as allowed"
+			description:	"Player can move diagonally as far as allowed",
+			smallCount:		1
 		}
 	],
-	["all directions",
+	["all_directions",
 		{ 
 			cardType: 		"all directions",
 			movementType: 	"all", 
 			cardTypeClass: 	"allDirections",
 			defaultCount: 	2,
-			description:	"Player can move in every direction"
+			description:	"Player can move in every direction",
+			smallCount:		1
 		}
 	],
 	["fish",
@@ -97,7 +213,8 @@ export const CARD_TYPES = new Map([
 			movementType: 	"horizontal vertical", 
 			cardTypeClass: 	"fish",
 			defaultCount: 	8,
-			description:	"Empty ocean"
+			description:	"Empty sea",
+			smallCount:		1
 		}
 	],
 	["chest",
@@ -107,7 +224,8 @@ export const CARD_TYPES = new Map([
 			cardTypeClass: 	"chest",
 			defaultCount: 	6,
 			treasures: 		[],
-			description:	"Find these and deliver the treasure to your boat"
+			description:	"Find these and deliver the treasure to your boat",
+			smallCount:		2
 		}
 	]
 ]);
