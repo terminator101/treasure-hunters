@@ -20,14 +20,12 @@ export default class TreasureHunters extends React.Component {
 		super(props);
 
 		this.defaults = {
-			gameSetup:		 GAME_SETUPS.large,
+			gameSetup:		 GAME_SETUPS.small,
+			treasuresForWin: 1,
+			displayValues:	 true,
 			cardTypes: 		 CARD_TYPES_TEST,
-			//numberOfCards: 	 DEFAULT_NUMBER_OF_CARDS,
-			//numberOfRows:    NUMBER_OF_ROWS,
-			//unitsPerPlayer:  DEFAULT_UNTS_PER_PLAYER,
 			screens:		 SCREENS,
 			cardImagesArray: ['img_0663.jpg'],
-			numberOfPlayers: 1,
 			cardsHolderId: 	 "cardsHolder"
 		}
 		this.settings = Object.assign({}, this.defaults, this.props);
@@ -62,6 +60,8 @@ export default class TreasureHunters extends React.Component {
 					<GameBoard
 						playersArray  = {this.state.playersArray}
 						cardsHolderId = {this.settings.cardsHolderId}
+						displayValues = {this.settings.displayValues}
+						treasuresForWin = {this.settings.treasuresForWin}
 						//numberOfCards = {this.settings.numberOfCards}
 						gameSetup = {this.settings.gameSetup}
 						/* numberOfRows  = {this.settings.gameSetup.numberOfRows}
@@ -70,9 +70,8 @@ export default class TreasureHunters extends React.Component {
 						cardWidthClass = {this.settings.gameSetup.cardWidthClass}
 						unitsPerPlayer = {this.settings.gameSetup.unitsPerPlayer} */
 						cardImagesArray = {this.settings.cardImagesArray}
-						
 					/>
-				  </DisplayScreenContext.Provider>
+				</DisplayScreenContext.Provider>
 			)
 		} else {
 			return(
@@ -85,12 +84,15 @@ export default class TreasureHunters extends React.Component {
 	_createPlayers(){
 		let playersArray = [];
 		playersArray.push({ playerId: 0, playerName: DEAFULT_PLAYER_NAME, row: 0, col: 3, playerClass: "player1", score: 0, playerType: "human" });
-		playersArray.push({ playerId: 1, playerName: "Mike", row: 3, col: 0, playerClass: "player2", score: 0, playerType: "human" });
+		playersArray.push({ playerId: 1, playerName: "Tester2", row: 3, col: 0, playerClass: "player2", score: 0, playerType: "human" });
 		return playersArray;
 	}
 }
 
 /*
+//numberOfCards: 	 DEFAULT_NUMBER_OF_CARDS,
+			//numberOfRows:    NUMBER_OF_ROWS,
+			//unitsPerPlayer:  DEFAULT_UNTS_PER_PLAYER,
 	<GameBoard
 						playersArray  = {this.state.playersArray}
 						cardsHolderId = {this.settings.cardsHolderId}

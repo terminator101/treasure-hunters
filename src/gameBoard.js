@@ -30,6 +30,8 @@ export default class GameBoard extends React.Component {
 			unitsPerPlayer:		this.props.gameSetup.unitsPerPlayer,
 			gameBoardWidthClass:this.props.gameSetup.gameBoardWidthClass,
 			outerWaterSideWidth:this.props.gameSetup.outerWaterSideWidth,
+			displayValues:		this.props.displayValues,
+			treasuresForWin:	this.props.treasuresForWin,
 			cardTypes: 			CARD_TYPES,
 			playerStates:		PLAYER_STATES,
 			screens:			SCREENS,
@@ -553,14 +555,15 @@ export default class GameBoard extends React.Component {
 
 		cardTypes.forEach(function(card, key) {
 			//console.log(key + ' = ' + value)
-  			for(let i = 0; i < card.defaultCount; i++) {
+			//Uncomment when ready
+  			/* for(let i = 0; i < card.defaultCount; i++) {
   				generatedCards.push({ card });
-			}
-			/* if(card.smallCount > 0){
+			} */
+			if(card.smallCount > 0){
 				for(let i = 0; i < card.smallCount; i++) {
 					generatedCards.push({ card });
 				} 
-			} */
+			}
 		})
 
 		//Randomize the generated cards
@@ -584,7 +587,8 @@ export default class GameBoard extends React.Component {
 			for (let i = 1; i < this.defaults.numberCardsPerRow + 1; i++) {
 				//Check if the card is at the edge
 				let isEdge = this._isAtTheEdge(r,i);
-				
+				let displayValues = this.defaults.displayValues;
+
 				cardArray[r][i] = { 
 					row: 			r, 
 					col: 			i, 
@@ -598,7 +602,7 @@ export default class GameBoard extends React.Component {
 					disabled: 		true, 
 					objectType: 	"card", 
 					edge: 			isEdge,
-					opened: 		false,
+					opened: 		displayValues,
 					cardTypeClass: 	generatedCards[cardTypeCounter].card.cardTypeClass,
 					treasures: 		generatedCards[cardTypeCounter].card.treasures ? generatedCards[cardTypeCounter].card.treasures : []
 				};
@@ -1589,12 +1593,18 @@ export default class GameBoard extends React.Component {
 		//updatedCardArray = this._disableAllCards(updatedCardArray);
 
 		//Get all player units
-		let currrentPlayerUnits = this._getPlayerUnitsFromPlayer(this.state.currentPlayer,updatedUnitsArray);
-		
-		if (currrentPlayerUnits.length === 0) {
+		let currentPlayerUnits = this._getPlayerUnitsFromPlayer(this.state.currentPlayer,updatedUnitsArray);
+
+		if (currentPlayerUnits.length === 0) {
 			//All of the current player units are dead so set the player as dead
 			updatedPlayersArray = this._changePlayerState(this.state.currentPlayer,updatedPlayersArray,this.defaults.playerStates.dead);
 			
+			this.context.setDisplayScreen(this.defaults.screens.resultsScreen);
+		}
+		let currentPlayer = this._getCurrentPlayer(updatedPlayersArray);
+
+		if (currentPlayer.score === this.defaults.treasuresForWin){
+			//Current player reached the desired score so game is over
 			this.context.setDisplayScreen(this.defaults.screens.resultsScreen);
 		}
 
