@@ -22,10 +22,10 @@ export default class TreasureHunters extends React.Component {
 		this.defaults = {
 			gameSetup:		 GAME_SETUPS.small,
 			treasuresForWin: 1,
-			displayValues:	 true,
+			displayValues:	 false,
 			cardTypes: 		 CARD_TYPES_TEST,
 			screens:		 SCREENS,
-			cardImagesArray: ['img_0663.jpg'],
+			cardImagesArray: ['all_directions.png'],
 			cardsHolderId: 	 "cardsHolder"
 		}
 		this.settings = Object.assign({}, this.defaults, this.props);

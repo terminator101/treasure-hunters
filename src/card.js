@@ -26,7 +26,7 @@ export default class Card extends React.Component {
 			cardType: 		"none",
 			imageLocation: 	CARD_IMAGE_LOCATION,
 			cardImage: 		"",
-			currentImage: 	IMAGE_PLACEHOLDER,
+			backImage: 		IMAGE_PLACEHOLDER,
 			cardWidth:		CARD_WIDTH,
 			cardClass: 		CARD_CLASS,
 			imageClass:     CARD_IMAGE_CLASS,
@@ -54,14 +54,16 @@ export default class Card extends React.Component {
 		let opened = this.props.opened ? this.props.opened : '';
 		let treasures = this.props.treasures ? this._displayTreasures(this.settings.treasures) : '';
 		let cardTypeClass = "cardInfo " + this.props.cardTypeClass;
+		let cardImage = this._displayCardImage(this.settings);
+		let cardBack = this._displayCardBack(this.settings);
 		return(
 			<div className={cardClasses} onClick={this.settings.disabled ? null : () => this.props.onClick()}>
-				<img className={this.settings.imageClass} src={imageLocation} alt="card" />
+				{opened ? cardImage : cardBack}
 				{debug ? <div className="cardInfo">{this.settings.cardType} {this.settings.row} - {this.settings.col}</div> : ""}
-				{opened ? <div className={cardTypeClass}>{this.settings.cardType}</div> : ""}
+				{debug ? <div className={cardTypeClass}>{this.settings.cardType}</div> : ""}
 				{(treasures && opened) ? <div className="treasureHolder">{treasures}</div> : ""}
-				{playerUnits ? <div className="unitsHolder">{playerUnits}</div> : ""}
 				{playerBoat ? <div className="boatsHolder">{playerBoat}</div> : ""}
+				{playerUnits ? <div className="unitsHolder">{playerUnits}</div> : ""}
 				{possibleMove ? <div className="possibleMove"></div> : ""}
 			</div>
 		);
@@ -77,10 +79,12 @@ export default class Card extends React.Component {
 	_displayTreasures(treasures){
 		if (treasures[treasures.length - 1] !== undefined) {
 			return(
-				<div className="treasure">{treasures[treasures.length - 1].name}</div>
+				<img src={this.defaults.imageLocation + "/treasure.png"} alt="treasure" />
 			);
 		}
 		/* Hidden for now so that only one treasure shows up at a time
+		{treasures[treasures.length - 1].name}
+
 		return treasures.map((treasure) => {
 			return(
 				<Treasure
@@ -93,6 +97,17 @@ export default class Card extends React.Component {
 				/>
 			)
 		}); */
+	}
+
+	_displayCardImage(settings){
+		return(
+			<img className={settings.imageClass} src={settings.imageLocation + "/" + settings.cardImage} alt="card" />
+		)
+	}
+	_displayCardBack(settings){
+		return(
+			<img className={settings.imageClass} src={settings.imageLocation + "/" + settings.backImage} alt="ocean" />
+		)
 	}
 
 	_displayUnits(units){

@@ -352,7 +352,9 @@ export default class GameBoard extends React.Component {
 					cardClass: "cardObject", 
 					objectType: "outerWater", 
 					cardType: "horizontal vertical",
-					movementType: "horizontal"
+					movementType: "horizontal",
+					opened: true,
+					cardImage: "ocean.png",
 				}
 			break;
 			case "bottom":
@@ -366,7 +368,9 @@ export default class GameBoard extends React.Component {
 					cardClass: "cardObject", 
 					objectType: "outerWater", 
 					cardType: "horizontal vertical",
-					movementType: "horizontal"
+					movementType: "horizontal",
+					opened: true,
+					cardImage: "ocean.png",
 				}
 			break;
 			case "left":
@@ -380,7 +384,9 @@ export default class GameBoard extends React.Component {
 					cardClass: "cardObject", 
 					objectType: "outerWater", 
 					cardType: "horizontal vertical",
-					movementType: "vertical"
+					movementType: "vertical",
+					opened: true,
+					cardImage: "ocean.png",
 				}
 				break;
 			case "right":
@@ -393,7 +399,9 @@ export default class GameBoard extends React.Component {
 					cardWidth: "col", 
 					cardClass: "cardObject", 
 					objectType: "outerWater", 
-					cardType: "vertical"
+					cardType: "vertical",
+					opened: true,
+					cardImage: "ocean.png",
 				}
 			break;
 			default:
@@ -598,7 +606,7 @@ export default class GameBoard extends React.Component {
 					cardClass: 		"cardObject", 
 					units: 			[], 
 					possibleMove: 	false, 
-					cardImage: 		this.props.cardImagesArray[0], 
+					cardImage: 		generatedCards[cardTypeCounter].card.cardImage, 
 					disabled: 		true, 
 					objectType: 	"card", 
 					edge: 			isEdge,
