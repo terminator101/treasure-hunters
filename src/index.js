@@ -5,7 +5,7 @@ import './css/style.css';
 import './css/bootstrap.min.css';
 import App from './App';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('treasure_hunters'));
 
 //import './css/bootstrap.min.css';
 

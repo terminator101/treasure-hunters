@@ -906,6 +906,11 @@ export default class GameBoard extends React.Component {
 		return objectsWithUpdatedLocation;
 	}
 
+	/**
+	 * A unit has died
+	 * @param {object} object 
+	 * @param {array} objectsArray 
+	 */
 	_markUnitAsdead(object,objectsArray){
 		let updatedObjects = objectsArray.slice();
 
@@ -916,17 +921,24 @@ export default class GameBoard extends React.Component {
 		return updatedObjects;
 	}
 
-	_updateMultipleObjectsWithNewLocation(objectList,location,objectsArray){
-		let objectsWithUpdatedLocation = objectsArray.slice();
+	/**
+	 * Update all units in the location with new parameters
+	 * @param {array} objectUnits 
+	 * @param {object} location 
+	 * @param {array} unitArray 
+	 */
+	_updateMultipleUnitsWithNewLocation(objectUnits,location,unitArray){
+		let objectsWithUpdatedLocation = unitArray.slice();
 
-		for(let object of objectList){
+		for(let unit of objectUnits){
 			let boatUnitMovementType = "";
-			if (object.objectType === "boat") {
+			if (location.objectType === "boat") {
+				//The unit is being added to a boat so update how it can move
 				boatUnitMovementType = this._setBoatUnitMovementType(location);
 			}
 			//Update
 			//objectsWithUpdatedLocation[object.id] = objectsWithUpdatedLocation[object.id].slice();
-			objectsWithUpdatedLocation[object.id] = Object.assign(object, objectsWithUpdatedLocation[object.id], {
+			objectsWithUpdatedLocation[unit.id] = Object.assign(unit, objectsWithUpdatedLocation[unit.id], {
 				row: location.row,
 				col: location.col,
 				location: location.objectType,
@@ -937,6 +949,11 @@ export default class GameBoard extends React.Component {
 		return objectsWithUpdatedLocation;
 	}
 
+	/**
+	 * Remove a specific unit from a card
+	 * @param {object} findUnit 
+	 * @param {array} objectArray 
+	 */
 	_removeUnitFromCard(findUnit,objectArray){
 		let updatedObjectArray = objectArray.slice();
 		let objectUnitsArray = updatedObjectArray[findUnit.row][findUnit.col].units;
@@ -1484,7 +1501,7 @@ export default class GameBoard extends React.Component {
 					//Make sure the units get updated with proper location
 					let futureBoatLocation = { row: object.row, col: object.col, objectType: "boat" };
 					//Update all the units on the boat
-					updatedUnitsArray = this._updateMultipleObjectsWithNewLocation(objectUnits,futureBoatLocation,updatedUnitsArray);
+					updatedUnitsArray = this._updateMultipleUnitsWithNewLocation(objectUnits,futureBoatLocation,updatedUnitsArray);
 				}
 				
 				//Update all boats
