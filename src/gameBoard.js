@@ -234,6 +234,24 @@ export default class GameBoard extends React.Component {
 						</table>
 					</div>
 				</div>
+				<div className="row justify-content-center">
+					<div className="col-8">
+					<ul>
+						<li>
+							Tap on your boat and then you can move it to the highlighted tiles or you can move your units to the shallows
+						</li>
+						<li>
+							A boat can be moved regardless if there are any units on it
+						</li>
+						<li>
+							Delivering { this.settings.treasuresForWin } treasure(s) will win the game
+						</li>
+						<li>
+							Losing all units will kick the player out of the game
+						</li>
+					</ul>
+					</div>
+				</div>
 				<div className="row justify-content-center no-gutters">
 					<div className={ this.settings.gameBoardWidthClass }>
 						<div className="row no-gutters">
@@ -462,6 +480,7 @@ export default class GameBoard extends React.Component {
 				playerName: player.playerName, 
 				disabled: true, 
 				location: "",
+				boatImage: player.boatImage,
 				boatClass: player.playerClass })
 
 			/*playerBoatsArray[player.playerId] = { 

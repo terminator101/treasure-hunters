@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { DEAFULT_PLAYER_NAME } from './constants';
+import { DEAFULT_PLAYER_NAME,
+	CARD_IMAGE_LOCATION, 
+	CARD_IMAGE_CLASS } from './constants';
 
 ///
 class Player extends React.Component {
@@ -19,6 +21,7 @@ class Player extends React.Component {
 			playerState: "",
 			playerType: "human",
 			dead: false,
+			boatImage: "ship_black",
 		}
 
 		this.state = {
@@ -110,7 +113,10 @@ class PlayerBoat extends React.Component {
 			movementType: 	"horizontal vertical",
 			units: 			[],
 			debug: 			false,
-			boatClass: 		"boat"
+			boatClass: 		"boat",
+			boatImage:  	"ship_black",
+			imageLocation: 	CARD_IMAGE_LOCATION,
+			imageClass:     CARD_IMAGE_CLASS,
 		}
 	}
 
@@ -118,11 +124,18 @@ class PlayerBoat extends React.Component {
 		this.settings = Object.assign({}, this.defaults, this.props);
 		let possibleMove = this.props.possibleMove ? 'possible' : '';
 		let debug = this.settings.debug;
+		let boatImage = this.settings.boatImage ? this._displayBoat(this.settings.boatImage,this.settings) : this._displayBoat("ship_black");
 		return(
 			<div className={this.settings.boatClass + "boat"}>
-				{debug ? <div>Player Boat R:{this.settings.row}|C:{this.settings.col}</div> : ""}
+				{debug ? <div>Player Boat R:{this.settings.row}|C:{this.settings.col}</div> : boatImage}
 				<div className="unitsHolder">{this._displayUnits(this.settings.units)}</div>
 			</div>
+		);
+	}
+
+	_displayBoat(boatImage,settings){
+		return(
+			<img className={settings.imageClass} src={this.defaults.imageLocation + "/" + boatImage + ".png"} alt="boat" />
 		);
 	}
 

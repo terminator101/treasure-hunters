@@ -23,7 +23,7 @@ export const SCREENS = {
 export const DEFAULT_UNTS_PER_PLAYER = 2;
 
 //Card
-export const CARD_IMAGE_LOCATION = '/card_images';
+export const CARD_IMAGE_LOCATION = 'http://andrejdeveloper.com/wp-content/uploads';
 export const IMAGE_PLACEHOLDER   = 'shallow.png';
 export const CARD_CLASS    		 = 'cardObject';
 export const CARD_IMAGE_CLASS	 = 'img-fluid mx-auto d-block cardImage';

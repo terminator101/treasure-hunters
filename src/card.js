@@ -52,7 +52,7 @@ export default class Card extends React.Component {
 		//let edge = this.settings.edge ? this._displayEdge() : '';
 		let debug = this.settings.debug;
 		let opened = this.props.opened ? this.props.opened : '';
-		let treasures = this.props.treasures ? this._displayTreasures(this.settings.treasures) : '';
+		let treasures = this.props.treasures ? this._displayTreasures(this.settings) : '';
 		let cardTypeClass = "cardInfo " + this.props.cardTypeClass;
 		let cardImage = this._displayCardImage(this.settings);
 		let cardBack = this._displayCardBack(this.settings);
@@ -76,8 +76,8 @@ export default class Card extends React.Component {
 		)
 	}
 
-	_displayTreasures(treasures){
-		if (treasures[treasures.length - 1] !== undefined) {
+	_displayTreasures(settings){
+		if (settings.treasures[settings.treasures.length - 1] !== undefined) {
 			return(
 				<img src={this.defaults.imageLocation + "/treasure.png"} alt="treasure" />
 			);
@@ -142,6 +142,7 @@ export default class Card extends React.Component {
 				playerName = 	{playerBoat.playerName}
 				possibleMove = 	{playerBoat.possibleMove}
 				boatClass =		{playerBoat.boatClass}
+				boatImage = 	{playerBoat.boatImage}
 			/>
 		)
 	}
