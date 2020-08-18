@@ -220,7 +220,7 @@ export default class GameBoard extends React.Component {
 		return(
 			<div className="container">
 				<div className="row justify-content-center">
-					<div className="col-8">
+					<div className="col-lg-8">
 						<table className="table table-bordered">
 							<thead className="thead-dark">
 								<tr>
@@ -235,7 +235,7 @@ export default class GameBoard extends React.Component {
 					</div>
 				</div>
 				<div className="row justify-content-center">
-					<div className="col-8">
+					<div className="col-lg-8">
 					<ul>
 						<li>
 							Use your units to find treasures and deliver them to your boat!

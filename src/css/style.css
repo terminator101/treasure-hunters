@@ -6,13 +6,7 @@
 	border: 1px solid black;
 	cursor: pointer;
 }
-.cardObject img {
-	/*width:100%;
-	height:100%;
-	width: 100px;*/
-	padding:0px;
-	border:0px;
-}
+
 .cardImage {
 	width: 100%;
 	float: left;
@@ -68,7 +62,7 @@
 	position:absolute;
 	width:100%;
 	height:20px;
-	bottom: 40px;
+	bottom: 40%;
 }
 
 .player1unit {
@@ -129,5 +123,15 @@
 	height: 100%;
 	width: 100%;
 	top: 25%;
-	left: 25%;
+}
+
+@media (max-width: 991.98px) {
+	.treasureHolder {
+		height: 50%;
+		width: 50%;
+		left: 25%;
+	}
+	.unitsHolder {
+		bottom:35%;
+	}
 }

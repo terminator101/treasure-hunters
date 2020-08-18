@@ -79,7 +79,7 @@ export default class Card extends React.Component {
 	_displayTreasures(settings){
 		if (settings.treasures[settings.treasures.length - 1] !== undefined) {
 			return(
-				<img src={this.defaults.imageLocation + "/treasure.png"} alt="treasure" />
+				<img className="img-fluid mx-auto d-block" src={this.defaults.imageLocation + "/treasure.png"} alt="treasure" />
 			);
 		}
 		/* Hidden for now so that only one treasure shows up at a time
