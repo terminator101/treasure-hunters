@@ -216,7 +216,7 @@ export default class GameBoard extends React.Component {
 		
 		//Outer water containers have to scale
 		let outerWaterSideContainerWitdhClass = "col-" + this.settings.outerWaterSideWidth;
-		let outerWaterTopBottomContainerWithClass = this.settings.cardRowWidthClass + " offset-md-" + this.defaults.outerWaterSideWidth;
+		let outerWaterTopBottomContainerWithClass = this.settings.cardRowWidthClass + " offset-" + this.defaults.outerWaterSideWidth;
 		return(
 			<div className="container">
 				<div className="row justify-content-center">
@@ -237,6 +237,9 @@ export default class GameBoard extends React.Component {
 				<div className="row justify-content-center">
 					<div className="col-8">
 					<ul>
+						<li>
+							Use your units to find treasures and deliver them to your boat!
+						</li>
 						<li>
 							Tap on your boat and then you can move it to the highlighted tiles or you can move your units to the shallows
 						</li>

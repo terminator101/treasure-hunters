@@ -43,8 +43,8 @@ export const GAME_SETUPS = {
 		numberCardsPerRow: 3,
 		unitsPerPlayer: 2,
 		gameBoardWidthClass: "col-12 col-md-8",
-		cardRowWidthClass: "col-10 col-md-6",
-		cardWidthClass: "col-md-4",
+		cardRowWidthClass: "col-6 col-md-6",
+		cardWidthClass: "col-4 col-md-4",
 		outerWaterSideWidth: "2",
 		cardTypeNumbersCount: [
 			{horizontal_vertical: 1},

@@ -107,7 +107,6 @@ class PlayerBoat extends React.Component {
 			image: 			"",
 			playerId: 		"",
 			playerName: 	"",
-			imageLocation: 	"",
 			possibleMove: 	false,
 			objectType: 	"boat",
 			movementType: 	"horizontal vertical",
@@ -122,7 +121,6 @@ class PlayerBoat extends React.Component {
 
 	render(){
 		this.settings = Object.assign({}, this.defaults, this.props);
-		let possibleMove = this.props.possibleMove ? 'possible' : '';
 		let debug = this.settings.debug;
 		let boatImage = this.settings.boatImage ? this._displayBoat(this.settings.boatImage,this.settings) : this._displayBoat("ship_black");
 		return(

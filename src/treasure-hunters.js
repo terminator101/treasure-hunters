@@ -2,6 +2,7 @@ import React from 'react';
 
 import GameBoard from './gameBoard';
 import Results from './results';
+import MainMenu from './mainMenu';
 
 import { DEFAULT_NUMBER_OF_CARDS, 
 	DEFAULT_UNTS_PER_PLAYER, 
@@ -54,6 +55,14 @@ export default class TreasureHunters extends React.Component {
     }
 
 	render(){
+		if(this.state.displayScreen === this.defaults.screens.mainMenu){
+			return(
+				<DisplayScreenContext.Provider value={this.state}>
+					<MainMenu />
+				</DisplayScreenContext.Provider>
+			)
+		}
+		else
 		if(this.state.displayScreen === this.defaults.screens.gameBoard){
 			return(
 				<DisplayScreenContext.Provider value={this.state}>
@@ -75,7 +84,9 @@ export default class TreasureHunters extends React.Component {
 			)
 		} else {
 			return(
-				<Results />
+				<DisplayScreenContext.Provider value={this.state}>
+					<Results />
+				</DisplayScreenContext.Provider>
 			)
 		}
 	}
