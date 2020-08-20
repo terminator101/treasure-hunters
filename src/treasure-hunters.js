@@ -33,8 +33,8 @@ export default class TreasureHunters extends React.Component {
 
 		this.state = {
 			playersArray: this._createPlayers(),
-			displayScreen: this.defaults.screens.gameBoard,
-			setDisplayScreen: this._setDisplayScreen,
+			//displayScreen: this.defaults.screens.gameBoard,
+			//setDisplayScreen: this._setDisplayScreen,
 		}
 
 	}
@@ -48,45 +48,39 @@ export default class TreasureHunters extends React.Component {
 		}) 
 	}*/
 
-	_setDisplayScreen = (vars) => {
+	/* _setDisplayScreen = (vars) => {
         this.setState(state => ({
             displayScreen: vars
         }))
-    }
+    } */
 
 	render(){
-		if(this.state.displayScreen === this.defaults.screens.mainMenu){
+		if(this.context.displayScreen === this.defaults.screens.mainMenu){
 			return(
-				<DisplayScreenContext.Provider value={this.state}>
-					<MainMenu />
-				</DisplayScreenContext.Provider>
+				<MainMenu />
 			)
 		}
 		else
-		if(this.state.displayScreen === this.defaults.screens.gameBoard){
+		if(this.context.displayScreen === this.defaults.screens.gameBoard){
 			return(
-				<DisplayScreenContext.Provider value={this.state}>
-					<GameBoard
-						playersArray  = {this.state.playersArray}
-						cardsHolderId = {this.settings.cardsHolderId}
-						displayValues = {this.settings.displayValues}
-						treasuresForWin = {this.settings.treasuresForWin}
-						//numberOfCards = {this.settings.numberOfCards}
-						gameSetup = {this.settings.gameSetup}
-						/* numberOfRows  = {this.settings.gameSetup.numberOfRows}
-						numberCardsPerRow = {this.settings.gameSetup.numberCardsPerRow}
-						cardRowWidthClass = {this.settings.gameSetup.cardRowWidthClass}
-						cardWidthClass = {this.settings.gameSetup.cardWidthClass}
-						unitsPerPlayer = {this.settings.gameSetup.unitsPerPlayer} */
-						cardImagesArray = {this.settings.cardImagesArray}
-					/>
-				</DisplayScreenContext.Provider>
+				<GameBoard
+					playersArray  = {this.state.playersArray}
+					cardsHolderId = {this.settings.cardsHolderId}
+					displayValues = {this.settings.displayValues}
+					treasuresForWin = {this.settings.treasuresForWin}
+					//numberOfCards = {this.settings.numberOfCards}
+					gameSetup = {this.settings.gameSetup}
+					/* numberOfRows  = {this.settings.gameSetup.numberOfRows}
+					numberCardsPerRow = {this.settings.gameSetup.numberCardsPerRow}
+					cardRowWidthClass = {this.settings.gameSetup.cardRowWidthClass}
+					cardWidthClass = {this.settings.gameSetup.cardWidthClass}
+					unitsPerPlayer = {this.settings.gameSetup.unitsPerPlayer} */
+					cardImagesArray = {this.settings.cardImagesArray}
+				/>
 			)
 		} else {
 			return(
-				<DisplayScreenContext.Provider value={this.state}>
-					<Results />
-				</DisplayScreenContext.Provider>
+				<Results />
 			)
 		}
 	}
@@ -99,6 +93,8 @@ export default class TreasureHunters extends React.Component {
 		return playersArray;
 	}
 }
+
+TreasureHunters.contextType = DisplayScreenContext;
 
 /*
 //numberOfCards: 	 DEFAULT_NUMBER_OF_CARDS,
