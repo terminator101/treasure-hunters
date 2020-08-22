@@ -2,7 +2,8 @@ import React from 'react';
 
 import { DEAFULT_PLAYER_NAME,
 	CARD_IMAGE_LOCATION, 
-	CARD_IMAGE_CLASS } from './constants';
+	CARD_IMAGE_CLASS,
+	UNIT_HOLDERS, } from './constants';
 
 ///
 class Player extends React.Component {
@@ -111,6 +112,7 @@ class PlayerBoat extends React.Component {
 			objectType: 	"boat",
 			movementType: 	"horizontal vertical",
 			units: 			[],
+			unitsHolders: 	UNIT_HOLDERS,
 			debug: 			false,
 			boatClass: 		"boat",
 			boatImage:  	"ship_black",
@@ -123,10 +125,11 @@ class PlayerBoat extends React.Component {
 		this.settings = Object.assign({}, this.defaults, this.props);
 		let debug = this.settings.debug;
 		let boatImage = this.settings.boatImage ? this._displayBoat(this.settings.boatImage,this.settings) : this._displayBoat("ship_black");
+		let unitsHolderClass = this.settings.units ? this._getUnitsHolder(this.settings.units.length,this.settings) : "";
 		return(
 			<div className={this.settings.boatClass + "boat"}>
 				{debug ? <div>Player Boat R:{this.settings.row}|C:{this.settings.col}</div> : boatImage}
-				<div className="unitsHolder">{this._displayUnits(this.settings.units)}</div>
+				<div className={unitsHolderClass}>{this._displayUnits(this.settings.units)}</div>
 			</div>
 		);
 	}
@@ -152,6 +155,28 @@ class PlayerBoat extends React.Component {
 				/>
 			)
 		});
+	}
+
+	_getUnitsHolder(number,settings){
+		let holderClass = "";
+		switch(number) {
+			case 1:
+				holderClass = settings.unitsHolders.oneUnit
+			break;
+			case 2:
+				holderClass = settings.unitsHolders.twoUnits
+			break;
+			case 3:
+				holderClass = settings.unitsHolders.threeUnits
+			break;
+			case 4:
+				holderClass = settings.unitsHolders.fourUnits
+			break;
+			default:
+				holderClass = settings.unitsHolders.oneUnit
+			break;
+		}
+		return holderClass;
 	}
 }
 

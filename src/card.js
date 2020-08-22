@@ -6,7 +6,8 @@ import { CARD_IMAGE_LOCATION,
 		IMAGE_PLACEHOLDER, 
 		CARD_CLASS,
 		CARD_WIDTH,
-		CARD_IMAGE_CLASS } from './constants';
+		CARD_IMAGE_CLASS,
+		UNIT_HOLDERS } from './constants';
 
 ///The Card
 export default class Card extends React.Component {
@@ -31,6 +32,7 @@ export default class Card extends React.Component {
 			cardClass: 		CARD_CLASS,
 			imageClass:     CARD_IMAGE_CLASS,
 			units:          [],
+			unitsHolders: 	UNIT_HOLDERS,
 			possibleMove:   false,
 			onClick: 		"",
 			edge: 			false,
@@ -56,6 +58,7 @@ export default class Card extends React.Component {
 		let cardTypeClass = "cardInfo " + this.props.cardTypeClass;
 		let cardImage = this._displayCardImage(this.settings);
 		let cardBack = this._displayCardBack(this.settings);
+		let unitsHolderClass = this.settings.units ? this._getUnitsHolder(this.settings.units.length,this.settings) : "";
 		return(
 			<div className={cardClasses} onClick={this.settings.disabled ? null : () => this.props.onClick()}>
 				{opened ? cardImage : cardBack}
@@ -63,7 +66,7 @@ export default class Card extends React.Component {
 				{debug ? <div className={cardTypeClass}>{this.settings.cardType}</div> : ""}
 				{(treasures && opened) ? <div className="treasureHolder">{treasures}</div> : ""}
 				{playerBoat ? <div className="boatsHolder">{playerBoat}</div> : ""}
-				{playerUnits ? <div className="unitsHolder">{playerUnits}</div> : ""}
+				{playerUnits ? <div className={unitsHolderClass}>{playerUnits}</div> : ""}
 				{possibleMove ? <div className="possibleMove"></div> : ""}
 			</div>
 		);
@@ -125,6 +128,28 @@ export default class Card extends React.Component {
 				/>
 			)
 		});
+	}
+
+	_getUnitsHolder(number,settings){
+		let holderClass = "";
+		switch(number) {
+			case 1:
+				holderClass = settings.unitsHolders.oneUnit
+			break;
+			case 2:
+				holderClass = settings.unitsHolders.twoUnits
+			break;
+			case 3:
+				holderClass = settings.unitsHolders.threeUnits
+			break;
+			case 4:
+				holderClass = settings.unitsHolders.fourUnits
+			break;
+			default:
+				holderClass = settings.unitsHolders.oneUnit
+			break;
+		}
+		return holderClass;
 	}
 
 	_displayPlayerBoat(playerBoat){

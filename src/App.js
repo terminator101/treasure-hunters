@@ -15,7 +15,7 @@ class App extends React.Component {
         this.settings = Object.assign({}, this.defaults, this.props);
 
         this.state = {
-          displayScreen: this.defaults.screens.mainMenu,
+          displayScreen: this.defaults.screens.gameBoard,
           setDisplayScreen: this._setDisplayScreen,
         }
     }

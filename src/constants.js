@@ -20,6 +20,13 @@ export const SCREENS = {
 	resultsScreen: 'resultsScreen'
 }
 
+export const UNIT_HOLDERS = {
+	oneUnit: 'unitsHolderOne',
+	twoUnits: 'unitsHolderTwo',
+	threeUnits: 'unitsHolderThree',
+	fourUnits: 'unitsHolderFour',
+}
+
 export const DEFAULT_UNTS_PER_PLAYER = 2;
 
 //Card
