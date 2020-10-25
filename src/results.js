@@ -18,21 +18,37 @@ export default class Results extends React.Component {
 		}
 	}
 
-	_handleClick(e) {    
+	/**
+	 * When rematch button is pressed
+	 * @param {event} e 
+	 */
+	_rematch(e) {    
         //e.preventDefault();    
 		
 		//Update the players
-		this.context.setPlayers(this._resetPlayers(this.context.playersArray));
+		this.context.setPlayers(this._resetPlayerProperties(this.context.playersArray));
 		
 		//Change the screen
 		this.context.setDisplayScreen(this.defaults.screens.gameBoard);
 	}
 
 	/**
+	 * When restart button is pressed
+	 * @param {event} e 
+	 */
+	_reset(e){
+		//Update the players
+		this.context.setPlayers(null);
+
+		//Change the screen
+		this.context.setDisplayScreen(this.defaults.screens.mainMenu);
+	}
+
+	/**
 	 * Reset players so that a new game can start without problems
 	 * @param {array} playersArray 
 	 */
-	_resetPlayers(playersArray){
+	_resetPlayerProperties(playersArray){
 		let updatedPlayersArray = playersArray.slice();
 
 		for(let player of updatedPlayersArray){
@@ -100,10 +116,16 @@ export default class Results extends React.Component {
 							</div>
 						</div>
 						<div className="row no-gutters justify-content-center">
-							<button type="button" className="btn btn-primary"
-								value="Start"     
-								onClick={() => this._handleClick()}>Restart
-							</button>
+							<div class="col-md-12 btn-group btn-group-justified">
+								<button type="button" className="btn btn-primary"
+									value="Rematch"     
+									onClick={() => this._rematch()}>Rematch
+								</button> 
+								<button type="button" className="btn btn-success"
+									value="Reset"     
+									onClick={() => this._reset()}>Reset
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>

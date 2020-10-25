@@ -24,11 +24,19 @@ export default class MainMenu extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
     }
     
-    _handleClick(e) {    
+    _handleClick(e) {
         //e.preventDefault();    
         //console.log('The link was clicked.');
-        this.context.setPlayers(this._createPlayers());
-        this.context.setDisplayScreen(this.defaults.screens.gameBoard);
+
+        if(this.state.player0name === ""){
+            //A name wasn't entered so display error message
+            alert("Player 1 must have a name");
+        } else {
+            //Update the context with the players
+            this.context.setPlayers(this._createPlayers());
+            //Move to the game board
+            this.context.setDisplayScreen(this.defaults.screens.gameBoard);
+        }
     }
 
     /**
@@ -62,7 +70,7 @@ export default class MainMenu extends React.Component {
                     <div className="form-group">
                         <div className="col pb-1">
                             <div class="form-group">
-                                <label for="player0">&nbsp; Player 1 Name:</label>
+                                <label for="player0name">&nbsp; Player 1 Name:</label>
                             </div>
                             <div className="form-group">
                                 <div className="row align-items-center">
@@ -71,9 +79,11 @@ export default class MainMenu extends React.Component {
                                             name="player0name" 
                                             className="form-control"
                                             type="text"
+                                            id="player0name"
                                             value={this.state.player0name}
                                             onChange={this.handleInputChange}
-                                            maxlength="15" />
+                                            maxlength="15"
+                                            required />
                                     </div>
                                     <div className="col">
                                         <div className="checkbox">
