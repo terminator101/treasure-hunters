@@ -23,6 +23,7 @@ class Player extends React.Component {
 			playerType: "human",
 			dead: false,
 			boatImage: "ship_black",
+			resultText: "",
 		}
 
 		this.state = {
@@ -42,6 +43,33 @@ class Player extends React.Component {
 		return this.settings.currentLocationCardId;
 	}
 
+}
+
+class PlayerScore extends React.Component {
+	constructor(props) {
+		super(props);
+
+		this.defaults = {
+			playerName: "",
+			score: 0,
+			resultText: "",
+		}
+	}
+	render(){
+		this.settings = Object.assign({}, this.defaults, this.props);
+		return(
+			<tr>
+				<td>
+					<strong>{this.settings.playerName}</strong></td>
+				<td>
+					{this.settings.score}
+				</td>
+				<td>
+					{this.settings.resultText}
+				</td>
+			</tr>
+		);
+	}
 }
 
 ///
@@ -181,4 +209,4 @@ class PlayerBoat extends React.Component {
 }
 
 ///
-export { Player, PlayerUnit, PlayerBoat };
+export { Player, PlayerScore, PlayerUnit, PlayerBoat };

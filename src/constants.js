@@ -27,6 +27,11 @@ export const UNIT_HOLDERS = {
 	fourUnits: 'unitsHolderFour',
 }
 
+export const RESULT_TEXT = {
+	win: "Won the game",
+	lose: "Lost all units",
+}
+
 export const DEFAULT_UNTS_PER_PLAYER = 2;
 
 //Card

@@ -32,7 +32,7 @@ export default class TreasureHunters extends React.Component {
 		this.settings = Object.assign({}, this.defaults, this.props);
 
 		this.state = {
-			playersArray: this._createPlayers(),
+			//playersArray: this._createPlayers(),
 			//displayScreen: this.defaults.screens.gameBoard,
 			//setDisplayScreen: this._setDisplayScreen,
 		}
@@ -64,7 +64,7 @@ export default class TreasureHunters extends React.Component {
 		if(this.context.displayScreen === this.defaults.screens.gameBoard){
 			return(
 				<GameBoard
-					playersArray  = {this.state.playersArray}
+					playersArray  = {this.context.playersArray}
 					cardsHolderId = {this.settings.cardsHolderId}
 					displayValues = {this.settings.displayValues}
 					treasuresForWin = {this.settings.treasuresForWin}
@@ -86,12 +86,12 @@ export default class TreasureHunters extends React.Component {
 	}
 
 	//Function for filling the players array
-	_createPlayers(){
+	/* _createPlayers(){
 		let playersArray = [];
 		playersArray.push({ playerId: 0, playerName: DEAFULT_PLAYER_NAME, row: 0, col: 3, playerClass: "player1", score: 0, playerType: "human", boatImage: "ship_brown" });
 		//playersArray.push({ playerId: 1, playerName: "Tester2", row: 3, col: 0, playerClass: "player2", score: 0, playerType: "human", boatImage: "ship_red" });
 		return playersArray;
-	}
+	} */
 }
 
 TreasureHunters.contextType = DisplayScreenContext;

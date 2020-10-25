@@ -1,7 +1,7 @@
 import React from 'react';
 import { DisplayScreenContext } from "./display-screen-context";
 
-import { SCREENS } from './constants';
+import { SCREENS, DEAFULT_PLAYER_NAME } from './constants';
 
 ///
 export default class MainMenu extends React.Component {
@@ -13,13 +13,46 @@ export default class MainMenu extends React.Component {
             players: [],
             screens: SCREENS,
         }
+
+        this.state = {
+            player0name: "",
+            player0computer: false,
+            player1name: "",
+            player1computer: true,
+        }
+
+        this.handleInputChange = this.handleInputChange.bind(this);
     }
     
     _handleClick(e) {    
         //e.preventDefault();    
         //console.log('The link was clicked.');
+        this.context.setPlayers(this._createPlayers());
         this.context.setDisplayScreen(this.defaults.screens.gameBoard);
     }
+
+    /**
+     * Get the state of the input and update the value
+     * @param {event} event 
+     */
+    handleInputChange(event){
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            [name]: value
+        });
+    }
+
+    //Function for filling the players array
+	_createPlayers(){
+        let playersArray = [];
+        playersArray.push({ playerId: 0, playerName: this.state.player0name, row: 0, col: 3, playerClass: "player1", score: 0, playerType: this.state.player0computer === false ? "human" : "computer", boatImage: "ship_brown", resultText: "" })
+		//playersArray.push({ playerId: 0, playerName: "Andrej", row: 0, col: 3, playerClass: "player1", score: 0, playerType: "human", boatImage: "ship_brown", resultText: "" });
+		//playersArray.push({ playerId: 1, playerName: "Tester2", row: 3, col: 0, playerClass: "player2", score: 0, playerType: "human", boatImage: "ship_red", resultText: "" });
+		return playersArray;
+	}
 
 	render(){
 		this.settings = Object.assign({}, this.defaults, this.props);
@@ -34,13 +67,25 @@ export default class MainMenu extends React.Component {
                             <div className="form-group">
                                 <div className="row align-items-center">
                                     <div className="col">
-                                        <input className="form-control" id="player0" type="text" maxlength="15" />
+                                        <input
+                                            name="player0name" 
+                                            className="form-control"
+                                            type="text"
+                                            value={this.state.player0name}
+                                            onChange={this.handleInputChange}
+                                            maxlength="15" />
                                     </div>
                                     <div className="col">
                                         <div className="checkbox">
                                             <label>
-                                                <input id="computer0" type="checkbox" value="computer" />
-                                                <span> Computer</span>
+                                                <input
+                                                    hidden="true"
+                                                    name="player0computer"
+                                                    type="checkbox"
+                                                    checked={this.state.player0computer} 
+                                                    onChange={this.handleInputChange} />
+                                                <span> </span>
+                                                {/* Computer */}
                                             </label>
                                         </div>
                                     </div>

@@ -8,7 +8,8 @@ import { NUMBER_OF_ROWS,
 		CARD_TYPES, 
 		OUTER_WATER_TYPES, 
 		PLAYER_STATES,
-		SCREENS } from './constants';
+		SCREENS, 
+		RESULT_TEXT} from './constants';
 
 export default class GameBoard extends React.Component {
 
@@ -33,6 +34,7 @@ export default class GameBoard extends React.Component {
 			treasuresForWin:	this.props.treasuresForWin,
 			cardTypes: 			CARD_TYPES,
 			playerStates:		PLAYER_STATES,
+			resultText: 		RESULT_TEXT,
 			screens:			SCREENS,
 			cardTypeWithTreasure: "chest"
 		}
@@ -1576,13 +1578,19 @@ export default class GameBoard extends React.Component {
 		if (currentPlayerUnits.length === 0) {
 			//All of the current player units are dead so set the player as dead
 			updatedPlayersArray = this._changePlayerState(this.state.currentPlayer,updatedPlayersArray,this.defaults.playerStates.dead);
-			
+			updatedPlayersArray = this._changePlayerResultText(this.state.currentPlayer,updatedPlayersArray,this.defaults.resultText.lose);
+
+			//The player died so game is over
+			this.context.setPlayers(updatedPlayersArray);
 			this.context.setDisplayScreen(this.defaults.screens.resultsScreen);
 		}
 		let currentPlayer = this._getCurrentPlayer(updatedPlayersArray);
 
 		if (currentPlayer.score === this.defaults.treasuresForWin){
+			
+			updatedPlayersArray = this._changePlayerResultText(this.state.currentPlayer,updatedPlayersArray,this.defaults.resultText.win);
 			//Current player reached the desired score so game is over
+			this.context.setPlayers(updatedPlayersArray);
 			this.context.setDisplayScreen(this.defaults.screens.resultsScreen);
 		}
 
@@ -1704,16 +1712,18 @@ export default class GameBoard extends React.Component {
 		
 		//A placeholder move until a proper AI can me implemented
 		console.log("moves where highlighted on:");
-		console.log(updatedCardArray[4][0]);
+		let computerMoveFrom = updatedCardArray[4][0];
+		let computerMoveTo = updatedCardArray[4][1];
+		console.log(computerMoveTo);
 
-		this._higlightPossibleMoves(updatedCardArray[4][0]);
+		this._higlightPossibleMoves(computerMoveFrom);
 
 		setTimeout(() => {
 
 			console.log("move was performed to:");
-			console.log(updatedCardArray[4][1]);
+			console.log(computerMoveTo);
 
-			this._moveToDestination(updatedCardArray[4][1]);
+			this._moveToDestination(computerMoveTo);
 		},1700);
 
 	}
@@ -1780,8 +1790,32 @@ export default class GameBoard extends React.Component {
 	_changePlayerState(player,playersArray,state){
 		let updatedPlayersArray = playersArray.slice();
 
+		//If the player died, set their state to lost
+		/* if(state === this.defaults.playerStates.dead){
+			updatedPlayersArray = this._changePlayerResultText(player,updatedPlayersArray,this.defaults.resultText.lose);
+		} */
+
 		updatedPlayersArray[player.playerId] = Object.assign({}, updatedPlayersArray[player.playerId], {
 			playerState: state
+		});
+		return updatedPlayersArray;
+	}
+
+	/**
+	 * Set the result text
+	 * @param {Player} player 
+	 * @param {Array} playersArray 
+	 * @param {String} text 
+	 */
+	_changePlayerResultText(player,playersArray,text){
+		let updatedPlayersArray = playersArray.slice();
+		
+		console.log("This player should get new text");
+		console.log(updatedPlayersArray[player.playerId]);
+		console.log(text);
+		
+		updatedPlayersArray[player.playerId] = Object.assign({}, updatedPlayersArray[player.playerId], {
+			resultText: text
 		});
 		return updatedPlayersArray;
 	}
