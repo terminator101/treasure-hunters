@@ -69,8 +69,8 @@ export default class MainMenu extends React.Component {
                 <div className="row h-100 no-gutters justify-content-center">
                     <div className="form-group">
                         <div className="col pb-1">
-                            <div class="form-group">
-                                <label for="player0name">&nbsp; Player 1 Name:</label>
+                            <div className="form-group">
+                                <label htmlFor="player0name">&nbsp; Player 1 Name:</label>
                             </div>
                             <div className="form-group">
                                 <div className="row align-items-center">
@@ -82,7 +82,7 @@ export default class MainMenu extends React.Component {
                                             id="player0name"
                                             value={this.state.player0name}
                                             onChange={this.handleInputChange}
-                                            maxlength="15"
+                                            maxLength="15"
                                             required />
                                     </div>
                                     <div className="col">
@@ -101,7 +101,7 @@ export default class MainMenu extends React.Component {
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div className="form-group">
                                 <button type="button" className="btn btn-primary"
                                     value="Start"     
                                     onClick={() => this._handleClick()}>Start Game

@@ -1,5 +1,7 @@
 import React from 'react';
 import { CARD_TYPES } from './constants';
+import Button from 'react-bootstrap/Button';
+import Collapse from 'react-bootstrap/Collapse';
 
 /**
  * Game description object
@@ -12,51 +14,79 @@ export default class Description extends React.Component {
 		this.defaults = {
             treasuresForWin: this.props.treasuresForWin,
             cardInformation: this._generateCardInformation(CARD_TYPES),
-        }
-    }
+		}
+
+		this.state = {
+			open: false,
+		}
+	}
+	
+	_openInfo(){
+		this.setState({ 
+			open: !this.state.open 
+		});
+	}
 
 	render(){
         this.settings = Object.assign({}, this.defaults, this.props);
         const cardInformation = this._displayCardInformation(this.settings.cardInformation);
 		return(
             <div>
-			    <div className="row justify-content-center">
-					<div className="col-lg-8">
-						<table className="table table-bordered">
-							<thead className="thead-dark">
-								<tr>
-									<th scope="col">Card</th>
-									<th scope="col">Description</th>
-								</tr>
-							</thead>
-							<tbody>
-								{ cardInformation }
-							</tbody>
-						</table>
+				<Collapse in={ this.state.open }>
+        			<div id="collapse-info">
+						<div className="row justify-content-center">
+							<div className="col-lg-8">
+								<table className="table table-bordered">
+									<thead className="thead-dark">
+										<tr>
+											<th scope="col">Card</th>
+											<th scope="col">Description</th>
+										</tr>
+									</thead>
+									<tbody>
+										{ cardInformation }
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div className="row justify-content-center">
+							<div className="col-lg-8">
+								<ul>
+									<li>
+										Use your units to find treasures and deliver them to your boat!
+									</li>
+									<li>
+										Tap on your boat and then you can move it to the highlighted tiles or you can move your units to the shallows
+									</li>
+									<li>
+										A boat can be moved regardless if there are any units on it
+									</li>
+									<li>
+										Delivering { this.settings.treasuresForWin } treasure(s) will win the game
+									</li>
+									<li>
+										Losing all units will kick the player out of the game
+									</li>
+								</ul>
+							</div>
+						</div>
 					</div>
-				</div>
+				</Collapse>
 				<div className="row justify-content-center">
 					<div className="col-lg-8">
-					<ul>
-						<li>
-							Use your units to find treasures and deliver them to your boat!
-						</li>
-						<li>
-							Tap on your boat and then you can move it to the highlighted tiles or you can move your units to the shallows
-						</li>
-						<li>
-							A boat can be moved regardless if there are any units on it
-						</li>
-						<li>
-							Delivering { this.settings.treasuresForWin } treasure(s) will win the game
-						</li>
-						<li>
-							Losing all units will kick the player out of the game
-						</li>
-					</ul>
+						<div className="row justify-content-end">
+							<div className="col-5">
+								<Button className="btn btn-primary" type="button"
+									onClick={ () => this._openInfo() }
+									aria-controls="collapse-info"
+									aria-expanded={ this.state.open }>
+										{ this.state.open ? "Hide" : "Show" } instructions
+								</Button>
+							</div>
+						</div>
 					</div>
 				</div>
-            </div>
+			</div> 
 		);
     }
     
