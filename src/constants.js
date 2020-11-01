@@ -123,6 +123,7 @@ export const CARD_TYPES_TEST = {
 		cardTypeClass: 	"seaHorse",
 		defaultCount: 	4,
 		description:	"Player can move in L like direction",
+		image: 			"seahorse.png"
 	},
 	mermaid:
 	{ 
@@ -203,7 +204,7 @@ export const CARD_TYPES = new Map([
 			defaultCount: 	4,
 			description:	"Player can move in L like direction",
 			smallCount:		0,
-			cardImage: 		"empty.jpg",
+			cardImage: 		"seahorse.png",
 		}
 	],
 	["mermaid",

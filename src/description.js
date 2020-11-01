@@ -1,5 +1,6 @@
 import React from 'react';
-import { CARD_TYPES } from './constants';
+import { CARD_TYPES, 
+	CARD_IMAGE_LOCATION } from './constants';
 import Button from 'react-bootstrap/Button';
 import Collapse from 'react-bootstrap/Collapse';
 
@@ -35,7 +36,7 @@ export default class Description extends React.Component {
 				<Collapse in={ this.state.open }>
         			<div id="collapse-info">
 						<div className="row justify-content-center">
-							<div className="col-lg-8">
+							<div className="col-lg-5">
 								<table className="table table-bordered">
 									<thead className="thead-dark">
 										<tr>
@@ -53,13 +54,22 @@ export default class Description extends React.Component {
 							<div className="col-lg-8">
 								<ul>
 									<li>
-										Use your units to find treasures and deliver them to your boat!
+										The <span className="font-weight-bold">goal</span> of the game is to use your units to find treasures and deliver them to your boat!
 									</li>
 									<li>
-										Tap on your boat and then you can move it to the highlighted tiles or you can move your units to the shallows
+										You can select your boat and then you can move it to the highlighted <span className="outer-water font-weight-bold">outer water</span> tiles
+									</li>
+									<li>
+										You can select a unit (circle) and then you can move it to the <span className="shallows font-weight-bold">shallows</span>, as well as to and from a boat
 									</li>
 									<li>
 										A boat can be moved regardless if there are any units on it
+									</li>
+									<li>
+										A unit can only carry one treasure at a time
+									</li>
+									<li>
+										Once a shark is killed, it acts same as a tile with fish
 									</li>
 									<li>
 										Delivering { this.settings.treasuresForWin } treasure(s) will win the game
@@ -99,7 +109,7 @@ export default class Description extends React.Component {
 
 		cardTypesArray.forEach(function(card, key) {
 			generatedInfo.push({ 
-				cardName: card.cardType, 
+				cardImage: card.cardImage, 
 				cardDescription: card.description
 			});
 		})
@@ -115,7 +125,7 @@ export default class Description extends React.Component {
 			return(
 				<CardInfo
 					key = {cardInfo.cardName}
-					cardName = {cardInfo.cardName}
+					cardImage = {cardInfo.cardImage}
 					cardDescription = {cardInfo.cardDescription}
 				/>
 			)
@@ -132,8 +142,10 @@ class CardInfo extends React.Component {
 		super(props);
 
 		this.defaults = {
-			cardName: "",
-			cardDescription: ""
+			cardImage: "",
+			cardDescription: "",
+			imageLocation: CARD_IMAGE_LOCATION,
+			imageClass:    "w-50",
 		}
 	}
 
@@ -141,7 +153,7 @@ class CardInfo extends React.Component {
 		this.settings = Object.assign({}, this.defaults, this.props);
 		return(
 			<tr>
-				<td>{ this.settings.cardName }</td>
+				<td><img className={this.settings.imageClass} src={this.settings.imageLocation + "/" + this.settings.cardImage} alt="card" /></td>
 				<td>{ this.settings.cardDescription }</td>
     		</tr>
 		);
