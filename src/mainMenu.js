@@ -65,48 +65,46 @@ export default class MainMenu extends React.Component {
 	render(){
 		this.settings = Object.assign({}, this.defaults, this.props);
 		return(
-			<div className="container">
-                <div className="row h-100 no-gutters justify-content-center">
-                    <div className="form-group">
-                        <div className="col pb-1">
-                            <div className="form-group">
-                                <label htmlFor="player0name">&nbsp; Player 1 Name:</label>
-                            </div>
-                            <div className="form-group">
-                                <div className="row align-items-center">
-                                    <div className="col">
-                                        <input
-                                            name="player0name" 
-                                            className="form-control"
-                                            type="text"
-                                            id="player0name"
-                                            value={this.state.player0name}
-                                            onChange={this.handleInputChange}
-                                            maxLength="15"
-                                            required />
-                                    </div>
-                                    <div className="col">
-                                        <div className="checkbox">
-                                            <label>
-                                                <input
-                                                    hidden="true"
-                                                    name="player0computer"
-                                                    type="checkbox"
-                                                    checked={this.state.player0computer} 
-                                                    onChange={this.handleInputChange} />
-                                                <span> </span>
-                                                {/* Computer */}
-                                            </label>
-                                        </div>
+            <div className="row h-100 no-gutters justify-content-center">
+                <div className="form-group">
+                    <div className="col pb-1">
+                        <div className="form-group">
+                            <label htmlFor="player0name">&nbsp; Player 1 Name:</label>
+                        </div>
+                        <div className="form-group">
+                            <div className="row align-items-center">
+                                <div className="col">
+                                    <input
+                                        name="player0name" 
+                                        className="form-control"
+                                        type="text"
+                                        id="player0name"
+                                        value={this.state.player0name}
+                                        onChange={this.handleInputChange}
+                                        maxLength="15"
+                                        required />
+                                </div>
+                                <div className="col">
+                                    <div className="checkbox">
+                                        <label>
+                                            <input
+                                                hidden="true"
+                                                name="player0computer"
+                                                type="checkbox"
+                                                checked={this.state.player0computer} 
+                                                onChange={this.handleInputChange} />
+                                            <span> </span>
+                                            {/* Computer */}
+                                        </label>
                                     </div>
                                 </div>
                             </div>
-                            <div className="form-group">
-                                <button type="button" className="btn btn-primary"
-                                    value="Start"     
-                                    onClick={() => this._handleClick()}>Start Game
-                                </button>
-                            </div>
+                        </div>
+                        <div className="form-group">
+                            <button type="button" className="btn btn-primary"
+                                value="Start"     
+                                onClick={() => this._handleClick()}>Start Game
+                            </button>
                         </div>
                     </div>
                 </div>

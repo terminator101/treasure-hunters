@@ -216,7 +216,7 @@ export default class GameBoard extends React.Component {
 		let outerWaterSideContainerWitdhClass = "col-" + this.settings.outerWaterSideWidth;
 		let outerWaterTopBottomContainerWithClass = this.settings.cardRowWidthClass + " offset-" + this.defaults.outerWaterSideWidth;
 		return(
-			<div className="container">
+			<div>
 				<Description 
 					treasuresForWin={this.settings.treasuresForWin} 
 				/>
