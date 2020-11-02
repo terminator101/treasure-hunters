@@ -29,7 +29,7 @@ export const UNIT_HOLDERS = {
 
 export const RESULT_TEXT = {
 	win: "Won the game",
-	lose: "Lost all units",
+	lose: "Lost all divers",
 }
 
 export const DEFAULT_UNTS_PER_PLAYER = 2;
@@ -97,7 +97,7 @@ export const CARD_TYPES_TEST = {
 		movementType: 	"horizontal vertical", 
 		cardTypeClass: 	"horizontalVerticalCard",
 		defaultCount: 	4,
-		description:	"Player can move horizontally or vertically"
+		description:	"The diver can move horizontally or vertically"
 	},
 	diagonal: 
 	{ 	
@@ -105,7 +105,7 @@ export const CARD_TYPES_TEST = {
 		movementType: 	"diagonal", 
 		cardTypeClass: 	"diagonal",
 		defaultCount: 	6,
-		description:	"Player can move diagonally"
+		description:	"The diver can move diagonally"
 	},
 	shark: 
 	{ 
@@ -113,7 +113,7 @@ export const CARD_TYPES_TEST = {
 		movementType: 	"none", 
 		cardTypeClass: 	"shark",
 		defaultCount: 	4,
-		description:	"Kills the player unit and dies as well",
+		description:	"Kills the diver and dies as well",
 		image: 			"shark.png"
 	},
 	sea_horse:
@@ -122,7 +122,7 @@ export const CARD_TYPES_TEST = {
 		movementType: 	"sea horse", 
 		cardTypeClass: 	"seaHorse",
 		defaultCount: 	4,
-		description:	"Player can move in L like direction",
+		description:	"The diver can move in L like direction",
 		image: 			"seahorse.png"
 	},
 	mermaid:
@@ -131,7 +131,7 @@ export const CARD_TYPES_TEST = {
 		movementType: 	"mermaid", 
 		cardTypeClass: 	"mermaid",
 		defaultCount: 	2,
-		description:	"Player can move diagonally as far as allowed",
+		description:	"The diver can move diagonally as far as allowed",
 	},
 	all_directions:
 	{ 
@@ -139,7 +139,7 @@ export const CARD_TYPES_TEST = {
 		movementType: 	"all", 
 		cardTypeClass: 	"allDirections",
 		defaultCount: 	2,
-		description:	"Player can move in every direction",
+		description:	"The diver can move in every direction",
 		image: 			"all_directions.png"
 	},
 	fish:
@@ -169,7 +169,7 @@ export const CARD_TYPES = new Map([
 			movementType: 	"horizontal vertical", 
 			cardTypeClass: 	"horizontalVerticalCard",
 			defaultCount: 	4,
-			description:	"Player can move horizontally or vertically",
+			description:	"The diver can move horizontally or vertically",
 			smallCount:		1,
 			cardImage: 		"horizontal_vertical.png"
 		}
@@ -180,7 +180,7 @@ export const CARD_TYPES = new Map([
 			movementType: 	"diagonal", 
 			cardTypeClass: 	"diagonal",
 			defaultCount: 	6,
-			description:	"Player can move diagonally",
+			description:	"The diver can move diagonally",
 			smallCount:		0,
 			cardImage: 		"diagonal.png"
 		}
@@ -191,7 +191,7 @@ export const CARD_TYPES = new Map([
 			movementType: 	"none", 
 			cardTypeClass: 	"shark",
 			defaultCount: 	4,
-			description:	"Kills the player unit and dies as well",
+			description:	"Kills the diver and dies as well",
 			smallCount:		2,
 			cardImage: 		"shark.png"
 		}
@@ -202,7 +202,7 @@ export const CARD_TYPES = new Map([
 			movementType: 	"sea horse", 
 			cardTypeClass: 	"seaHorse",
 			defaultCount: 	4,
-			description:	"Player can move in L like direction",
+			description:	"The diver can move in L like direction",
 			smallCount:		0,
 			cardImage: 		"seahorse.png",
 		}
@@ -213,7 +213,7 @@ export const CARD_TYPES = new Map([
 			movementType: 	"mermaid", 
 			cardTypeClass: 	"mermaid",
 			defaultCount: 	2,
-			description:	"Player can move diagonally as far as allowed",
+			description:	"The diver can move diagonally as far as allowed",
 			smallCount:		1,
 			cardImage: 		"mermaid.png",
 		}
@@ -224,7 +224,7 @@ export const CARD_TYPES = new Map([
 			movementType: 	"all", 
 			cardTypeClass: 	"allDirections",
 			defaultCount: 	2,
-			description:	"Player can move in every direction",
+			description:	"The diver can move in every direction",
 			smallCount:		1,
 			cardImage: 		"all_directions.png",
 		}

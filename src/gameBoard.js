@@ -218,7 +218,8 @@ export default class GameBoard extends React.Component {
 		return(
 			<div>
 				<Description 
-					treasuresForWin={this.settings.treasuresForWin} 
+					treasuresForWin={this.settings.treasuresForWin}
+					unitsPerPlayer={this.settings.unitsPerPlayer}
 				/>
 				<div className="row justify-content-center no-gutters">
 					<div className={ this.settings.gameBoardWidthClass }>

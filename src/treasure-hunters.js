@@ -5,7 +5,6 @@ import Results from './results';
 import MainMenu from './mainMenu';
 
 import { DEFAULT_NUMBER_OF_CARDS, 
-	DEFAULT_UNTS_PER_PLAYER, 
 	DEAFULT_PLAYER_NAME, 
 	NUMBER_OF_ROWS,
 	SCREENS,
