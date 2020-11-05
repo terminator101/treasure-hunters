@@ -4,12 +4,8 @@ import GameBoard from './gameBoard';
 import Results from './results';
 import MainMenu from './mainMenu';
 
-import { DEFAULT_NUMBER_OF_CARDS, 
-	DEAFULT_PLAYER_NAME, 
-	NUMBER_OF_ROWS,
-	SCREENS,
-	GAME_SETUPS,
-	CARD_TYPES_TEST } from './constants';
+import { SCREENS,
+	GAME_SETUPS } from './constants';
 import { DisplayScreenContext } from "./display-screen-context";
 
 //import jQuery from 'jquery';
@@ -23,7 +19,6 @@ export default class TreasureHunters extends React.Component {
 			gameSetup:		 GAME_SETUPS.small,
 			treasuresForWin: 1,
 			displayValues:	 false,
-			cardTypes: 		 CARD_TYPES_TEST,
 			screens:		 SCREENS,
 			cardImagesArray: ['all_directions.png'],
 			cardsHolderId: 	 "cardsHolder"

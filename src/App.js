@@ -36,11 +36,9 @@ class App extends React.Component {
     
     render(){
         return (
-          <div className="container">
             <DisplayScreenContext.Provider value={this.state}>
               <TreasureHunters />
             </DisplayScreenContext.Provider>
-          </div>
         )
     } 
 }

@@ -1,9 +1,9 @@
 //Defaults
 
 //Game
-export const DEFAULT_NUMBER_OF_CARDS = 36;
-export const NUMBER_OF_ROWS = 6;
-export const NUMBER_CARDS_PER_ROW = 6;
+//export const DEFAULT_NUMBER_OF_CARDS = 36;
+//export const NUMBER_OF_ROWS = 6;
+//export const NUMBER_CARDS_PER_ROW = 6;
 
 //Player
 export const DEAFULT_PLAYER_NAME = 'Tester';
@@ -54,19 +54,39 @@ export const GAME_SETUPS = {
 		numberOfRows: 3,
 		numberCardsPerRow: 3,
 		unitsPerPlayer: 2,
-		gameBoardWidthClass: "col-12 col-md-8",
+		gameBoardWidthClass: "col-12 col-md-6",
 		cardRowWidthClass: "col-6 col-md-6",
 		cardWidthClass: "col-4 col-md-4",
 		outerWaterSideWidth: "2",
-		cardTypeNumbersCount: [
-			{horizontal_vertical: 1},
-			{chest: 2},
-			{shark: 2},
-			{all_directions: 1},
-			{fish: 1},
-			{mermaid: 1},
-			{diagonal: 1},
-		],
+		cardTypeNumbersCount: new Map ([
+			['horizontal_vertical', 1],
+			['chest', 2],
+			['shark', 2],
+			['all_directions', 1],
+			['fish', 1],
+			['mermaid', 1],
+			['diagonal', 1],
+		]),
+	},
+	medium: 
+	{
+		numberOfRows: 4,
+		numberCardsPerRow: 4,
+		unitsPerPlayer: 2,
+		gameBoardWidthClass: "col-12 col-md-8",
+		cardRowWidthClass: "col-8 col-md-8",
+		cardWidthClass: "col-3 col-md-3",
+		outerWaterSideWidth: "2",
+		cardTypeNumbersCount: new Map ([
+			['horizontal_vertical', 2],
+			['chest', 3],
+			['shark', 3],
+			['sea_horse', 2],
+			['all_directions', 2],
+			['fish', 1],
+			['mermaid', 1],
+			['diagonal', 2],
+		]),
 	},
 	large: 
 	{
@@ -77,20 +97,96 @@ export const GAME_SETUPS = {
 		cardRowWidthClass: "col-sm-10",
 		cardWidthClass: "col-sm-2",
 		outerWaterSideWidth: "1",
-		cardTypeNumbersCount: [
-			{horizontal_vertical: 4},
-			{diagonal: 6},
-			{shark: 4},
-			{sea_horse: 4},
-			{mermaid: 2},
-			{all_directions: 2},
-			{fish: 8},
-			{chest: 6},
-		],
+		cardTypeNumbersCount: new Map ([
+			['horizontal_vertical', 4],
+			['diagonal', 6],
+			['shark', 4],
+			['sea_horse', 4],
+			['mermaid', 2],
+			['all_directions', 2],
+			['fish', 8],
+			['chest', 6],
+		]),
 	}
 }
 
-export const CARD_TYPES_TEST = {
+export const CARD_TYPES = new Map([
+	["horizontal_vertical", 
+		{ 	
+			cardType: 		"horizontal vertical",
+			movementType: 	"horizontal vertical", 
+			cardTypeClass: 	"horizontalVerticalCard",
+			description:	"The diver can move horizontally or vertically",
+			cardImage: 		"horizontal_vertical.png"
+		}
+	],
+	["diagonal",
+		{ 	
+			cardType: 		"diagonal",
+			movementType: 	"diagonal", 
+			cardTypeClass: 	"diagonal",
+			description:	"The diver can move diagonally",
+			cardImage: 		"diagonal.png"
+		}
+	],
+	["shark",
+		{ 
+			cardType: 		"shark",
+			movementType: 	"none", 
+			cardTypeClass: 	"shark",
+			description:	"Kills the diver and dies as well",
+			cardImage: 		"shark.png"
+		}
+	],
+	["sea_horse",
+		{ 
+			cardType: 		"sea horse",
+			movementType: 	"sea horse", 
+			cardTypeClass: 	"seaHorse",
+			description:	"The diver can move in L like direction",
+			cardImage: 		"seahorse.png",
+		}
+	],
+	["mermaid",
+		{ 
+			cardType: 		"mermaid",
+			movementType: 	"mermaid", 
+			cardTypeClass: 	"mermaid",
+			description:	"The diver can move diagonally as far as allowed",
+			cardImage: 		"mermaid.png",
+		}
+	],
+	["all_directions",
+		{ 
+			cardType: 		"all directions",
+			movementType: 	"all", 
+			cardTypeClass: 	"allDirections",
+			description:	"The diver can move in every direction",
+			cardImage: 		"all_directions.png",
+		}
+	],
+	["fish",
+		{ 
+			cardType: 		"fish",
+			movementType: 	"horizontal vertical", 
+			cardTypeClass: 	"fish",
+			description:	"Empty sea",
+			cardImage: 		"fish.png",
+		}
+	],
+	["chest",
+		{ 
+			cardType: 		"chest",
+			movementType: 	"horizontal vertical", 
+			cardTypeClass: 	"chest",
+			treasures: 		[],
+			description:	"Find these and deliver the treasure to your boat",
+			cardImage: 		"chest.png",
+		}
+	]
+]);
+
+/* export const CARD_TYPES_TEST = {
 	horizontal_vertical: 
 	{ 	
 		cardType: 		"horizontal vertical",
@@ -160,99 +256,7 @@ export const CARD_TYPES_TEST = {
 		treasures: 		[],
 		description:	"Find these and deliver the treasure to your boat",
 	},
-};
-
-export const CARD_TYPES = new Map([
-	["horizontal_vertical", 
-		{ 	
-			cardType: 		"horizontal vertical",
-			movementType: 	"horizontal vertical", 
-			cardTypeClass: 	"horizontalVerticalCard",
-			defaultCount: 	4,
-			description:	"The diver can move horizontally or vertically",
-			smallCount:		1,
-			cardImage: 		"horizontal_vertical.png"
-		}
-	],
-	["diagonal",
-		{ 	
-			cardType: 		"diagonal",
-			movementType: 	"diagonal", 
-			cardTypeClass: 	"diagonal",
-			defaultCount: 	6,
-			description:	"The diver can move diagonally",
-			smallCount:		0,
-			cardImage: 		"diagonal.png"
-		}
-	],
-	["shark",
-		{ 
-			cardType: 		"shark",
-			movementType: 	"none", 
-			cardTypeClass: 	"shark",
-			defaultCount: 	4,
-			description:	"Kills the diver and dies as well",
-			smallCount:		2,
-			cardImage: 		"shark.png"
-		}
-	],
-	["sea_horse",
-		{ 
-			cardType: 		"sea horse",
-			movementType: 	"sea horse", 
-			cardTypeClass: 	"seaHorse",
-			defaultCount: 	4,
-			description:	"The diver can move in L like direction",
-			smallCount:		0,
-			cardImage: 		"seahorse.png",
-		}
-	],
-	["mermaid",
-		{ 
-			cardType: 		"mermaid",
-			movementType: 	"mermaid", 
-			cardTypeClass: 	"mermaid",
-			defaultCount: 	2,
-			description:	"The diver can move diagonally as far as allowed",
-			smallCount:		1,
-			cardImage: 		"mermaid.png",
-		}
-	],
-	["all_directions",
-		{ 
-			cardType: 		"all directions",
-			movementType: 	"all", 
-			cardTypeClass: 	"allDirections",
-			defaultCount: 	2,
-			description:	"The diver can move in every direction",
-			smallCount:		1,
-			cardImage: 		"all_directions.png",
-		}
-	],
-	["fish",
-		{ 
-			cardType: 		"fish",
-			movementType: 	"horizontal vertical", 
-			cardTypeClass: 	"fish",
-			defaultCount: 	8,
-			description:	"Empty sea",
-			smallCount:		2,
-			cardImage: 		"fish.png",
-		}
-	],
-	["chest",
-		{ 
-			cardType: 		"chest",
-			movementType: 	"horizontal vertical", 
-			cardTypeClass: 	"chest",
-			defaultCount: 	6,
-			treasures: 		[],
-			description:	"Find these and deliver the treasure to your boat",
-			smallCount:		2,
-			cardImage: 		"chest.png",
-		}
-	]
-]);
+}; */
 
 //All card types
 /*export const CARD_TYPES = {

@@ -86,7 +86,7 @@ export default class Description extends React.Component {
 				<div className="row justify-content-center">
 					<div className="col-lg-8">
 						<div className="row justify-content-end">
-							<div className="col-5">
+							<div className="col-6 col-md-3">
 								<Button className="btn btn-primary" type="button"
 									onClick={ () => this._openInfo() }
 									aria-controls="collapse-info"

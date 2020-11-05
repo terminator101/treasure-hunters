@@ -3,9 +3,7 @@ import Card from './card';
 import Description from './description';
 import { DisplayScreenContext } from "./display-screen-context";
 
-import { NUMBER_OF_ROWS, 
-		NUMBER_CARDS_PER_ROW, 
-		CARD_TYPES, 
+import { CARD_TYPES, 
 		OUTER_WATER_TYPES, 
 		PLAYER_STATES,
 		SCREENS, 
@@ -32,6 +30,7 @@ export default class GameBoard extends React.Component {
 			outerWaterSideWidth:this.props.gameSetup.outerWaterSideWidth,
 			displayValues:		this.props.displayValues,
 			treasuresForWin:	this.props.treasuresForWin,
+			cardTypeNumbersCount:this.props.gameSetup.cardTypeNumbersCount,
 			cardTypes: 			CARD_TYPES,
 			playerStates:		PLAYER_STATES,
 			resultText: 		RESULT_TEXT,
@@ -42,7 +41,7 @@ export default class GameBoard extends React.Component {
 		this.state = {
 			playersArray: 		this.props.playersArray,
 			playerUnitsArray: 	this._createPlayerUnits(this.defaults.unitsPerPlayer,this.props.playersArray),
-			cardArray: 			this._createCards(CARD_TYPES,OUTER_WATER_TYPES),
+			cardArray: 			this._createCards(CARD_TYPES,OUTER_WATER_TYPES,this.defaults.cardTypeNumbersCount),
 			playerBoatsArray: 	this._createPlayerBoats(this.props.playersArray),
 			treasuresArray:		[],
 			possibleMovesUnit: 	[],
@@ -271,7 +270,7 @@ export default class GameBoard extends React.Component {
 
 	/**
 	 * Add a vertical spacer
-	 * @param {array} objectArray 
+	 * @param {Array} objectArray 
 	 */
 	_addSpacer(objectArray){
 		let objectWithSpacerArray = [];
@@ -465,6 +464,11 @@ export default class GameBoard extends React.Component {
 	///////////////////
 	/// Player Units
 	///////////////////
+	/**
+	 * Create the player units
+	 * @param {integer} unitsPerPlayer 
+	 * @param {Array} playersArray 
+	 */
 	_createPlayerUnits(unitsPerPlayer,playersArray){
 		//let playersArray = this.state.playersArray;
 		let playerUnitsArray = []; //this.state.playerUnitsArray.slice();
@@ -494,15 +498,18 @@ export default class GameBoard extends React.Component {
 		return playerUnitsArray;		
 	}
 
-	//Set the way the units will move from the boat
+	/**
+	 * Set the way the units will move from the boat
+	 * @param {Object} location 
+	 */
 	_setBoatUnitMovementType(location){
 		let movementType = "";
 		//If movement type for this location is horizontal, set the unit to move vertically
-		if (location.row === 0 || location.row === (NUMBER_OF_ROWS + 1)) {
+		if (location.row === 0 || location.row === (this.defaults.numberOfRows + 1)) {
 			movementType = "vertical";
 		} 
 		else
-		if (location.col === 0 || location.col === (NUMBER_OF_ROWS + 1)){
+		if (location.col === 0 || location.col === (this.defaults.numberOfRows + 1)){
 			movementType = "horizontal";
 		}
 		//let unitMovementType = location.movementType === "horizontal" ? "vertical" : "horizontal";
@@ -512,23 +519,40 @@ export default class GameBoard extends React.Component {
 	///////////////////
 	/// Cards
 	///////////////////
-	_createCards(cardTypes,outerWaterTypes){
+	/**
+	 * 
+	 * @param {Map} cardTypes 
+	 * @param {Object} outerWaterTypes 
+	 * @param {Map} cardTypeNumbersCount 
+	 */
+	_createCards(cardTypes,outerWaterTypes,cardTypeNumbersCount){
 		let cardArray = [];
 		let cardTypeCounter = 0;
 		let generatedCards = [];
+		let createdCardCounter = 0;
+		//let totalNumberOfCards = this.defaults.numberCardsPerRow * this.defaults.numberOfRows;
 
 		cardTypes.forEach(function(card, key) {
-			//console.log(key + ' = ' + value)
-			//Uncomment when ready
-  			/* for(let i = 0; i < card.defaultCount; i++) {
-  				generatedCards.push({ card });
-			} */
-			if(card.smallCount > 0){
-				for(let i = 0; i < card.smallCount; i++) {
-					generatedCards.push({ card });
-				} 
-			}
+			cardTypeNumbersCount.forEach(function(cardCountNumber, cardCountKey){
+				if(key === cardCountKey){
+					for(let i = 0; i < cardCountNumber; i++) {
+						createdCardCounter++
+						generatedCards.push({ card });
+					} 
+				}
+			})
 		})
+		
+		/* Work in progress
+		if(createdCardCounter < totalNumberOfCards){
+			console.log(createdCardCounter);
+			console.log(totalNumberOfCards);
+			//Number of cards created is smaller than the desired total, fill the rest with fish
+			for(let i = 0; i < (totalNumberOfCards - createdCardCounter); i++) {
+				let filler = cardTypes.get("fish");
+				generatedCards.push({ filler });
+			} 
+		} */
 
 		//Randomize the generated cards
 		generatedCards = this._randomizeArray(generatedCards);
@@ -589,7 +613,10 @@ export default class GameBoard extends React.Component {
 		return cardArray;
 	}
 
-	//Randomizing an array
+	/**
+	 * Randomizing an array
+	 * @param {Array} theArray 
+	 */
 	_randomizeArray(theArray){
 		var currentIndex = theArray.length, temporaryValue, randomIndex;
 
@@ -622,6 +649,10 @@ export default class GameBoard extends React.Component {
 		}
 	}
 
+	/**
+	 * Map the objects to the Card object
+	 * @param {Array} cardArray 
+	 */
 	_displayCards(cardArray){
 		return cardArray.map((card) => {
 			return(
@@ -649,6 +680,11 @@ export default class GameBoard extends React.Component {
 		});
 	}
 
+	/**
+	 * Add all boats to the appropriate cards
+	 * @param {Array} playerBoatsArray 
+	 * @param {Array} cardArray 
+	 */
 	_addAllBoatsToCards(playerBoatsArray,cardArray){
 		let cardsUpdatedWithBoats = cardArray.slice();
 
@@ -671,6 +707,11 @@ export default class GameBoard extends React.Component {
 		return cardsUpdatedWithBoats;
 	}
 
+	/**
+	 * Add all units to the appropriate boats
+	 * @param {Array} playerUnitsArray 
+	 * @param {Array} playerBoatsArray 
+	 */
 	_addAllUnitsToBoats(playerUnitsArray,playerBoatsArray){
 		let boatsUpdatedWithUnitsArray = playerBoatsArray.slice();
 
@@ -733,7 +774,7 @@ export default class GameBoard extends React.Component {
 							});*/
 
 	/**
-	 * Adding unit to a boat
+	 * Add a unit to a boat
 	 * @param {Object} unit 
 	 * @param {Object} boat 
 	 * @param {Array} playerUnitsArray 
@@ -779,7 +820,7 @@ export default class GameBoard extends React.Component {
 	 * Remove units from a boat
 	 * @param {Object} findUnit 
 	 * @param {Object} boat 
-	 * @param {array} boatArray 
+	 * @param {Array} boatArray 
 	 */
 	_removeUnitFromBoat(findUnit,boat,boatArray) {
 		let updatedPlayerBoatsArray = boatArray.slice();
@@ -804,10 +845,10 @@ export default class GameBoard extends React.Component {
 
 	/**
 	 * Adding a unit to the card
-	 * @param {object} unit 
-	 * @param {object} object 
-	 * @param {*} playerUnitsArray 
-	 * @param {*} objectArray 
+	 * @param {Object} unit 
+	 * @param {Object} object 
+	 * @param {Array} playerUnitsArray 
+	 * @param {Array} objectArray 
 	 */
 	_addUnitToCard(unit,object,playerUnitsArray,objectArray){
 
@@ -825,8 +866,8 @@ export default class GameBoard extends React.Component {
 
 	/**
 	 * Update the card properties after a shark attack
-	 * @param {object} object 
-	 * @param {array} objectArray 
+	 * @param {Object} object 
+	 * @param {Array} objectArray 
 	 */
 	_setCardToStayOpen(object,objectArray){
 		let updatedObjects = objectArray.slice();
@@ -841,7 +882,12 @@ export default class GameBoard extends React.Component {
 		return updatedObjects;
 	}
 
-	//Update the location of a unit or a boat  to match the object
+	/**
+	 * Update the location of a unit or a boat  to match the object
+	 * @param {Object} object 
+	 * @param {Object} location 
+	 * @param {Array} objectsArray 
+	 */
 	_updateObjectWithNewLocation(object,location,objectsArray){
 		let objectsWithUpdatedLocation = objectsArray.slice();
 		let boatUnitMovementType = "";
@@ -864,8 +910,8 @@ export default class GameBoard extends React.Component {
 
 	/**
 	 * A unit has died
-	 * @param {object} object 
-	 * @param {array} objectsArray 
+	 * @param {Object} object 
+	 * @param {Array} objectsArray 
 	 */
 	_markUnitAsdead(object,objectsArray){
 		let updatedObjects = objectsArray.slice();
@@ -879,9 +925,9 @@ export default class GameBoard extends React.Component {
 
 	/**
 	 * Update all units in the location with new parameters
-	 * @param {array} objectUnits 
-	 * @param {object} location 
-	 * @param {array} unitArray 
+	 * @param {Array} objectUnits 
+	 * @param {Object} location 
+	 * @param {Array} unitArray 
 	 */
 	_updateMultipleUnitsWithNewLocation(objectUnits,location,unitArray){
 		let objectsWithUpdatedLocation = unitArray.slice();
@@ -907,8 +953,8 @@ export default class GameBoard extends React.Component {
 
 	/**
 	 * Remove a specific unit from a card
-	 * @param {object} findUnit 
-	 * @param {array} objectArray 
+	 * @param {Object} findUnit 
+	 * @param {Array} objectArray 
 	 */
 	_removeUnitFromCard(findUnit,objectArray){
 		let updatedObjectArray = objectArray.slice();
@@ -930,7 +976,7 @@ export default class GameBoard extends React.Component {
 	///////////////////
 	/**
 	 * Create treasures
-	 * @param {array} cardArray 
+	 * @param {Array} cardArray 
 	 */
 	_createTreasures(cardArray){
 		let treasuresArray = [];
@@ -958,8 +1004,8 @@ export default class GameBoard extends React.Component {
 
 	/**
 	 * Add all treasures to cards
-	 * @param {array} treasuresArray 
-	 * @param {array} cardArray 
+	 * @param {Array} treasuresArray 
+	 * @param {Array} cardArray 
 	 */
 	_addAllTreasuresToCards(treasuresArray,cardArray){
 		let cardsUpdatedWithTreasures = cardArray.slice();
@@ -976,6 +1022,10 @@ export default class GameBoard extends React.Component {
 		return cardsUpdatedWithTreasures;
 	}
 
+	/**
+	 * Ge all treasures from a card
+	 * @param {Object} object 
+	 */
 	_getTreasuresFromObject(object){
 		const treasures = object.treasures;
 		if (treasures.length > 0) {
@@ -987,9 +1037,9 @@ export default class GameBoard extends React.Component {
 
 	/**
 	 * Update who retrieved the treasure
-	 * @param {object} object 
-	 * @param {array} objectsArray 
-	 * @param {object} collector 
+	 * @param {Object} object 
+	 * @param {Array} objectsArray 
+	 * @param {Object} collector 
 	 */
 	_markTreasureAsRetrieved(object,objectsArray,collector){
 		let updatedObjects = objectsArray.slice();
@@ -1005,8 +1055,8 @@ export default class GameBoard extends React.Component {
 	 * Add a treasure to a card
 	 * @param {Object} treasure 
 	 * @param {Object} location 
-	 * @param {array} treasuresArray 
-	 * @param {array} locationArray 
+	 * @param {Array} treasuresArray 
+	 * @param {Array} locationArray 
 	 */
 	_addTreasureToCard(treasure,location,treasuresArray,locationArray){
 
@@ -1022,8 +1072,8 @@ export default class GameBoard extends React.Component {
 
 	/**
 	 * Remove a treasure from a card
-	 * @param {object} location 
-	 * @param {array} objectArray 
+	 * @param {Object} location 
+	 * @param {Array} objectArray 
 	 */
 	_removeTreasureFromCard(findTreasure,objectArray){
 		let updatedObjectArray = objectArray.slice();
@@ -1041,8 +1091,8 @@ export default class GameBoard extends React.Component {
 
 	/**
 	 * Clear highlighted cards
-	 * @param {array} objectArray 
-	 * @param {array} possibleMoves 
+	 * @param {Array} objectArray 
+	 * @param {Array} possibleMoves 
 	 */
 	_clearPossibleMoves(objectArray,possibleMoves){
 		let updatedObjectArray = objectArray;
@@ -1058,6 +1108,10 @@ export default class GameBoard extends React.Component {
 		return updatedObjectArray;
 	}
 
+	/**
+	 * Highlight all possible moves for an object
+	 * @param {Object} object 
+	 */
 	_higlightPossibleMoves(object){
 		let cardArray = this.state.cardArray.slice();
 		const playerBoatsArray = this.state.playerBoatsArray.slice();
@@ -1172,7 +1226,11 @@ export default class GameBoard extends React.Component {
 		return false;
 	}
 
-	//Get all unit for the specified player
+	/**
+	 * Get all unit for the specified player
+	 * @param {Object} player 
+	 * @param {Array} allPlayerUnits 
+	 */
 	_getPlayerUnitsFromPlayer(player,allPlayerUnits){
 
 		let updatedPlayerUnits = allPlayerUnits.slice();
@@ -1197,8 +1255,8 @@ export default class GameBoard extends React.Component {
 
 	/**
 	 * Find all possible moves based on the card movement type
-	 * @param {object} object 
-	 * @param {array} objectArray 
+	 * @param {Object} object 
+	 * @param {Array} objectArray 
 	 */
 	_findPossibleMoves(object, objectArray){
 		const {
@@ -1375,7 +1433,7 @@ export default class GameBoard extends React.Component {
 
 	/**
 	 * Get all player units from the given object
-	 * @param {object} object 
+	 * @param {Object} object 
 	 */
 	_getPlayerUnitsFromObject(object){
 		const units = object.units;
@@ -1388,7 +1446,7 @@ export default class GameBoard extends React.Component {
 
 	/**
 	 * Ge the unit the belongs to the current player
-	 * @param {array} objectUnits 
+	 * @param {Array} objectUnits 
 	 */
 	_getCurrentPlayerUnitFromObject(objectUnits){
 		if (objectUnits !== false && objectUnits.length > 0) {
@@ -1413,7 +1471,7 @@ export default class GameBoard extends React.Component {
 
 	/**
 	 * Handle what happens when object gets clicked on
-	 * @param {object} object 
+	 * @param {Object} object 
 	 */
 	_handleClick(object){
 
@@ -1429,7 +1487,7 @@ export default class GameBoard extends React.Component {
 
 	/**
 	 * Move the object to the destination
-	 * @param {object} object 
+	 * @param {Object} object 
 	 */
 	_moveToDestination(object){
 		console.log("Unit to move:" + this.state.currentPlayerUnit + " || " + this.state.currentPlayerBoat);
@@ -1621,7 +1679,7 @@ export default class GameBoard extends React.Component {
 
 	/**
 	 * Change who the current player is
-	 * @param {array} playersArray 
+	 * @param {Array} playersArray 
 	 */
 	_goNextPlayer(playersArray){
 
@@ -1667,7 +1725,7 @@ export default class GameBoard extends React.Component {
 	/**
 	 * Increase the score for the given player
 	 * @param {Object} player 
-	 * @param {array} playersArray 
+	 * @param {Array} playersArray 
 	 * @param {integer} score 
 	 */
 	_increaseScore(player,playersArray,score){
@@ -1694,7 +1752,10 @@ export default class GameBoard extends React.Component {
 		}
 	}
 
-	//Computer move
+	/**
+	 * Computer move, work in progress
+	 * @param {Object} computerPlayer 
+	 */
 	_goComputer(computerPlayer){
 
 		let updatedPlayersArray = this.state.playersArray.slice();
@@ -1729,7 +1790,10 @@ export default class GameBoard extends React.Component {
 
 	}
 
-	//Find who the current player is
+	/**
+	 * Find who the current player is
+	 * @param {Array} playersArray 
+	 */
 	_getCurrentPlayer(playersArray){
 		for(let player of playersArray){
 			if(player.playerState === "current"){
@@ -1740,7 +1804,13 @@ export default class GameBoard extends React.Component {
 		return this.state.currentPlayer;
 	};
 
-	//Enable all 
+	/**
+	 * Enable all cards that contain the current player units and boat
+	 * @param {Object} currentPlayer 
+	 * @param {Array} cardArray 
+	 * @param {Array} updatedUnitsArray 
+	 * @param {Array} playerBoatsArray 
+	 */
 	_enableAllCardsWithCurrentplayerUnitsAndBoats(currentPlayer,cardArray,updatedUnitsArray,playerBoatsArray){
 
 		let playerUnits = this._getPlayerUnitsFromPlayer(currentPlayer,updatedUnitsArray);
@@ -1763,7 +1833,10 @@ export default class GameBoard extends React.Component {
 		return updatedCardArray;
 	}
 
-	//Disable all cards so that the player can only click on cards with their unit and boat
+	/**
+	 * Disable all cards so that the player can only click on cards with their unit and boat
+	 * @param {Array} cardArray 
+	 */
 	_disableAllCards(cardArray){
 
 		let updatedCardArray = cardArray.slice();
@@ -2062,11 +2135,11 @@ _getAllOuterWater(outerWaterArray){
 		const playerBoatsArray = this.state.playerBoatsArray.slice();
 		const playerUnitsArray = this.state.playerUnitsArray.slice();
 		let displayArray = [];
-		for(let i = 1; i < NUMBER_OF_ROWS + 1; i++){
+		for(let i = 1; i < this.defaults.numberOfRows + 1; i++){
 			displayArray.push(outerWaterArray[0][i]);
 			displayArray.push(outerWaterArray[NUMBER_CARDS_PER_ROW + 1][i]);
 			displayArray.push(outerWaterArray[i][0]);
-			displayArray.push(outerWaterArray[i][NUMBER_OF_ROWS + 1]);
+			displayArray.push(outerWaterArray[i][this.defaults.numberOfRows + 1]);
 		}
 		displayArray = this._addAllBoatsToCards(this._addAllUnitsToBoats(playerUnitsArray,playerBoatsArray),displayArray);
 		return displayArray;
@@ -2928,7 +3001,7 @@ _getAllOuterWater(outerWaterArray){
 		}*/
 
 		//bottom
-		//if(cardRow < NUMBER_OF_ROWS){
+		//if(cardRow < this.defaults.numberOfRows){
 			/*let bottomMoves = this._calculateMoves(card,"bottom");
 			if (bottomMoves.length > 0) {
 				moves.push(...bottomMoves);
@@ -2991,17 +3064,17 @@ _getAllOuterWater(outerWaterArray){
 		let moves = [];
 			//top
 			//Make sure the card is not at the very top
-			if (cardId > NUMBER_OF_ROWS) {
+			if (cardId > this.defaults.numberOfRows) {
 				let topLeftRange = 7;
 				let topRightRange = 3;
 				//left
 				//Check if the card is at the left edge
-				if( cardId % NUMBER_OF_ROWS === 1) {
+				if( cardId % this.defaults.numberOfRows === 1) {
 					topLeftRange -=1;
 				}
 				//right
 				//Check if the card is at the right edge
-				if (cardId % NUMBER_OF_ROWS === 0) {
+				if (cardId % this.defaults.numberOfRows === 0) {
 					topRightRange +=1;
 				}
 				//Add all the cards to the moves based on the range
@@ -3011,29 +3084,29 @@ _getAllOuterWater(outerWaterArray){
 			}
 			//left side
 			//Check if the card is not at the left edge
-			if( cardId % NUMBER_OF_ROWS !== 1) {
+			if( cardId % this.defaults.numberOfRows !== 1) {
 				//Add the card to the left to possible moves
 				moves.push(cardId-1);
 			}
 			//right side
 			//Check if the card is not at the right edge
-			if (cardId % NUMBER_OF_ROWS !== 0) {
+			if (cardId % this.defaults.numberOfRows !== 0) {
 				//Add the card to the right to possible moves
 				moves.push(cardId+1);
 			}
 			//bottom
 			//Make sure the card is not at the very bottom
-			if (cardId < (DEFAULT_NUMBER_OF_CARDS - NUMBER_OF_ROWS)) {
+			if (cardId < (DEFAULT_NUMBER_OF_CARDS - this.defaults.numberOfRows)) {
 				let bottomLeftRange = 5;
 				let bottomRightRange = 7;
 				//left
 				//Check if the card is at the left edge
-				if( cardId % NUMBER_OF_ROWS === 1) {
+				if( cardId % this.defaults.numberOfRows === 1) {
 					bottomLeftRange +=1;
 				}
 				//right
 				//Check if the card is at the right edge
-				if (cardId % NUMBER_OF_ROWS === 0) {
+				if (cardId % this.defaults.numberOfRows === 0) {
 					bottomRightRange -=1;
 				}
 				//Add all the cards to the moves based on the range
