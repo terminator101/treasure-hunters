@@ -364,6 +364,11 @@ export default class GameBoard extends React.Component {
 		return outerWater;
 	}
 
+	/**
+	 * Get the outer water depending on the postion
+	 * @param {Object} position 
+	 * @param {Array} outerWaterArray 
+	 */
 	_getOuterWater(position,outerWaterArray){
 		let displayArray = [];
 		switch(position){
@@ -396,11 +401,15 @@ export default class GameBoard extends React.Component {
 	///////////////////
 	/// Player Boats
 	///////////////////
+	/**
+	 * Create all player boats
+	 * @param {Array} playersArray 
+	 */
 	_createPlayerBoats(playersArray){
 		let playerBoatsArray = [];
 		let movementType = "";
 		for(let player of playersArray){
-
+			//Update the movement based on the player initial location
 			movementType = this._setBoatUnitMovementType(player);
 
 			playerBoatsArray.push({ 
@@ -437,6 +446,13 @@ export default class GameBoard extends React.Component {
 		return playerBoatsArray;
 	}
 
+	/**
+	 * Add a player boat to outer water
+	 * @param {Object} boat 
+	 * @param {Object} spot 
+	 * @param {Array} playerBoatsArray 
+	 * @param {Array} outerWaterArray 
+	 */
 	_addPlayerBoatToOuterWater(boat,spot,playerBoatsArray,outerWaterArray){
 		let outerWaterUpdatedWithBoatsArray = outerWaterArray.slice();
 
@@ -450,6 +466,11 @@ export default class GameBoard extends React.Component {
 		return outerWaterUpdatedWithBoatsArray;
 	}
 
+	/**
+	 * Remove a player boat from outer water
+	 * @param {Object} boat 
+	 * @param {Array} objectArray 
+	 */
 	_removePlayerBoatFromOuterWater(boat,objectArray){
 		let updatedObjectArray = objectArray;
 
@@ -505,7 +526,7 @@ export default class GameBoard extends React.Component {
 	_setBoatUnitMovementType(location){
 		let movementType = "";
 		//If movement type for this location is horizontal, set the unit to move vertically
-		if (location.row === 0 || location.row === (this.defaults.numberOfRows + 1)) {
+		if (location.row === 0 || location.row === (this.defaults.numberCardsPerRow + 1)) {
 			movementType = "vertical";
 		} 
 		else
@@ -529,14 +550,17 @@ export default class GameBoard extends React.Component {
 		let cardArray = [];
 		let cardTypeCounter = 0;
 		let generatedCards = [];
-		let createdCardCounter = 0;
+		//let createdCardCounter = 0;
 		//let totalNumberOfCards = this.defaults.numberCardsPerRow * this.defaults.numberOfRows;
 
-		cardTypes.forEach(function(card, key) {
-			cardTypeNumbersCount.forEach(function(cardCountNumber, cardCountKey){
-				if(key === cardCountKey){
+		//Loop through all the card types
+		cardTypes.forEach(function(card, cardTypeName) {
+			//For each card type, loop through each count
+			cardTypeNumbersCount.forEach(function(cardCountNumber, cardCountName){
+				if(cardTypeName === cardCountName){
+					//A card has been found so use its counter to create appropriate number of cards
 					for(let i = 0; i < cardCountNumber; i++) {
-						createdCardCounter++
+						//createdCardCounter++
 						generatedCards.push({ card });
 					} 
 				}
@@ -557,29 +581,30 @@ export default class GameBoard extends React.Component {
 		//Randomize the generated cards
 		generatedCards = this._randomizeArray(generatedCards);
 
+		//Create all of the rows
 		for(let r = 0; r < this.defaults.numberOfRows + 2; r++){
 			cardArray[r] = [];
 		}
 
 		//top outerWater
-		for(let i = 1; i < this.defaults.numberOfRows + 1; i++){
+		for(let i = 1; i < this.defaults.numberCardsPerRow + 1; i++){
 			cardArray[0][i] = this._createOuterWater(outerWaterTypes.top,i);
 		}
 
-		for (let r = 1; r < this.defaults.numberCardsPerRow + 1; r++) {
+		for (let r = 1; r < this.defaults.numberOfRows + 1; r++) {
 			cardArray[r] = [];
 
 			//Left outerWater
 			cardArray[r][0] = this._createOuterWater(outerWaterTypes.left,r);
 
-			for (let i = 1; i < this.defaults.numberCardsPerRow + 1; i++) {
+			for (let c = 1; c < this.defaults.numberCardsPerRow + 1; c++) {
 				//Check if the card is at the edge
-				let isEdge = this._isAtTheEdge(r,i);
+				let isEdge = this._isAtTheEdge(r,c);
 				let displayValues = this.defaults.displayValues;
 
-				cardArray[r][i] = { 
+				cardArray[r][c] = { 
 					row: 			r, 
-					col: 			i, 
+					col: 			c, 
 					cardType: 		generatedCards[cardTypeCounter].card.cardType,
 					movementType: 	generatedCards[cardTypeCounter].card.movementType,
 					cardWidth: 		this.defaults.cardWidthClass, 
@@ -601,8 +626,7 @@ export default class GameBoard extends React.Component {
 			}
 
 			//right outerWater
-			cardArray[r][this.defaults.numberCardsPerRow + 1] = this._createOuterWater(outerWaterTypes.right,r);
-			
+			cardArray[r][this.defaults.numberOfRows + 1] = this._createOuterWater(outerWaterTypes.right,r);
 		}
 
 		//bottom outerWater
