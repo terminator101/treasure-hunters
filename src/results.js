@@ -23,13 +23,15 @@ export default class Results extends React.Component {
 	 * @param {event} e 
 	 */
 	_rematch(e) {    
-        //e.preventDefault();    
+		//e.preventDefault();   
+		//Hide the results
+		this.context.setDisplayResults(false); 
 		
 		//Update the players
 		this.context.setPlayers(this._resetPlayerProperties(this.context.playersArray));
-		
+
 		//Change the screen
-		this.context.setDisplayScreen(this.defaults.screens.gameBoard);
+		this.context.setDisplayScreen(this.defaults.screens.mainMenu);
 	}
 
 	/**
@@ -37,8 +39,14 @@ export default class Results extends React.Component {
 	 * @param {event} e 
 	 */
 	_reset(e){
+		//Hide the results
+		this.context.setDisplayResults(false); 
+		
 		//Update the players
 		this.context.setPlayers(null);
+
+		//Reset the game settings back to defaults
+		this.context.setGameSettings('small');
 
 		//Change the screen
 		this.context.setDisplayScreen(this.defaults.screens.mainMenu);
@@ -90,8 +98,9 @@ export default class Results extends React.Component {
 
 	render(){
 		this.settings = Object.assign({}, this.defaults, this.props);
+		let displayResults = this.context.displayResults ? "" : "d-none"; 
 		return(
-			<div className="row h-100 no-gutters justify-content-center">
+			<div className={"row h-100 no-gutters justify-content-center " + displayResults}>
 				<div className="col-lg-6 pt-4">
 					<div className="row no-gutters justify-content-center">
 						<div className="col pb-1">
@@ -115,7 +124,7 @@ export default class Results extends React.Component {
 						</div>
 					</div>
 					<div className="row no-gutters justify-content-center">
-						<div class="col-md-12 btn-group btn-group-justified">
+						<div className="col-md-12 btn-group btn-group-justified">
 							<button type="button" className="btn btn-primary"
 								value="Rematch"     
 								onClick={() => this._rematch()}>Rematch

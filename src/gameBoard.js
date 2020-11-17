@@ -75,7 +75,6 @@ export default class GameBoard extends React.Component {
 
 	//Used for testing
 	componentDidMount() {
-		
 		//this._debug({row: 1, col: 1});
 		//this._debug4();
 		//this._debug2();
@@ -194,7 +193,7 @@ export default class GameBoard extends React.Component {
 	render(){
 		this.settings = Object.assign({}, this.defaults, this.props);
 		const updatedCardArray = this.state.cardArray.slice();
-		let currentPlayer = this.state.currentPlayer;
+		let currentPlayer = this.state.currentPlayer ? this.state.currentPlayer : "";
 		let displayCardArray = [];
 
 		//Display the cards, but remove the first and last since that's outer water
@@ -222,11 +221,11 @@ export default class GameBoard extends React.Component {
 				/>
 				<div className="row justify-content-center no-gutters">
 					<div className={ this.settings.gameBoardWidthClass }>
-						<div className="row no-gutters">
+						{currentPlayer ? <div className="row no-gutters">
 							<div className="col-12">
 								{ currentPlayer.playerName + " | " + currentPlayer.score }
 							</div>
-						</div>
+						</div> : ""}
 						<div className="row no-gutters">
 							<div className={ outerWaterTopBottomContainerWithClass }>
 								<div className="row no-gutters">
@@ -1518,6 +1517,7 @@ export default class GameBoard extends React.Component {
 
 		let updatedCardArray = this.state.cardArray.slice();
 
+		let updatedCurrentPlayer = "";
 		let updatedPlayersArray = this.state.playersArray.slice();
 		let updatedUnitsArray = this.state.playerUnitsArray.slice();
 		let updatedPlayerBoatsArray = this.state.playerBoatsArray.slice();
@@ -1657,34 +1657,40 @@ export default class GameBoard extends React.Component {
 
 		//Get all player units
 		let currentPlayerUnits = this._getPlayerUnitsFromPlayer(this.state.currentPlayer,updatedUnitsArray);
+		//get the current player
+		let currentPlayer = this._getCurrentPlayer(updatedPlayersArray);
 
 		if (currentPlayerUnits.length === 0) {
 			//All of the current player units are dead so set the player as dead
+			updatedCardArray = this._disableAllCards(updatedCardArray);
 			updatedPlayersArray = this._changePlayerState(this.state.currentPlayer,updatedPlayersArray,this.defaults.playerStates.dead);
 			updatedPlayersArray = this._changePlayerResultText(this.state.currentPlayer,updatedPlayersArray,this.defaults.resultText.lose);
 
 			//The player died so game is over
 			this.context.setPlayers(updatedPlayersArray);
-			this.context.setDisplayScreen(this.defaults.screens.resultsScreen);
+			this.context.setDisplayResults(true);
+			//this.context.setDisplayScreen(this.defaults.screens.resultsScreen);
 		}
-		let currentPlayer = this._getCurrentPlayer(updatedPlayersArray);
-
+		else
 		if (currentPlayer.score === this.defaults.treasuresForWin){
-			
+			//The current player found enough treasures to win
+			updatedCardArray = this._disableAllCards(updatedCardArray);
 			updatedPlayersArray = this._changePlayerResultText(this.state.currentPlayer,updatedPlayersArray,this.defaults.resultText.win);
 			//Current player reached the desired score so game is over
 			this.context.setPlayers(updatedPlayersArray);
-			this.context.setDisplayScreen(this.defaults.screens.resultsScreen);
+			this.context.setDisplayResults(true);
+			//this.context.setDisplayScreen(this.defaults.screens.resultsScreen);
 		}
-
-		//Switch to the next player
-		updatedPlayersArray = this._goNextPlayer(updatedPlayersArray); //this._createTurn(this.turnTypes.next,updatedPlayersArray); 
+		else {
+			//Switch to the next player
+			updatedPlayersArray = this._goNextPlayer(updatedPlayersArray); //this._createTurn(this.turnTypes.next,updatedPlayersArray); 
 		
-		//Get the next player
-		let updatedCurrentPlayer = this._getCurrentPlayer(updatedPlayersArray);
+			//Get the next player
+			updatedCurrentPlayer = this._getCurrentPlayer(updatedPlayersArray);
 
-		//enable all cards that have the next players units and boats
-		updatedCardArray = this._enableAllCardsWithCurrentplayerUnitsAndBoats(updatedCurrentPlayer,updatedCardArray,updatedUnitsArray,updatedPlayerBoatsArray);
+			//enable all cards that have the next players units and boats
+			updatedCardArray = this._enableAllCardsWithCurrentplayerUnitsAndBoats(updatedCurrentPlayer,updatedCardArray,updatedUnitsArray,updatedPlayerBoatsArray);
+		}
 
 		this.setState({
 			currentPlayerUnit: "",
@@ -1768,7 +1774,7 @@ export default class GameBoard extends React.Component {
 	 */
 	_createTurn(currentPlayer){
 		
-		if(currentPlayer.playerType === 'computer'){
+		if(currentPlayer.computer){
 			//Let the computer go
 			setTimeout(() => {
 				this._goComputer(currentPlayer);

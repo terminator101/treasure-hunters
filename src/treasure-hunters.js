@@ -16,7 +16,7 @@ export default class TreasureHunters extends React.Component {
 		super(props);
 
 		this.defaults = {
-			gameSetup:		 GAME_SETUPS.small,
+			gameSetup:		 GAME_SETUPS,
 			treasuresForWin: 1,
 			displayValues:	 false,
 			screens:		 SCREENS,
@@ -30,7 +30,6 @@ export default class TreasureHunters extends React.Component {
 			//displayScreen: this.defaults.screens.gameBoard,
 			//setDisplayScreen: this._setDisplayScreen,
 		}
-
 	}
 
 	/* _getCards(){
@@ -57,20 +56,23 @@ export default class TreasureHunters extends React.Component {
 		else
 		if(this.context.displayScreen === this.defaults.screens.gameBoard){
 			return(
-				<GameBoard
-					playersArray  = {this.context.playersArray}
-					cardsHolderId = {this.settings.cardsHolderId}
-					displayValues = {this.settings.displayValues}
-					treasuresForWin = {this.settings.treasuresForWin}
-					//numberOfCards = {this.settings.numberOfCards}
-					gameSetup = {this.settings.gameSetup}
-					/* numberOfRows  = {this.settings.gameSetup.numberOfRows}
-					numberCardsPerRow = {this.settings.gameSetup.numberCardsPerRow}
-					cardRowWidthClass = {this.settings.gameSetup.cardRowWidthClass}
-					cardWidthClass = {this.settings.gameSetup.cardWidthClass}
-					unitsPerPlayer = {this.settings.gameSetup.unitsPerPlayer} */
-					cardImagesArray = {this.settings.cardImagesArray}
-				/>
+				<div>
+					<Results />
+					<GameBoard
+						playersArray  = {this.context.playersArray}
+						cardsHolderId = {this.settings.cardsHolderId}
+						displayValues = {this.settings.displayValues}
+						treasuresForWin = {this.settings.treasuresForWin}
+						//numberOfCards = {this.settings.numberOfCards}
+						gameSetup = {this.settings.gameSetup[this.context.gameSettings]}
+						/* numberOfRows  = {this.settings.gameSetup.numberOfRows}
+						numberCardsPerRow = {this.settings.gameSetup.numberCardsPerRow}
+						cardRowWidthClass = {this.settings.gameSetup.cardRowWidthClass}
+						cardWidthClass = {this.settings.gameSetup.cardWidthClass}
+						unitsPerPlayer = {this.settings.gameSetup.unitsPerPlayer} */
+						cardImagesArray = {this.settings.cardImagesArray}
+					/>
+				</div>
 			)
 		} else {
 			return(

@@ -17,22 +17,38 @@ class App extends React.Component {
         this.state = {
           displayScreen: this.defaults.screens.mainMenu,
           setDisplayScreen: this._setDisplayScreen,
-          playersArray: [{ playerId: 0, playerName: DEAFULT_PLAYER_NAME, row: 0, col: 3, playerClass: "player1", score: 0, playerType: "human", boatImage: "ship_brown" }],
+          displayResults: false,
+          setDisplayResults: this._setDisplayResults,
+          playersArray: [{ playerId: 0, playerName: "", row: 0, col: 3, computer: false, playerClass: "player1", score: 0, boatImage: "ship_brown", resultText: "" }],
           setPlayers: this._setPlayers,
+          gameSettings: "small",
+          setGameSettings: this._setGameSettings,
         }
     }
 
+    _setDisplayResults = (vars) => {
+      this.setState(state => ({
+        displayResults: vars
+      }));
+    }
+
     _setDisplayScreen = (vars) => {
-        this.setState(state => ({
-          displayScreen: vars
-        }));
+      this.setState(state => ({
+        displayScreen: vars
+      }));
     };
 
     _setPlayers = (vars) => {
       this.setState(state => ({
-        playersArray: vars
+        playersArray: vars ? vars.slice() : vars
       }));
-  };
+    };
+
+    _setGameSettings = (vars) => {
+      this.setState(state => ({
+        gameSettings: vars
+      }));
+    };
     
     render(){
         return (

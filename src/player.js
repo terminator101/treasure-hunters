@@ -20,7 +20,7 @@ class Player extends React.Component {
 			playerUnitNumber: 2,
 			playerClass: "player",
 			playerState: "",
-			playerType: "human",
+			computer: false,
 			dead: false,
 			boatImage: "ship_black",
 			resultText: "",
@@ -208,5 +208,77 @@ class PlayerBoat extends React.Component {
 	}
 }
 
-///
 export { Player, PlayerScore, PlayerUnit, PlayerBoat };
+
+/* class PlayerEntry extends React.Component {
+	constructor(props) {
+		super(props);
+
+		this.defaults = {
+			playerId: 	this.props.playerId ? this.props.playerId : 0,
+			playerNumber: 1,
+			playerName: this.props.playerName ? this.props.playerName : "",
+			computer: false,
+		}
+
+		this.state = {
+			playerNumber: this.defaults.playerNumber,
+			playerName: this.defaults.playerName,
+			playerComputer: false,
+		}
+
+		this.handleInputChange = this.handleInputChange.bind(this);
+	}
+
+	/**
+     * Get the state of the input and update the value
+     * @param {event} event 
+	 *
+    handleInputChange(event){
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            [name]: value
+        });
+    }
+
+	render(){
+		this.settings = Object.assign({}, this.defaults, this.props);
+		return(
+			<div className="row">
+				<div className="col pb-1">
+					<label htmlFor="player0name">&nbsp; Player {this.state.playerNumber} Name:</label>
+					<div className="row align-items-center">
+						<div className="col">
+							<input
+								name={"player" + this.state.playerNumber + "name"}
+								className="form-control"
+								type="text"
+								id={"player" + this.state.playerNumber + "name"}
+								value={ this.state.playerName }
+								onChange={ this.handleInputChange }
+								maxLength="15"
+								required />
+						</div>
+						<div className="col">
+							<div className="checkbox">
+								<label>
+									<input
+										hidden="true"
+										name={"player" + this.state.playerNumber + "computer"}
+										type="checkbox"
+										checked={ this.state.playerComputer } 
+										onChange={ this.handleInputChange } />
+									<span> </span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+}
+*/
