@@ -191,7 +191,7 @@ export default class Card extends React.Component {
 	}
 
 }
-
+/* Reserved for future so that different treasures can be added
 class Treasure extends React.Component {
 
 	constructor(props) {
@@ -213,4 +213,4 @@ class Treasure extends React.Component {
 			<div className="treasure">{this.settings.name}</div>
 		);
 	}
-}
+} */

@@ -1,6 +1,6 @@
 import React from 'react';
 import TreasureHunters from './treasure-hunters';
-import { SCREENS, DEAFULT_PLAYER_NAME } from './constants';
+import { SCREENS, DEFAULT_PLAYERS, GAME_SETUPS } from './constants';
 import { DisplayScreenContext } from "./display-screen-context";
 
 class App extends React.Component {
@@ -19,9 +19,9 @@ class App extends React.Component {
           setDisplayScreen: this._setDisplayScreen,
           displayResults: false,
           setDisplayResults: this._setDisplayResults,
-          playersArray: [{ playerId: 0, playerName: "", row: 0, col: 3, computer: false, playerClass: "player1", score: 0, boatImage: "ship_brown", resultText: "" }],
+          playersArray: [DEFAULT_PLAYERS[0]],//[{ playerId: 0, playerName: "", row: 0, col: 3, computer: false, playerClass: "player1", score: 0, boatImage: "ship_brown", resultText: "" }],
           setPlayers: this._setPlayers,
-          gameSettings: "small",
+          gameSettings: GAME_SETUPS.small.value,
           setGameSettings: this._setGameSettings,
         }
     }

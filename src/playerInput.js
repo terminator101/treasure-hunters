@@ -9,7 +9,8 @@ const PlayerInput = ({ idx, playerState, handlePlayerChange, handlePlayerRemove 
             <div className="form-group">
                 <label htmlFor={ playerId }>&nbsp; {`Player #${idx + 1} Name:`} </label>
                 <input
-                    name={ playerId }
+                    //name={ playerId }
+                    name="playerName"
                     data-idx={ idx }
                     className="playerName"
                     type="text"
@@ -35,8 +36,8 @@ const PlayerInput = ({ idx, playerState, handlePlayerChange, handlePlayerRemove 
                     </label>
                 </div>*/}
             </div>
-            {//Display the remove button but only if there are at least two players
-            idx > 0 ? 
+            {//Display the remove button but only if there are at least two players and only display this for the last player
+            (idx > 0 && idx === (playerState.length - 1)) ? 
                 <div className="form-group">
                     <button type="button" onClick={() => handlePlayerRemove(idx) } className="btn btn-danger">Remove player</button>
                 </div>

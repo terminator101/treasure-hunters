@@ -8,6 +8,25 @@
 //Player
 export const DEAFULT_PLAYER_NAME = 'Tester';
 
+export const DEFAULT_PLAYERS = [
+	{ playerId: 0, playerName: "player1", 
+		gameSmallLocation: {row: 0, col: 2}, 
+		gameMediumLocation: {row: 0, col: 2}, 
+		computer: false, playerClass: "player1", score: 0, boatImage: "ship_brown", resultText: ""},
+	{ playerId: 1, playerName: "player2", 
+		gameSmallLocation: {row: 2, col: 0}, 
+		gameMediumLocation: {row: 3, col: 0},
+		computer: false, playerClass: "player2", score: 0, boatImage: "ship_red", resultText: ""},
+	{ playerId: 2, playerName: "player3", 
+		gameSmallLocation: {row: 2, col: 4}, 
+		gameMediumLocation: {row: 2, col: 5},
+		computer: false, playerClass: "player3", score: 0, boatImage: "ship_green", resultText: ""},
+	{ playerId: 3, playerName: "player4", 
+		gameSmallLocation: {row: 4, col: 2}, 
+		gameMediumLocation: {row: 5, col: 3},
+		computer: false, playerClass: "player4", score: 0, boatImage: "ship_yellow", resultText: ""},
+]
+
 export const PLAYER_STATES = {
 	current: 	'current',
 	previous: 	'previous',
@@ -51,6 +70,9 @@ export const OUTER_WATER_TYPES = {
 export const GAME_SETUPS = {
 	small: 
 	{
+		label: "Small",
+		value: "small",
+		playerLocations: "gameSmallLocation",
 		numberOfRows: 3,
 		numberCardsPerRow: 3,
 		unitsPerPlayer: 2,
@@ -70,6 +92,9 @@ export const GAME_SETUPS = {
 	},
 	medium: 
 	{
+		label: "Medium (work in progress)",
+		value: "medium",
+		playerLocations: "gameMediumLocation",
 		numberOfRows: 4,
 		numberCardsPerRow: 4,
 		unitsPerPlayer: 2,

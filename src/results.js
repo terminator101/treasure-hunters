@@ -22,11 +22,10 @@ export default class Results extends React.Component {
 	 * When rematch button is pressed
 	 * @param {event} e 
 	 */
-	_rematch(e) {    
-		//e.preventDefault();   
+	_rematch(e) {     
 		//Hide the results
-		this.context.setDisplayResults(false); 
-		
+		this.context.setDisplayResults(false);
+
 		//Update the players
 		this.context.setPlayers(this._resetPlayerProperties(this.context.playersArray));
 
@@ -54,7 +53,7 @@ export default class Results extends React.Component {
 
 	/**
 	 * Reset players so that a new game can start without problems
-	 * @param {array} playersArray 
+	 * @param {Array} playersArray 
 	 */
 	_resetPlayerProperties(playersArray){
 		let updatedPlayersArray = playersArray.slice();
@@ -62,9 +61,10 @@ export default class Results extends React.Component {
 		for(let player of updatedPlayersArray){
 			let thePlayerState = "";
 			if(player.id === 0){
+				//Set the first player as the current so that they can go first
 				thePlayerState = this.defaults.playerStates.current;
 			}
-			updatedPlayersArray[player.id] = Object.assign(player, updatedPlayersArray[player.id], {
+			updatedPlayersArray[player.id] = Object.assign({}, updatedPlayersArray[player.id], {
 				score: 0,
 				playerState: thePlayerState,
 				resultText: "",

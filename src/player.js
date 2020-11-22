@@ -93,7 +93,7 @@ class PlayerUnit extends React.Component {
 	render(){
 		this.settings = Object.assign({}, this.defaults, this.props);
 		return(
-			<div className={this.settings.unitClass + "unit"}></div>
+			<div className={"diver " + this.settings.unitClass + "unit"}></div>
 		);
 	}
 

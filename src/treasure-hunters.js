@@ -65,6 +65,7 @@ export default class TreasureHunters extends React.Component {
 						treasuresForWin = {this.settings.treasuresForWin}
 						//numberOfCards = {this.settings.numberOfCards}
 						gameSetup = {this.settings.gameSetup[this.context.gameSettings]}
+						gameSize = {this.context.gameSettings}
 						/* numberOfRows  = {this.settings.gameSetup.numberOfRows}
 						numberCardsPerRow = {this.settings.gameSetup.numberCardsPerRow}
 						cardRowWidthClass = {this.settings.gameSetup.cardRowWidthClass}

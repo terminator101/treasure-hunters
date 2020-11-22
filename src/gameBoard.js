@@ -7,7 +7,8 @@ import { CARD_TYPES,
 		OUTER_WATER_TYPES, 
 		PLAYER_STATES,
 		SCREENS, 
-		RESULT_TEXT} from './constants';
+		RESULT_TEXT,
+		GAME_SETUPS, } from './constants';
 
 export default class GameBoard extends React.Component {
 
@@ -21,6 +22,7 @@ export default class GameBoard extends React.Component {
 
 		this.defaults = {
 			outerWaterTypes:  	OUTER_WATER_TYPES,
+			gameSize:			this.props.gameSize,
 			numberOfRows:		this.props.gameSetup.numberOfRows,
 			numberCardsPerRow: 	this.props.gameSetup.numberCardsPerRow,
 			cardRowWidthClass: 	this.props.gameSetup.cardRowWidthClass,
@@ -40,9 +42,9 @@ export default class GameBoard extends React.Component {
 
 		this.state = {
 			playersArray: 		this.props.playersArray,
-			playerUnitsArray: 	this._createPlayerUnits(this.defaults.unitsPerPlayer,this.props.playersArray),
+			playerUnitsArray: 	this._createPlayerUnits(this.defaults.unitsPerPlayer,this.props.playersArray,this.props.gameSize),
 			cardArray: 			this._createCards(CARD_TYPES,OUTER_WATER_TYPES,this.defaults.cardTypeNumbersCount),
-			playerBoatsArray: 	this._createPlayerBoats(this.props.playersArray),
+			playerBoatsArray: 	this._createPlayerBoats(this.props.playersArray,this.props.gameSize),
 			treasuresArray:		[],
 			possibleMovesUnit: 	[],
 			possibleMovesBoat: 	[],
@@ -402,20 +404,23 @@ export default class GameBoard extends React.Component {
 	///////////////////
 	/**
 	 * Create all player boats
-	 * @param {Array} playersArray 
+	 * @param {Array} playersArray
+	 * @param {String} gameSize
 	 */
-	_createPlayerBoats(playersArray){
+	_createPlayerBoats(playersArray,gameSize){
 		let playerBoatsArray = [];
 		let movementType = "";
+		let startLocation = {};
 		for(let player of playersArray){
 			//Update the movement based on the player initial location
 			movementType = this._setBoatUnitMovementType(player);
-
+			//Get the starting positon based on the game size
+			startLocation = this._getStartingPlayerLocation(player,gameSize);
 			playerBoatsArray.push({ 
 				key: "boat" + player.playerId,
 				id: player.playerId, 
-				row: player.row, 
-				col: player.col, 
+				row: startLocation.row, 
+				col: startLocation.col, 
 				units: [], 
 				possibleMove: false, 
 				objectType: "boat",
@@ -481,28 +486,49 @@ export default class GameBoard extends React.Component {
 		return updatedObjectArray;
 	}
 
+	/**
+	 * Get the starting location depending on the game size
+	 * @param {Object} player 
+	 * @param {String} gameSize 
+	 */
+	_getStartingPlayerLocation(player,gameSize){
+		let location = {};
+		let gameSizeName = "";
+		if(gameSize === GAME_SETUPS.small.value){
+			gameSizeName = GAME_SETUPS.small.playerLocations;
+		}
+		else
+		if(gameSize === GAME_SETUPS.medium.value){
+			gameSizeName = GAME_SETUPS.medium.playerLocations;
+		}
+		location = {row: player[gameSizeName].row, col: player[gameSizeName].col}
+		return location;
+	}
+
 	///////////////////
 	/// Player Units
 	///////////////////
 	/**
 	 * Create the player units
-	 * @param {integer} unitsPerPlayer 
-	 * @param {Array} playersArray 
+	 * @param {Integer} unitsPerPlayer 
+	 * @param {Array} playersArray
+	 * @param {String} gameSize
 	 */
-	_createPlayerUnits(unitsPerPlayer,playersArray){
+	_createPlayerUnits(unitsPerPlayer,playersArray,gameSize){
 		//let playersArray = this.state.playersArray;
 		let playerUnitsArray = []; //this.state.playerUnitsArray.slice();
 		let unitCounter = 0;
+		let startLocation = {};
 		//console.log(playersArray);
 		for(let player of playersArray){
-			//console.log(player);
-			//this._createUnit(playersArray[index]);
+			//Get the starting positon based on the game size
+			startLocation = this._getStartingPlayerLocation(player,gameSize);
 			for (let i = 0; i < unitsPerPlayer; i++) {
 				playerUnitsArray.push({ 
 					id: unitCounter,
 					key: player.playerName + i, 
-					row: player.row, 
-					col: player.col, 
+					row: startLocation.row, 
+					col: startLocation.col, 
 					playerId: player.playerId, 
 					playerName: player.playerName, 
 					location: "boat",

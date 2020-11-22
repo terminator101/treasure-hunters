@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { DisplayScreenContext } from "./display-screen-context";
-import { SCREENS } from './constants';
+import { SCREENS, DEFAULT_PLAYERS, GAME_SETUPS } from './constants';
 import PlayerInput from './playerInput';
 
 const MainMenu = () => {
@@ -8,23 +8,32 @@ const MainMenu = () => {
     //Enable context
     const displayScreenContext = useContext(DisplayScreenContext);
     //Set the default player
-    const newPlayer = [{ playerId: 0, playerName: "", row: 0, col: 3, computer: false, playerClass: "player1", score: 0, boatImage: "ship_brown", resultText: "" }];
+    const newPlayer = [DEFAULT_PLAYERS[0]]; //[{ playerId: 0, playerName: "", row: 0, col: 3, computer: false, playerClass: "player1", score: 0, boatImage: "ship_brown", resultText: "" }];
+    
+    const defaultPlayers = DEFAULT_PLAYERS;
     //Get the players from the context. If there are no players, just put the default one
     const displayScreenContextPlayers = displayScreenContext.playersArray ? displayScreenContext.playersArray : newPlayer;
+    
+    //console.log('displayScreenContextPlayers');
+    //console.log(displayScreenContextPlayers);
     //Get the game settings
     const gameSettings = displayScreenContext.gameSettings;
     const screens = SCREENS;
 
     const [gameSizes] = React.useState([
         {
-            label: "Small",
-            value: 'small'
+            label: GAME_SETUPS.small.label,
+            value: GAME_SETUPS.small.value,
         },
         {
-            label: "Medium (work in progress)",
-            value: 'medium'
+            label: GAME_SETUPS.medium.label,
+            value: GAME_SETUPS.medium.value
         },
     ]);
+
+    const [playerCounter, updatePlayerCounter] = useState(
+        displayScreenContextPlayers.length
+    );
 
     const [gameSettingsState, setGameSettingsState] = useState({
         gameSize: gameSettings,
@@ -40,10 +49,13 @@ const MainMenu = () => {
     ]);
 
     const addPlayer = () => {
-        setPlayerState([...playerState, {...newPlayer}]);
+        updatePlayerCounter(playerCounter + 1);
+        /* setPlayerState([...playerState, {...newPlayer}]); */
+        setPlayerState([...playerState, {...defaultPlayers[playerCounter]}]);
     };
 
     const handlePlayerRemove = (index) => {
+        updatePlayerCounter(playerCounter - 1);
         const updatedPlayers = [...playerState];
         updatedPlayers.splice(index, 1);
         setPlayerState(updatedPlayers); 
@@ -52,7 +64,7 @@ const MainMenu = () => {
     const handlePlayerChange = (e) => {
         const updatedPlayers = [...playerState];
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        updatedPlayers[e.target.dataset.idx][e.target.className] = value;
+        updatedPlayers[e.target.dataset.idx][e.target.name] = value;
         /* updatedPlayers[e.target.dataset.idx][e.target.className] = 
         e.target.value; */
         setPlayerState(updatedPlayers); 
@@ -101,11 +113,11 @@ const MainMenu = () => {
                             />
                         ))
                     }
-                    {/* Implement once more players can be added
+                    {playerState.length < 4 ?
                     <div className="form-group">
                         <button type="button" onClick={ addPlayer } className="btn btn-primary">Add player</button>
                     </div>
-                     */}
+                    : ""}
                     <div className="form-group">
                         <button type="submit" className="btn btn-primary">Start Game</button>
                     </div>

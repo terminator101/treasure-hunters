@@ -60,29 +60,28 @@
 	bottom: 40%;
 }*/
 
-.player1unit {
-	background:
-    radial-gradient(1.2em 1.2em at 50% 50%, red 50%, transparent 50%);
-  background-repeat: no-repeat;
-  width: 20px;
-  height: 20px;
-   margin: auto;
-   float: left;
+.diver {
+	width: 20px;
+  	height: 20px;
+   	margin: auto;
+	float: left;
+	background-repeat: no-repeat;
 }
 
-/*.player2boat > .unitsHolder {
-	position:absolute;
-	width:100%;
-}*/
+.player1unit {
+	background: radial-gradient(1.2em 1.2em at 50% 50%, red 50%, transparent 50%); 
+}
 
 .player2unit {
-	background:
-    radial-gradient(1.2em 1.2em at 50% 50%, cyan 50%, transparent 50%);
-  background-repeat: no-repeat;
-  width: 20px;
-  height: 20px;
-  margin: auto;
-  float: left;
+	background: radial-gradient(1.2em 1.2em at 50% 50%, cyan 50%, transparent 50%);
+}
+
+.player3unit {
+	background: radial-gradient(1.2em 1.2em at 50% 50%,  rgb(14, 122, 8) 50%, transparent 50%);
+}
+
+.player4unit {
+	background: radial-gradient(1.2em 1.2em at 50% 50%, rgb(120, 122, 8) 50%, transparent 50%);
 }
 
 .possibleMove {
