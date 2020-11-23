@@ -60,11 +60,11 @@ export default class Results extends React.Component {
 
 		for(let player of updatedPlayersArray){
 			let thePlayerState = "";
-			if(player.id === 0){
+			if(player.playerId === 0){
 				//Set the first player as the current so that they can go first
 				thePlayerState = this.defaults.playerStates.current;
 			}
-			updatedPlayersArray[player.id] = Object.assign({}, updatedPlayersArray[player.id], {
+			updatedPlayersArray[player.playerId] = Object.assign({}, updatedPlayersArray[player.playerId], {
 				score: 0,
 				playerState: thePlayerState,
 				resultText: "",
