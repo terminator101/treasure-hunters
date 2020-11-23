@@ -59,7 +59,7 @@ export default class GameBoard extends React.Component {
 		this.state.cardArray = this._addAllTreasuresToCards(this.state.treasuresArray,this.state.cardArray);
 		//Add all the units to each boat
 		this.state.playerBoatsArray = this._addAllUnitsToBoats(this.state.playerUnitsArray,this.state.playerBoatsArray);
-		//Update the cards with boats and units
+		//Add all boats to cards
 		this.state.cardArray = this._addAllBoatsToCards(this.state.playerBoatsArray,this.state.cardArray);
 
 		//Allow the first player to go
@@ -414,10 +414,10 @@ export default class GameBoard extends React.Component {
 		let movementType = "";
 		let startLocation = {};
 		for(let player of playersArray){
-			//Update the movement based on the player initial location
-			movementType = this._setBoatUnitMovementType(player);
 			//Get the starting positon based on the game size
 			startLocation = this._getStartingPlayerLocation(player,gameSize);
+			//Update the movement based on the player starting positon
+			movementType = this._setBoatUnitMovementType(startLocation);
 			playerBoatsArray.push({ 
 				key: "boat" + player.playerId,
 				id: player.playerId, 
@@ -1246,7 +1246,6 @@ export default class GameBoard extends React.Component {
 			console.log(possibleMovesBoat);
 			console.log("Card moves");
 			console.log(possibleMovesUnit);*/
-
 		}
 
 		cardArray = this._disableAllCards(cardArray);
