@@ -54,6 +54,13 @@ const MainMenu = () => {
         setPlayerState([...playerState, {...defaultPlayers[playerCounter]}]);
     };
 
+    const addComputer = () => {
+        updatePlayerCounter(playerCounter + 1);
+        let newComputer = {...defaultPlayers[playerCounter]}
+        newComputer.computer = true;
+        setPlayerState([...playerState, newComputer]);
+    }
+
     const handlePlayerRemove = (index) => {
         updatePlayerCounter(playerCounter - 1);
         const updatedPlayers = [...playerState];
@@ -70,15 +77,35 @@ const MainMenu = () => {
         setPlayerState(updatedPlayers); 
     };
 
+    //Check for any duplicate player nampes
+    const checkPlayerNames = (players) => {
+        if(players.length > 1){
+            for(let c = 0; c < players.length; c++){
+                for(let p = 0; p < players.length; p++){
+                    if(c !== p && players[c].playerName === players[p].playerName){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     //The submit button has been selected
     const handleSubmit = (e) => {
         e.preventDefault();
-        //Pass the players to the context
-        displayScreenContext.setPlayers( playerState );
-        //Switch the screen to the gameboard
-        displayScreenContext.setDisplayScreen(screens.gameBoard);
-        //Update the context with the game size
-        displayScreenContext.setGameSettings( gameSettingsState.gameSize );
+
+        if(!checkPlayerNames(playerState)){
+            //The check didn't pass so show error message
+            alert('Player names must be unique');
+        } else {
+            //Pass the players to the context
+            displayScreenContext.setPlayers( playerState );
+            //Switch the screen to the gameboard
+            displayScreenContext.setDisplayScreen(screens.gameBoard);
+            //Update the context with the game size
+            displayScreenContext.setGameSettings( gameSettingsState.gameSize );
+        }
     };
 
     return (
@@ -86,21 +113,17 @@ const MainMenu = () => {
             <div className="col-md-6 col-lg-3">
                 <form onSubmit={ handleSubmit }>
                     <div className="form-group">
-                        {/* <div className="row">
-                            <div className="col pb-1"> */}
-                                <label htmlFor="gamesize">&nbsp; Game Size</label>
-                                <select name="gamesize"
-                                    value={ gameSettingsState.gameSize }
-                                    className="form-control"
-                                    onChange={ handleGameSettingsChange }>
-                                    {gameSizes.map(({ label, value }) => (
-                                        <option key={ value } value={ value }>
-                                            { label }
-                                        </option>
-                                    ))}
-                                </select>
-                            {/* </div>    
-                        </div> */}
+                        <label htmlFor="gamesize">&nbsp; Game Size</label>
+                        <select name="gamesize"
+                            value={ gameSettingsState.gameSize }
+                            className="form-control"
+                            onChange={ handleGameSettingsChange }>
+                            {gameSizes.map(({ label, value }) => (
+                                <option key={ value } value={ value }>
+                                    { label }
+                                </option>
+                            ))}
+                        </select>
                     </div>
                     {
                         playerState.map((val, idx) => (
@@ -114,12 +137,15 @@ const MainMenu = () => {
                         ))
                     }
                     {playerState.length < 4 ?
-                    <div className="form-group">
-                        <button type="button" onClick={ addPlayer } className="btn btn-primary">Add player</button>
-                    </div>
+                    <div className="btn-group w-100 mb-2" role="group">
+                        <button type="button" onClick={ addPlayer } className="btn btn-success">Add Player</button>
+                        {/* Implement once the computer player is ready
+                        <button type="button" onClick={ addComputer } className="btn btn-danger">Add Computer</button>
+                        */}
+                        </div>
                     : ""}
                     <div className="form-group">
-                        <button type="submit" className="btn btn-primary">Start Game</button>
+                        <button type="submit" className="btn btn-primary btn-block">Start Game</button>
                     </div>
                 </form>
             </div>

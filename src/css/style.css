@@ -68,12 +68,25 @@
 	background-repeat: no-repeat;
 }
 
+.player1color {
+	background-color: red;
+}
+.player2color {
+	background-color: rgb(7, 163, 163);
+}
+.player3color {
+	background-color: rgb(14, 122, 8);
+}
+.player4color {
+	background-color: rgb(120, 122, 8);
+}
+
 .player1unit {
 	background: radial-gradient(1.2em 1.2em at 50% 50%, red 50%, transparent 50%); 
 }
 
 .player2unit {
-	background: radial-gradient(1.2em 1.2em at 50% 50%, cyan 50%, transparent 50%);
+	background: radial-gradient(1.2em 1.2em at 50% 50%, rgb(7, 163, 163) 50%, transparent 50%);
 }
 
 .player3unit {

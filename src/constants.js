@@ -51,6 +51,12 @@ export const RESULT_TEXT = {
 	lose: "Lost all divers",
 }
 
+export const OBJECT_TYPES = {
+	card: "card",
+	outerWater: "outerWater",
+	boat: "boat",
+}
+
 export const DEFAULT_UNTS_PER_PLAYER = 2;
 
 //Card
