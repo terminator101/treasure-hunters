@@ -11,23 +11,24 @@ const MainMenu = () => {
     const newPlayer = [DEFAULT_PLAYERS[0]]; //[{ playerId: 0, playerName: "", row: 0, col: 3, computer: false, playerClass: "player1", score: 0, boatImage: "ship_brown", resultText: "" }];
     
     const defaultPlayers = DEFAULT_PLAYERS;
-    //Get the players from the context. If there are no players, just put the default one
-    const displayScreenContextPlayers = displayScreenContext.playersArray ? displayScreenContext.playersArray : newPlayer;
-    
-    //console.log('displayScreenContextPlayers');
-    //console.log(displayScreenContextPlayers);
+
+    const [displayScreenContextPlayers] = useState(
+        //Get the players from the context. If there are no players, just put the default one
+        displayScreenContext.playersArray ? displayScreenContext.playersArray : newPlayer
+    );
+
     //Get the game settings
     const gameSettings = displayScreenContext.gameSettings;
     const screens = SCREENS;
 
-    const [gameSizes] = React.useState([
+    const [gameSizes] = useState([
         {
             label: GAME_SETUPS.small.label,
             value: GAME_SETUPS.small.value,
         },
         {
             label: GAME_SETUPS.medium.label,
-            value: GAME_SETUPS.medium.value
+            value: GAME_SETUPS.medium.value,
         },
     ]);
 
@@ -136,7 +137,7 @@ const MainMenu = () => {
                             />
                         ))
                     }
-                    {playerState.length < 4 ?
+                    {playerState.length < 2 ?
                     <div className="btn-group w-100 mb-2" role="group">
                         <button type="button" onClick={ addPlayer } className="btn btn-success">Add Player</button>
                         {/* Implement once the computer player is ready

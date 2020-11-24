@@ -51,8 +51,8 @@ export default class GameBoard extends React.Component {
 			possibleMovesUnit: 	[],
 			possibleMovesBoat: 	[],
 			currentPlayer: 		this.props.playersArray[0],
-			currentPlayerUnit: 	"",
-			currentPlayerBoat: 	"",
+			currentPlayerUnit: 	null,
+			currentPlayerBoat: 	null,
 		}
 
 		//Create the treasures using the cards
@@ -71,7 +71,7 @@ export default class GameBoard extends React.Component {
 	componentDidUpdate(prevProps, prevState) {
 		if (this.state.cardArray !== prevState.cardArray ) {
 			//The cards have been changed so check if the current player has also changed
-			if(this.state.currentPlayer !== prevState.currentPlayer){
+			if(this.state.currentPlayer && (this.state.currentPlayer !== prevState.currentPlayer)){
 				//The current player has changed so create a turn using the changed player
 				this._createTurn(this.state.currentPlayer);
 			}
@@ -199,7 +199,7 @@ export default class GameBoard extends React.Component {
 	render(){
 		this.settings = Object.assign({}, this.defaults, this.props);
 		const updatedCardArray = this.state.cardArray.slice();
-		let currentPlayer = this.state.currentPlayer ? this.state.currentPlayer : "";
+		let currentPlayer = this.state.currentPlayer ? this.state.currentPlayer : null;
 		let displayCardArray = [];
 
 		//Display the cards, but remove the first and last since that's outer water
@@ -300,7 +300,7 @@ export default class GameBoard extends React.Component {
 	_createOuterWater(position, index = 0){
 		//Create a default outer water
 		let outerWater = {
-			playerBoat: "", 
+			playerBoat: null, 
 			possibleMove: false, 
 			disabled: true, 
 			cardWidth: this.defaults.cardWidthClass, 
@@ -467,7 +467,7 @@ export default class GameBoard extends React.Component {
 		let updatedObjectArray = objectArray;
 
 		updatedObjectArray[boat.row][boat.col] = Object.assign({}, updatedObjectArray[boat.row][boat.col], {
-			playerBoat: "",
+			playerBoat: null,
 			disabled: true
 		});
 
@@ -728,7 +728,7 @@ export default class GameBoard extends React.Component {
 		for(let boat of playerBoatsArray){
 			if (cardsUpdatedWithBoats[boat.row] !== undefined) {
 				let disabled = true;
-				if (this.state.currentPlayer.playerId === boat.playerId && this.state.currentPlayerUnit === "") {
+				if (this.state.currentPlayer.playerId === boat.playerId && !this.state.currentPlayerUnit) {
 					//Boat with the current player was found and no current player unit is selected so enable it
 					disabled = false;
 				}
@@ -1122,8 +1122,8 @@ export default class GameBoard extends React.Component {
 		let possibleMovesUnit = this.state.possibleMovesUnit.slice();
 		let possibleMovesBoat = this.state.possibleMovesBoat.slice();
 		let objectUnits = [];
-		let currentPlayerUnit = "";
-		let currentPlayerBoat = "";
+		let currentPlayerUnit = null;
+		let currentPlayerBoat = null;
 		let playerBoat = playerBoatsArray[this.state.currentPlayer.playerId];
 		let allowMovetoBoat = false;
 
@@ -1157,13 +1157,13 @@ export default class GameBoard extends React.Component {
 			//Get the boat from the outer water
 			currentPlayerBoat = object.playerBoat;
 
-			if (currentPlayerBoat !== "") {
+			if (currentPlayerBoat) {
 				//get the possible moves for the boat along the outer water
 				possibleMovesBoat = this._findPossibleMoves(object, cardArray);
 				//Get all units from the boat
 				objectUnits = this._getPlayerUnitsFromObject(currentPlayerBoat);
 				
-				if (objectUnits !== false) {
+				if (objectUnits) {
 					//use that to get the current player unit
 					currentPlayerUnit = this._getCurrentPlayerUnitFromObject(objectUnits);
 
@@ -1271,7 +1271,8 @@ export default class GameBoard extends React.Component {
 
 		let start = objectCol - 1;
 		let end = objectCol + 1;
-		let moves = [];
+		//Keep the object location so that it can be selected
+		let moves = [{"row" : objectRow, "col" : objectCol}];
 
 		switch(movementType){
 			case "none":
@@ -1385,7 +1386,7 @@ export default class GameBoard extends React.Component {
 						if (c in objectRowArray)  {
 							//the column has been found in the object row array so find the right coordinates
 							if (((c === objectCol) && (objectRow === r))){
-							//Ignore the coordinates of the card itself
+							//Ignore the coordinates of the object location
 							} else {
 								if (movementType === "horizontal vertical") {
 								//The card allows only for horizontal or vertical movement	
@@ -1450,7 +1451,7 @@ export default class GameBoard extends React.Component {
 	 * @param {Array} objectUnits 
 	 */
 	_getCurrentPlayerUnitFromObject(objectUnits){
-		if (objectUnits !== false && objectUnits.length > 0) {
+		if (objectUnits && objectUnits.length > 0) {
 			for(let unit of objectUnits){
 				if (unit.playerId === this.state.currentPlayer.playerId) {
 					return unit;
@@ -1477,11 +1478,51 @@ export default class GameBoard extends React.Component {
 	_handleClick(object){
 
 		console.log("Object clicked");
+		let updatedCardArray = this.state.cardArray.slice();
+		const possibleMovesUnit = this.state.possibleMovesUnit.slice();
+		const possibleMovesBoat = this.state.possibleMovesBoat.slice();
+		const unitsArray = this.state.playerUnitsArray.slice();
+		const playerBoatsArray = this.state.playerBoatsArray.slice();
 
-		//Make sure that neither a unit nor a boat has been set
-		if (this.state.currentPlayerUnit === "" && this.state.currentPlayerBoat === "") {
+		if (!this.state.currentPlayerUnit && !this.state.currentPlayerBoat) {
+			//No unit or boat has been set, so just highlight the possible moves
 			this._highlightPossibleMoves(object);
-		} else {
+		} else
+		if (
+			(this.state.currentPlayerUnit 
+			&&
+			(
+				(object.row === this.state.currentPlayerUnit.row) 
+				&&
+				(object.col === this.state.currentPlayerUnit.col)
+			))
+			||
+			(this.state.currentPlayerBoat
+			&&
+			(
+				(object.row === this.state.currentPlayerBoat.row)
+				&&
+				(object.col === this.state.currentPlayerBoat.col)
+			))
+		){
+			//The player has selected a card that either has the current player unit or current play boat
+			//Clear the unit possible moves
+			updatedCardArray = this._clearPossibleMoves(updatedCardArray, possibleMovesUnit);
+			//Clear the boat possible moves
+			updatedCardArray = this._clearPossibleMoves(updatedCardArray, possibleMovesBoat);
+			//enable all cards that have the current player units and boats
+			updatedCardArray = this._enableAllCardsWithCurrentplayerUnitsAndBoats(this.state.currentPlayer,updatedCardArray,unitsArray,playerBoatsArray);
+
+			this.setState({
+				currentPlayerUnit: null,
+				currentPlayerBoat: null,
+				cardArray: updatedCardArray,
+				possibleMovesUnit: [],
+				possibleMovesBoat: [],
+			});
+		} 
+		else {
+			//Current unit or boat have been selected and the destination does not contain either of them
 			this._moveToDestination(object);
 		}
 	}
@@ -1498,18 +1539,18 @@ export default class GameBoard extends React.Component {
 
 		let updatedCardArray = this.state.cardArray.slice();
 
-		let updatedCurrentPlayer = "";
+		let updatedCurrentPlayer = null;
 		let updatedPlayersArray = this.state.playersArray.slice();
 		let updatedUnitsArray = this.state.playerUnitsArray.slice();
 		let updatedPlayerBoatsArray = this.state.playerBoatsArray.slice();
 		let updatedTreasuresArray = this.state.treasuresArray.slice();
-		let treasureToMove = "";
+		let treasureToMove = null;
 
 		const possibleMovesUnit = this.state.possibleMovesUnit.slice();
 		const possibleMovesBoat = this.state.possibleMovesBoat.slice();
 
 		//A boat has been previously clicked
-		if (this.state.currentPlayerBoat !== "") {
+		if (this.state.currentPlayerBoat) {
 			if (object.objectType === this.defaults.objectTypes.outerWater){
 				console.log('move boat to OuterWater');
 
@@ -1564,9 +1605,9 @@ export default class GameBoard extends React.Component {
 			}
 		} else
 		//a field with a unit has previous been clicked
-		if (this.state.currentPlayerUnit !== "") {
+		if (this.state.currentPlayerUnit) {
 			//A card has been clicked on while no current boat is set
-			if (object.objectType === this.defaults.objectTypes.card && this.state.currentPlayerBoat === "") {
+			if (object.objectType === this.defaults.objectTypes.card && !this.state.currentPlayerBoat) {
 				console.log('move unit from card to card');
 
 				if(object.cardType === "shark"){
@@ -1675,8 +1716,8 @@ export default class GameBoard extends React.Component {
 		}
 
 		this.setState({
-			currentPlayerUnit: "",
-			currentPlayerBoat: "",
+			currentPlayerUnit: null,
+			currentPlayerBoat: null,
 			cardArray: updatedCardArray,
 			possibleMovesUnit: [],
 			possibleMovesBoat: [],
@@ -1808,7 +1849,7 @@ export default class GameBoard extends React.Component {
 	 */
 	_getCurrentPlayer(playersArray){
 		for(let player of playersArray){
-			if(player.playerState === "current"){
+			if(player.playerState === this.defaults.playerStates.current){
 				return player;
 			}
 		}
@@ -1857,7 +1898,7 @@ export default class GameBoard extends React.Component {
 
 			for(let c = 0; c < cardArray[r].length; c++){
 
-				if(cardArray[r] != undefined){
+				if(cardArray[r] !== undefined){
 
 					updatedCardArray[r][c] = Object.assign({}, updatedCardArray[r][c], {
 						disabled: true,

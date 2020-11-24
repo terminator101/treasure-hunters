@@ -9,11 +9,11 @@
 export const DEAFULT_PLAYER_NAME = 'Tester';
 
 export const DEFAULT_PLAYERS = [
-	{ playerId: 0, playerName: "player1", 
+	{ playerId: 0, playerName: "", 
 		gameSmallLocation: {row: 0, col: 2}, 
 		gameMediumLocation: {row: 0, col: 2}, 
 		computer: false, playerClass: "player1", score: 0, boatImage: "ship_brown", resultText: ""},
-	{ playerId: 1, playerName: "player2", 
+	{ playerId: 1, playerName: "", 
 		gameSmallLocation: {row: 2, col: 0}, 
 		gameMediumLocation: {row: 3, col: 0},
 		computer: false, playerClass: "player2", score: 0, boatImage: "ship_red", resultText: ""},

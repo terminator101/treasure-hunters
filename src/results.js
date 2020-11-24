@@ -34,7 +34,7 @@ export default class Results extends React.Component {
 	}
 
 	/**
-	 * When restart button is pressed
+	 * When reset button is pressed
 	 * @param {event} e 
 	 */
 	_reset(e){
