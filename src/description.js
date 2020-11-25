@@ -55,16 +55,19 @@ export default class Description extends React.Component {
 							<div className="col-lg-8">
 								<ul>
 									<li>
-										The <span className="font-weight-bold">goal</span> of the game is to use your divers to find treasures and deliver them to your boat!
+										The <span className="font-weight-bold">goal</span> of the game is to use your divers to find treasure(s) and bring it to your boat!
 									</li>
 									<li>
 										Each player starts with <span className="font-weight-bold">{ this.settings.unitsPerPlayer }</span> divers and losing all will remove them from the game
 									</li>
 									<li>
-										You can select your boat and then you can move it to the highlighted <span className="outer-water font-weight-bold">outer water</span> tiles. A boat cannot move to the <span className="shallows font-weight-bold">shallows</span>
+										Start by selecting your boat and then select where you want to move
 									</li>
 									<li>
-										You can select a diver (circle) and then you can move it to the <span className="shallows font-weight-bold">shallows</span>, as well as to and from a boat
+										A boat can move to the highlighted <span className="outer-water font-weight-bold">outer water</span> tiles. A boat cannot move to the <span className="shallows font-weight-bold">shallows</span>
+									</li>
+									<li>
+										A diver (circle) can move to the <span className="shallows font-weight-bold">shallows</span>, as well as to and from a boat
 									</li>
 									<li>
 										A boat can be moved through <span className="outer-water font-weight-bold">outer water</span> regardless if there are any divers on it
@@ -74,6 +77,9 @@ export default class Description extends React.Component {
 									</li>
 									<li>
 										Once a shark is killed, it acts same as a tile with fish
+									</li>
+									<li>
+										A treasure can be retrieved from a dead shark
 									</li>
 									<li>
 										Delivering <span className="font-weight-bold">{ this.settings.treasuresForWin }</span> treasure(s) to your boat will win the game

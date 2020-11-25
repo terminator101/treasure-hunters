@@ -1472,12 +1472,12 @@ export default class GameBoard extends React.Component {
 	//- Get the card row and col from the unit and use those to remove the unit from the previous card
 
 	/**
-	 * Handle what happens when object gets clicked on
+	 * Handle what happens when object gets selected
 	 * @param {Object} object 
 	 */
 	_handleClick(object){
 
-		console.log("Object clicked");
+		console.log("Object selected");
 		let updatedCardArray = this.state.cardArray.slice();
 		const possibleMovesUnit = this.state.possibleMovesUnit.slice();
 		const possibleMovesBoat = this.state.possibleMovesBoat.slice();
@@ -1505,6 +1505,7 @@ export default class GameBoard extends React.Component {
 				(object.col === this.state.currentPlayerBoat.col)
 			))
 		){
+			console.log("Same tile has been selected");
 			//The player has selected a card that either has the current player unit or current play boat
 			//Clear the unit possible moves
 			updatedCardArray = this._clearPossibleMoves(updatedCardArray, possibleMovesUnit);
@@ -1532,10 +1533,6 @@ export default class GameBoard extends React.Component {
 	 * @param {Object} object 
 	 */
 	_moveToDestination(object){
-		console.log("Unit to move:");
-		console.log(this.state.currentPlayerUnit);
-		console.log("Boat to move:");
-		console.log(this.state.currentPlayerBoat);
 
 		let updatedCardArray = this.state.cardArray.slice();
 
@@ -1545,11 +1542,10 @@ export default class GameBoard extends React.Component {
 		let updatedPlayerBoatsArray = this.state.playerBoatsArray.slice();
 		let updatedTreasuresArray = this.state.treasuresArray.slice();
 		let treasureToMove = null;
-
 		const possibleMovesUnit = this.state.possibleMovesUnit.slice();
 		const possibleMovesBoat = this.state.possibleMovesBoat.slice();
 
-		//A boat has been previously clicked
+		//A boat has been previously selected
 		if (this.state.currentPlayerBoat) {
 			if (object.objectType === this.defaults.objectTypes.outerWater){
 				console.log('move boat to OuterWater');
@@ -1566,6 +1562,8 @@ export default class GameBoard extends React.Component {
 				
 				//Update all boats
 				updatedPlayerBoatsArray = this._updateObjectWithNewLocation(this.state.currentPlayerBoat,updatedCardArray[object.row][object.col],updatedPlayerBoatsArray);
+				//Add the updated units to the boat
+				updatedPlayerBoatsArray = this._addAllUnitsToBoats(updatedUnitsArray,updatedPlayerBoatsArray);
 				//Remove boat from outer water
 				updatedCardArray = this._removePlayerBoatFromOuterWater(this.state.currentPlayerBoat,updatedCardArray);
 				//update the boats
@@ -1604,9 +1602,9 @@ export default class GameBoard extends React.Component {
 				updatedCardArray = this._clearPossibleMoves(updatedCardArray, possibleMovesBoat);
 			}
 		} else
-		//a field with a unit has previous been clicked
+		//a field with a unit has previously been selected
 		if (this.state.currentPlayerUnit) {
-			//A card has been clicked on while no current boat is set
+			//A card has been selected while no current boat is set
 			if (object.objectType === this.defaults.objectTypes.card && !this.state.currentPlayerBoat) {
 				console.log('move unit from card to card');
 
@@ -1643,7 +1641,7 @@ export default class GameBoard extends React.Component {
 				//Clear the unit possible moves
 				updatedCardArray = this._clearPossibleMoves(updatedCardArray, possibleMovesUnit);
 			} else
-			//An outer water with a boat has been clicked so move the unit to the boat
+			//An outer water with a boat has been selected so move the unit to the boat
 			if (object.objectType === this.defaults.objectTypes.outerWater){
 				console.log('move unit from card to boat');
 				//Update the unit with the new location
@@ -1714,6 +1712,11 @@ export default class GameBoard extends React.Component {
 			//enable all cards that have the next players units and boats
 			updatedCardArray = this._enableAllCardsWithCurrentplayerUnitsAndBoats(updatedCurrentPlayer,updatedCardArray,updatedUnitsArray,updatedPlayerBoatsArray);
 		}
+
+		console.log("updatedUnitsArray");
+		console.log(updatedUnitsArray);
+		console.log("updatedPlayerBoatsArray");
+		console.log(updatedPlayerBoatsArray);
 
 		this.setState({
 			currentPlayerUnit: null,
