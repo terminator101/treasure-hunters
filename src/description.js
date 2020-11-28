@@ -58,28 +58,19 @@ export default class Description extends React.Component {
 										The <span className="font-weight-bold">goal</span> of the game is to use your divers to find treasure(s) and bring it to your boat!
 									</li>
 									<li>
-										Each player starts with <span className="font-weight-bold">{ this.settings.unitsPerPlayer }</span> divers and losing all will remove them from the game
+										Each player starts with <span className="font-weight-bold">{ this.settings.unitsPerPlayer }</span> divers and losing both will end the game
 									</li>
 									<li>
-										Start by selecting your boat and then select where you want to move
+										Start by selecting your boat and then select an adjacent tile to move
 									</li>
 									<li>
-										A boat can move to the highlighted <span className="outer-water font-weight-bold">outer water</span> tiles. A boat cannot move to the <span className="shallows font-weight-bold">shallows</span>
+										A boat can move to the highlighted <span className="outer-water font-weight-bold">outer water</span> tiles, and moved regardless if there are any divers on it. It cannot move to the <span className="shallows font-weight-bold">shallows</span>
 									</li>
 									<li>
-										A diver (circle) can move to the <span className="shallows font-weight-bold">shallows</span>, as well as to and from a boat
+										A diver (circle) can move to the <span className="shallows font-weight-bold">shallows</span>, as well as to and from a boat, and can only carry one treasure at a time
 									</li>
 									<li>
-										A boat can be moved through <span className="outer-water font-weight-bold">outer water</span> regardless if there are any divers on it
-									</li>
-									<li>
-										A diver can only carry one treasure at a time
-									</li>
-									<li>
-										Once a shark is killed, it acts same as a tile with fish
-									</li>
-									<li>
-										A treasure can be retrieved from a dead shark
+										Once a shark is killed, it acts same as a tile with fish and if there is a treasure on it, it can be retrieved
 									</li>
 									<li>
 										Delivering <span className="font-weight-bold">{ this.settings.treasuresForWin }</span> treasure(s) to your boat will win the game
