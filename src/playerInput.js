@@ -7,14 +7,14 @@ const PlayerInput = ({ idx, playerState, handlePlayerChange, handlePlayerRemove 
     return (
         <div key={`player-${idx}`} className={"border " + playerState[idx].playerClass + "color mb-2"}>
             <div className="form-row">
-                <div className="form-group col-3 text-white mb-0">
+                <div className="form-group col-4 col-sm-3 text-white mb-0">
                     <label htmlFor={ playerId }>&nbsp; {`Player #${idx + 1}`}</label>&nbsp; 
                 </div>
-                <div className="form-group col-7 mb-0">
+                <div className="form-group col-6 col-sm-7 mb-0">
                     <input
                         name="playerName"
                         data-idx={ idx }
-                        className="playerName"
+                        className="form-control playerName"
                         placeholder="Enter Name"
                         type="text"
                         id={ playerId }
@@ -26,7 +26,7 @@ const PlayerInput = ({ idx, playerState, handlePlayerChange, handlePlayerRemove 
                 </div>
                 {//Display the remove button but only if there are at least two players and only display this for the last player
                 (idx > 0 && idx === (playerState.length - 1)) ?
-                <div className="form-group col-2 text-white mb-0">
+                <div className="form-group col-2 col-sm-2 text-white mb-0">
                     <button type="button" onClick={() => handlePlayerRemove(idx) } className="btn btn-danger">X</button>
                 </div>
                 : ""}
