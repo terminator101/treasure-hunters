@@ -1,6 +1,6 @@
 import React from 'react';
 import TreasureHunters from './treasure-hunters';
-import { SCREENS, DEFAULT_PLAYERS, GAME_SETUPS } from './constants';
+import { SCREENS, DEFAULT_PLAYERS, DEFAULT_PLAYERS_DEBUG, GAME_SETUPS } from './constants';
 import { DisplayScreenContext } from "./display-screen-context";
 
 class App extends React.Component {
@@ -9,20 +9,24 @@ class App extends React.Component {
         super(props);
 
         this.defaults = {
-          screens: SCREENS,
+          defaultScreen: SCREENS.mainMenu,
+          defaultPlayerArray: [DEFAULT_PLAYERS[0]],
+          defaultGameSetup: GAME_SETUPS.small.name,
+          //defaultScreen: SCREENS.gameBoard,
+          //defaultPlayerArray: DEFAULT_PLAYERS_DEBUG,
         }
 
         this.settings = Object.assign({}, this.defaults, this.props);
 
         this.state = {
-          displayScreen: this.defaults.screens.mainMenu,
+          displayScreen:    this.settings.defaultScreen,
           setDisplayScreen: this._setDisplayScreen,
-          displayResults: false,
+          displayResults:   false,
           setDisplayResults: this._setDisplayResults,
-          playersArray: [DEFAULT_PLAYERS[0]],//[{ playerId: 0, playerName: "", row: 0, col: 3, computer: false, playerClass: "player1", score: 0, boatImage: "ship_brown", resultText: "" }],
-          setPlayers: this._setPlayers,
-          gameSettings: GAME_SETUPS.small.value,
-          setGameSettings: this._setGameSettings,
+          playersArray:     this.settings.defaultPlayerArray,//[{ playerId: 0, playerName: "", row: 0, col: 3, computer: false, playerClass: "player1", score: 0, boatImage: "ship_brown", resultText: "" }],
+          setPlayers:       this._setPlayers,
+          gameSettings:     this.settings.defaultGameSetup,
+          setGameSettings:  this._setGameSettings,
         }
     }
 

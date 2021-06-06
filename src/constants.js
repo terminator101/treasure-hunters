@@ -27,6 +27,17 @@ export const DEFAULT_PLAYERS = [
 		computer: false, playerClass: "player4", score: 0, boatImage: "ship_yellow", resultText: ""},
 ]
 
+export const DEFAULT_PLAYERS_DEBUG = [
+	{ playerId: 0, playerName: "Andrej", 
+		gameSmallLocation: {row: 0, col: 2}, 
+		gameMediumLocation: {row: 0, col: 2}, 
+		computer: false, playerClass: "player1", score: 0, boatImage: "ship_brown", resultText: ""},
+	{ playerId: 1, playerName: "Computer", 
+		gameSmallLocation: {row: 2, col: 0}, 
+		gameMediumLocation: {row: 3, col: 0},
+		computer: true, playerClass: "player2", score: 0, boatImage: "ship_red", resultText: ""},
+]
+
 export const PLAYER_STATES = {
 	current: 	'current',
 	previous: 	'previous',
@@ -77,7 +88,7 @@ export const GAME_SETUPS = {
 	small: 
 	{
 		label: "Small",
-		value: "small",
+		name: "small",
 		playerLocations: "gameSmallLocation",
 		numberOfRows: 3,
 		numberCardsPerRow: 3,
@@ -99,7 +110,7 @@ export const GAME_SETUPS = {
 	medium: 
 	{
 		label: "Medium (work in progress)",
-		value: "medium",
+		name: "medium",
 		playerLocations: "gameMediumLocation",
 		numberOfRows: 4,
 		numberCardsPerRow: 4,

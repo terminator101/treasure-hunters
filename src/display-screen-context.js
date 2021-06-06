@@ -8,6 +8,6 @@ export const DisplayScreenContext = React.createContext({
     setPlayers: () => {},
     displayResults: false,
     setDisplayResults: () => {},
-    gameSettings: GAME_SETUPS.small.value,
+    gameSettings: GAME_SETUPS.small.name,
     setGameSettings: () => {},
 });

@@ -482,11 +482,11 @@ export default class GameBoard extends React.Component {
 	_getStartingPlayerLocation(player,gameSize){
 		let location = {};
 		let gameSizeName = "";
-		if(gameSize === GAME_SETUPS.small.value){
+		if(gameSize === GAME_SETUPS.small.name){
 			gameSizeName = GAME_SETUPS.small.playerLocations;
 		}
 		else
-		if(gameSize === GAME_SETUPS.medium.value){
+		if(gameSize === GAME_SETUPS.medium.name){
 			gameSizeName = GAME_SETUPS.medium.playerLocations;
 		}
 		location = {row: player[gameSizeName].row, col: player[gameSizeName].col}
