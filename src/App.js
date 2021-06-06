@@ -12,6 +12,7 @@ class App extends React.Component {
           defaultScreen: SCREENS.mainMenu,
           defaultPlayerArray: [DEFAULT_PLAYERS[0]],
           defaultGameSetup: GAME_SETUPS.small.name,
+          //Used for testing the computer player
           //defaultScreen: SCREENS.gameBoard,
           //defaultPlayerArray: DEFAULT_PLAYERS_DEBUG,
         }

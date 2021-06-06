@@ -493,6 +493,17 @@ export default class GameBoard extends React.Component {
 		return location;
 	}
 
+	/**
+	 * Get the Player boatd
+	 * @param {Object} player 
+	 * @param {Array} playerBoatsArray 
+	 * @returns 
+	 */
+	_getPlayerBoat(player,playerBoatsArray){
+		let playerBoat = playerBoatsArray[player.playerId];
+		return playerBoat;
+	}
+
 	///////////////////
 	/// Player Units
 	///////////////////
@@ -1820,24 +1831,60 @@ export default class GameBoard extends React.Component {
 		let updatedUnitsArray = this.state.playerUnitsArray.slice();
 		let updatedPlayerBoatsArray  = this.state.playerBoatsArray.slice();
 
-		const possibleMovesUnit = this.state.possibleMovesUnit.slice();
-		const possibleMovesBoat = this.state.possibleMovesBoat.slice();
+		const playerBoatsArray = this.state.playerBoatsArray.slice();
 
 		//Get the computer units
 		let computerUnits = this._getPlayerUnitsFromPlayer(computerPlayer,updatedUnitsArray);
+		let computerBoat = this._getPlayerBoat(computerPlayer,playerBoatsArray);
+
+		console.log("----Player-------");
+		console.log(computerPlayer);
+		console.log("----Units----");
+		console.log(computerUnits);
+		console.log("----Boat-----");
+		console.log(computerBoat);
+
+		let unitsOnBoard = [];
+		//Check if there are any units on the board
+		for(let unit of computerUnits){
+			if(unit.row !== computerBoat.row && unit.col !== computerBoat.col){
+				//A unit that is not on board was found so move it
+				unitsOnBoard.push(unit);
+			}
+		}
+		let unitToMove = {};
+		if (unitsOnBoard.length > 0){
+			//There are units on the board so move the first one
+			unitToMove = unitsOnBoard[0];
+		} else {
+			//There are no units on the board so move the first one on the boat
+			unitToMove = computerUnits[0];
+		}
+		console.log('unitToMove')
+		console.log(unitToMove.row);
+		console.log(unitToMove.col);
+		console.log('unitToMove');
 
 		//if (this.state.currentPlayerUnit === "" && this.state.currentPlayerBoat === "") {
 		
-		//A placeholder move until a proper AI can me implemented
+		//A placeholder moves until a proper AI can me implemented
 		console.log("moves where highlighted on:");
-		let computerMoveFrom = updatedCardArray[4][0];
-		let computerMoveTo = updatedCardArray[4][1];
-		console.log(computerMoveTo);
+		let computerMoveFrom = updatedCardArray[unitToMove.row][unitToMove.col]; //updatedCardArray[4][0];
 
 		this._highlightPossibleMoves(computerMoveFrom);
 
 		setTimeout(() => {
 
+			const possibleMovesBoat = this.state.possibleMovesBoat.slice();
+			const possibleMovesUnit = this.state.possibleMovesUnit.slice();
+			
+			//Remove the first item from the array so that the computer won't stop
+			possibleMovesUnit.shift();
+			console.log('--------');
+			console.log(possibleMovesUnit);
+			console.log('--------');
+			//Move the unit to the possible location
+			let computerMoveTo = updatedCardArray[possibleMovesUnit[0].row][possibleMovesUnit[0].col]; //updatedCardArray[4][1];
 			console.log("move was performed to:");
 			console.log(computerMoveTo);
 
@@ -1870,7 +1917,7 @@ export default class GameBoard extends React.Component {
 	_enableAllCardsWithCurrentplayerUnitsAndBoats(currentPlayer,cardArray,updatedUnitsArray,playerBoatsArray){
 
 		let playerUnits = this._getPlayerUnitsFromPlayer(currentPlayer,updatedUnitsArray);
-		let playerBoat = playerBoatsArray[currentPlayer.playerId];
+		let playerBoat = this._getPlayerBoat(currentPlayer,playerBoatsArray)
 		let updatedCardArray = cardArray.slice();
 
 		//Add the boat so that it's not disabled
