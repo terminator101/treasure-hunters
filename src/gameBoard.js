@@ -1130,6 +1130,7 @@ export default class GameBoard extends React.Component {
 	_highlightPossibleMoves(object){
 		let cardArray = this.state.cardArray.slice();
 		const playerBoatsArray = this.state.playerBoatsArray.slice();
+		const currentPlayer = this.state.currentPlayer;
 		let possibleMovesUnit = this.state.possibleMovesUnit.slice();
 		let possibleMovesBoat = this.state.possibleMovesBoat.slice();
 		let objectUnits = [];
@@ -1137,6 +1138,7 @@ export default class GameBoard extends React.Component {
 		let currentPlayerBoat = null;
 		let playerBoat = playerBoatsArray[this.state.currentPlayer.playerId];
 		let allowMovetoBoat = false;
+		let validUnitMoves = [];
 
 		if (object.objectType === this.defaults.objectTypes.card) {
 			//Get all of the unit from the object
@@ -1200,7 +1202,12 @@ export default class GameBoard extends React.Component {
 				cardArray[position.row] = cardArray[position.row].slice();
 
 				//Check if the move is to a card or if the card has the current player boat
-				if (cardArray[position.row][position.col].objectType === this.defaults.objectTypes.card || this._cardHasThePlayerBoat(cardArray[position.row][position.col],playerBoat)) {
+				if (cardArray[position.row][position.col].objectType === this.defaults.objectTypes.card 
+					|| 
+					this._cardHasTheCurrentPlayerBoat(currentPlayer,cardArray[position.row][position.col],playerBoat)) {
+					
+					//Add the position to the valid moves
+					validUnitMoves.push(position);
 					cardArray[position.row][position.col] = Object.assign({}, cardArray[position.row][position.col], {
 						possibleMove: true,
 						disabled: false
@@ -1208,6 +1215,8 @@ export default class GameBoard extends React.Component {
 				}
 				
 			}
+			console.log("Valid Card moves");
+			console.log(validUnitMoves);
 		}
 
 		if (possibleMovesBoat.length > 0 ) {
@@ -1223,16 +1232,25 @@ export default class GameBoard extends React.Component {
 
 		this.setState({
 			cardArray: cardArray,
-			possibleMovesUnit: possibleMovesUnit,
+			possibleMovesUnit: validUnitMoves,//possibleMovesUnit,
 			possibleMovesBoat: possibleMovesBoat,
 			currentPlayerUnit: currentPlayerUnit,
 			currentPlayerBoat: currentPlayerBoat
 		});
 	}
 
-	//Check if the card has the specified player boat
-	_cardHasThePlayerBoat(card,boat){
-		if (card.row === boat.row && card.col === boat.col) {
+	/**
+	 * Check if the card has the specified player boat
+	 * @param {Object} currentPlayer 
+	 * @param {Object} card 
+	 * @param {Object} boat 
+	 * @returns 
+	 */
+	_cardHasTheCurrentPlayerBoat(currentPlayer,card,boat){
+		if ((card.row === boat.row && card.col === boat.col)
+			&&
+			boat.playerId === currentPlayer.playerId
+			) {
 			return true;
 		}
 		return false;
