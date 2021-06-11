@@ -24,11 +24,11 @@ const MainMenu = () => {
     const [gameSizes] = useState([
         {
             label: GAME_SETUPS.small.label,
-            value: GAME_SETUPS.small.value,
+            value: GAME_SETUPS.small.name,
         },
         {
             label: GAME_SETUPS.medium.label,
-            value: GAME_SETUPS.medium.value,
+            value: GAME_SETUPS.medium.name,
         },
     ]);
 
